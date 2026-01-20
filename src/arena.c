@@ -7,40 +7,41 @@
 #include <stdio.h>
 
 #define LOG(...)                                                               \
-  do {                                                                         \
-    fprintf(stderr, __VA_ARGS__);                                              \
-    fprintf(stderr, "\n");                                                     \
-  } while (0)
+        do {                                                                   \
+                fprintf(stderr, __VA_ARGS__);                                  \
+                fprintf(stderr, "\n");                                         \
+        } while (0)
 
 #define LOGERROR(...)                                                          \
-  do {                                                                         \
-    fprintf(stderr, "Error: <%s on line %d>\n\t", __FILE__, __LINE__);         \
-    LOG(__VA_ARGS__);                                                          \
-  } while (0)
+        do {                                                                   \
+                fprintf(stderr, "Error: <%s on line %d>\n\t", __FILE__,        \
+                        __LINE__);                                             \
+                LOG(__VA_ARGS__);                                              \
+        } while (0)
 #else
 
 #define LOG(fmt, ...)                                                          \
-  do {                                                                         \
-  } while (0)
+        do {                                                                   \
+        } while (0)
 #define LOGERROR(fmt, ...)                                                     \
-  do {                                                                         \
-  } while (0)
+        do {                                                                   \
+        } while (0)
 #endif
 
 #define MEM_RESERVE(bytes)                                                     \
-  mmap(NULL, (bytes), PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)
+        mmap(NULL, (bytes), PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)
 #define MEM_COMMIT(dest, bytes)                                                \
-  mmap((dest), (bytes), PROT_READ | PROT_WRITE,                                \
-       MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED, -1, 0)
+        mmap((dest), (bytes), PROT_READ | PROT_WRITE,                          \
+             MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED, -1, 0)
 #define MEM_RELEASE(ptr, bytes) munmap((void *)(ptr), (bytes))
 
 #elif defined(_WIN32)
 #include <windows.h>
 
 #define MEM_RESERVE(bytes)                                                     \
-  VirtualAlloc(NULL, (bytes), MEM_RESERVE, PAGE_NOACCESS)
+        VirtualAlloc(NULL, (bytes), MEM_RESERVE, PAGE_NOACCESS)
 #define MEM_COMMIT(dest, bytes)                                                \
-  VirtualAlloc((dest), (bytes), MEM_COMMIT, PAGE_READWRITE)
+        VirtualAlloc((dest), (bytes), MEM_COMMIT, PAGE_READWRITE)
 #define MEM_RELEASE(dest, bytes) VirtualFree((dest), 0, MEM_RELEASE)
 #endif
 
@@ -48,103 +49,109 @@
 #define DEFAULT_ALIGNMENT (2 * sizeof(void *))
 
 uintptr_t alignForward(uintptr_t ptr) {
-  assert(!(DEFAULT_ALIGNMENT % 2));
-  uintptr_t modulo = ptr & (uintptr_t)(DEFAULT_ALIGNMENT - 1);
-  if (modulo != 0) {
-    ptr += DEFAULT_ALIGNMENT - modulo;
-  }
-  return ptr;
+        assert(!(DEFAULT_ALIGNMENT % 2));
+        uintptr_t modulo = ptr & (uintptr_t)(DEFAULT_ALIGNMENT - 1);
+        if (modulo != 0) {
+                ptr += DEFAULT_ALIGNMENT - modulo;
+        }
+        return ptr;
 }
 
 void *arenaResize(Arena *arena, size_t bytes) {
-  // commit at least a page
-  bytes = (bytes > PAGE_SIZE) ? bytes : PAGE_SIZE;
-  if (arena->offset + bytes > arena->reserved) {
-    LOGERROR("Out of reserved addresses.");
-    return NULL;
-  }
+        // commit at least a page
+        bytes = (bytes > PAGE_SIZE) ? bytes : PAGE_SIZE;
+        if (arena->offset + bytes > arena->reserved) {
+                LOGERROR("Out of reserved addresses.");
+                return NULL;
+        }
 
-  void *commit =
-      MEM_COMMIT((void *)((uintptr_t)arena->buffer + arena->offset), bytes);
-  if (commit == NULL) {
-    LOGERROR("Memory allocation failed.");
-    return NULL;
-  }
+        void *commit = MEM_COMMIT(
+            (void *)((uintptr_t)arena->buffer + arena->offset), bytes);
+        if (commit == NULL) {
+                LOGERROR("Memory allocation failed.");
+                return NULL;
+        }
 
-  arena->capacity += bytes;
-  return commit;
+        arena->capacity += bytes;
+        return commit;
 }
 
 int ArenaCreate(Arena *arena) {
-  arena->reserved = DEFAULT_ARENA_RESERVATION_SIZE;
-  arena->capacity = PAGE_SIZE;
-  arena->offset = 0;
+        arena->reserved = DEFAULT_ARENA_RESERVATION_SIZE;
+        arena->capacity = PAGE_SIZE;
+        arena->offset = 0;
 
-  // reserve virtual memory addresses
-  void *reservation = (void *)MEM_RESERVE(arena->reserved);
-  if (reservation == NULL) {
-    LOGERROR("Memory reservation failed.");
-    // this should never happen
-    return 1;
-  }
+        // reserve virtual memory addresses
+        void *reservation = (void *)MEM_RESERVE(arena->reserved);
+        if (reservation == NULL) {
+                LOGERROR("Memory reservation failed.");
+                // this should never happen
+                return 1;
+        }
 
-  // initially we commit a single page of physical memory to our reserved
-  void *commit = (void *)MEM_COMMIT(reservation, arena->capacity);
-  if (commit == NULL) {
-    LOGERROR("Memory allocation failed.");
-    MEM_RELEASE(reservation, DEFAULT_ARENA_RESERVATION_SIZE);
-    // check commit
-    return 1;
-  }
+        // initially we commit a single page of physical memory to our reserved
+        void *commit = (void *)MEM_COMMIT(reservation, arena->capacity);
+        if (commit == NULL) {
+                LOGERROR("Memory allocation failed.");
+                MEM_RELEASE(reservation, DEFAULT_ARENA_RESERVATION_SIZE);
+                // check commit
+                return 1;
+        }
 
-  arena->buffer = commit;
-  return 0;
+        arena->buffer = commit;
+        return 0;
 }
 
-void ArenaDestroy(Arena *arena) { MEM_RELEASE(arena->buffer, arena->reserved); }
+void ArenaDestroy(Arena *arena) {
+        MEM_RELEASE(arena->buffer, arena->reserved);
+}
 
 void *ArenaPush(Arena *arena, size_t bytes) {
-  if (arena->offset + bytes > arena->capacity) {
-    // resize if out of cap
-    if (arenaResize(arena, bytes) == NULL) {
-      LOGERROR("Memory resize failed.");
-      // fail if out of reserved addresses
-      return NULL;
-    }
-  }
+        if (arena->offset + bytes > arena->capacity) {
+                // resize if out of cap
+                if (arenaResize(arena, bytes) == NULL) {
+                        LOGERROR("Memory resize failed.");
+                        // fail if out of reserved addresses
+                        return NULL;
+                }
+        }
 
-  // align offset and move by bytes
-  arena->offset = alignForward((uintptr_t)arena->buffer + arena->offset) -
-                  (uintptr_t)arena->buffer;
-  void *loc = (void *)((uintptr_t)arena->buffer + arena->offset);
-  arena->offset += bytes;
-  return loc;
+        // align offset and move by bytes
+        arena->offset = alignForward((uintptr_t)arena->buffer + arena->offset) -
+                        (uintptr_t)arena->buffer;
+        void *loc = (void *)((uintptr_t)arena->buffer + arena->offset);
+        arena->offset += bytes;
+        return loc;
 }
 
 void *ArenaPushZero(Arena *arena, size_t bytes) {
-  void *loc = ArenaPush(arena, bytes);
-  if (loc == NULL) {
-    return NULL;
-  }
-  memset(loc, 0, bytes);
-  return loc;
+        void *loc = ArenaPush(arena, bytes);
+        if (loc == NULL) {
+                return NULL;
+        }
+        memset(loc, 0, bytes);
+        return loc;
 }
 
-void ArenaClear(Arena *arena) { arena->offset = 0; }
+void ArenaClear(Arena *arena) {
+        arena->offset = 0;
+}
 
 // scratchPad
 ScratchPad *ScratchPadBegin(Arena *arena, size_t bytes) {
-  size_t prevOffset = arena->offset;
-  ScratchPad *pad = ArenaPush(arena, bytes + sizeof(ScratchPad));
-  if (pad == NULL) {
-    return NULL;
-  }
+        size_t prevOffset = arena->offset;
+        ScratchPad *pad = ArenaPush(arena, bytes + sizeof(ScratchPad));
+        if (pad == NULL) {
+                return NULL;
+        }
 
-  pad->arena = arena;
-  pad->prevOffset = prevOffset;
-  pad->buffer =
-      (void *)((uintptr_t)arena->buffer + prevOffset + sizeof(ScratchPad));
-  return pad;
+        pad->arena = arena;
+        pad->prevOffset = prevOffset;
+        pad->buffer = (void *)((uintptr_t)arena->buffer + prevOffset +
+                               sizeof(ScratchPad));
+        return pad;
 }
 
-void ScratchPadEnd(ScratchPad *pad) { pad->arena->offset = pad->prevOffset; }
+void ScratchPadEnd(ScratchPad *pad) {
+        pad->arena->offset = pad->prevOffset;
+}
