@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/au617623/gitplayground/Forge/bin",
+  "command": "/usr/bin/cc -DDEBUG -I/home/au617623/gitplayground/Forge/include -g -std=gnu17 -Wall -Wextra -Wpedantic -fsanitize=address -O0 -g -o CMakeFiles/forge.dir/src/arena.c.o -c /home/au617623/gitplayground/Forge/src/arena.c",
+  "file": "/home/au617623/gitplayground/Forge/src/arena.c",
+  "output": "CMakeFiles/forge.dir/src/arena.c.o"
+},
+{
+  "directory": "/home/au617623/gitplayground/Forge/bin",
+  "command": "/usr/bin/cc -DDEBUG -I/home/au617623/gitplayground/Forge/include -g -std=gnu17 -Wall -Wextra -Wpedantic -fsanitize=address -O0 -g -o CMakeFiles/StaticTest.dir/main.c.o -c /home/au617623/gitplayground/Forge/main.c",
+  "file": "/home/au617623/gitplayground/Forge/main.c",
+  "output": "CMakeFiles/StaticTest.dir/main.c.o"
+}
+]
