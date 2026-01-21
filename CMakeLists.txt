@@ -6,10 +6,15 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(SOURCES 
+    ${CMAKE_SOURCE_DIR}/src/arena.c
+    ${CMAKE_SOURCE_DIR}/src/linalg.c
+    ${CMAKE_SOURCE_DIR}/src/ode.c
+)
 
 # Compiler settings
 # ------------------------------------------------------------------------------
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_compile_options(
@@ -27,7 +32,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 # Library
-set(SOURCES ${CMAKE_SOURCE_DIR}/src/arena.c)
 # ------------------------------------------------------------------------------
 add_library(forge STATIC
     ${SOURCES}
@@ -35,16 +39,19 @@ add_library(forge STATIC
 
 target_include_directories(forge
     PUBLIC
-        ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include
 )
+
+target_link_libraries(forge PUBLIC openblas)
 
 # Executable
 # ------------------------------------------------------------------------------
-add_executable(StaticTest
-    main.c
+add_executable(forgetest
+    test/main.c
 )
-
-target_link_libraries(StaticTest
-    PRIVATE forge
+target_include_directories(forgetest
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/test
 )
-
+target_link_libraries(forgetest PUBLIC forge openblas)

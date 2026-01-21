@@ -1,33 +1,8 @@
-#include <mem/arena.h>
-
+#include <forge/mem/arena.h>
+#include <forge.h>
 #ifdef __linux__
 #include <sys/mman.h>
 #include <unistd.h>
-#ifdef _DEBUG
-#include <stdio.h>
-
-#define LOG(...)                                                               \
-        do {                                                                   \
-                fprintf(stderr, __VA_ARGS__);                                  \
-                fprintf(stderr, "\n");                                         \
-        } while (0)
-
-#define LOGERROR(...)                                                          \
-        do {                                                                   \
-                fprintf(stderr, "Error: <%s on line %d>\n\t", __FILE__,        \
-                        __LINE__);                                             \
-                LOG(__VA_ARGS__);                                              \
-        } while (0)
-#else
-
-#define LOG(fmt, ...)                                                          \
-        do {                                                                   \
-        } while (0)
-#define LOGERROR(fmt, ...)                                                     \
-        do {                                                                   \
-        } while (0)
-#endif
-
 #define MEM_RESERVE(bytes)                                                     \
         mmap(NULL, (bytes), PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)
 #define MEM_COMMIT(dest, bytes)                                                \
@@ -57,7 +32,7 @@ uintptr_t alignForward(uintptr_t ptr) {
         return ptr;
 }
 
-void *arenaResize(Arena *arena, size_t bytes) {
+void *arenaResize(f_arena *arena, size_t bytes) {
         // commit at least a page
         bytes = (bytes > PAGE_SIZE) ? bytes : PAGE_SIZE;
         if (arena->offset + bytes > arena->reserved) {
@@ -76,7 +51,7 @@ void *arenaResize(Arena *arena, size_t bytes) {
         return commit;
 }
 
-int ArenaCreate(Arena *arena) {
+int f_arenaCreate(f_arena *arena) {
         arena->reserved = DEFAULT_ARENA_RESERVATION_SIZE;
         arena->capacity = PAGE_SIZE;
         arena->offset = 0;
@@ -102,11 +77,11 @@ int ArenaCreate(Arena *arena) {
         return 0;
 }
 
-void ArenaDestroy(Arena *arena) {
+void f_arenaDestroy(f_arena *arena) {
         MEM_RELEASE(arena->buffer, arena->reserved);
 }
 
-void *ArenaPush(Arena *arena, size_t bytes) {
+void *f_arenaPush(f_arena *arena, size_t bytes) {
         if (arena->offset + bytes > arena->capacity) {
                 // resize if out of cap
                 if (arenaResize(arena, bytes) == NULL) {
@@ -124,8 +99,8 @@ void *ArenaPush(Arena *arena, size_t bytes) {
         return loc;
 }
 
-void *ArenaPushZero(Arena *arena, size_t bytes) {
-        void *loc = ArenaPush(arena, bytes);
+void *f_arenaPushZero(f_arena *arena, size_t bytes) {
+        void *loc = f_arenaPush(arena, bytes);
         if (loc == NULL) {
                 return NULL;
         }
@@ -133,14 +108,14 @@ void *ArenaPushZero(Arena *arena, size_t bytes) {
         return loc;
 }
 
-void ArenaClear(Arena *arena) {
+void f_arenaClear(f_arena *arena) {
         arena->offset = 0;
 }
 
 // scratchPad
-ScratchPad *ScratchPadBegin(Arena *arena, size_t bytes) {
+ScratchPad *f_ScratchPadBegin(f_arena *arena, size_t bytes) {
         size_t prevOffset = arena->offset;
-        ScratchPad *pad = ArenaPush(arena, bytes + sizeof(ScratchPad));
+        ScratchPad *pad = f_arenaPush(arena, bytes + sizeof(ScratchPad));
         if (pad == NULL) {
                 return NULL;
         }
@@ -152,6 +127,6 @@ ScratchPad *ScratchPadBegin(Arena *arena, size_t bytes) {
         return pad;
 }
 
-void ScratchPadEnd(ScratchPad *pad) {
+void f_ScratchPadEnd(ScratchPad *pad) {
         pad->arena->offset = pad->prevOffset;
 }
