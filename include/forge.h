@@ -2,6 +2,7 @@
 #define FORGE_H
 #include <stdint.h>
 #include <stddef.h>
+#include <assert.h>
 
 #define _DEBUG
 #define _BLAS
