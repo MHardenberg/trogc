@@ -7,9 +7,9 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SOURCES 
-    ${CMAKE_SOURCE_DIR}/src/arena.c
-    ${CMAKE_SOURCE_DIR}/src/linalg.c
-    ${CMAKE_SOURCE_DIR}/src/ode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/arena.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/linalg.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
 )
 
 # Compiler settings
@@ -39,7 +39,7 @@ add_library(forge STATIC
 
 target_include_directories(forge
     PUBLIC
-    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 target_link_libraries(forge PUBLIC openblas)
@@ -51,7 +51,7 @@ add_executable(forgetest
 )
 target_include_directories(forgetest
     PUBLIC
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/test
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/test
 )
 target_link_libraries(forgetest PUBLIC forge openblas)
