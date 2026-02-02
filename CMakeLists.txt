@@ -10,6 +10,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/arena.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/linalg.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc.c
 )
 
 # Compiler settings
