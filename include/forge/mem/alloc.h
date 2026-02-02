@@ -10,8 +10,8 @@ typedef struct {
         enum allocType type;
 
         union {
-                f_arena *allocArena;
+                f_arena allocArena;
         } alloc;
-} f_allocator;
+} f_alloc;
 
 #endif // ALLOCATOR_H
