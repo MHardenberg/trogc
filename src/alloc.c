@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <forge/mem/alloc.h>
 
-void f_allocInit(f_alloc *alloc, enum allocType type) {
+void f_allocCreate(f_alloc *alloc, enum allocType type) {
         assert(alloc != NULL);
         switch (type) {
         case ALLOC_ARENA: {
