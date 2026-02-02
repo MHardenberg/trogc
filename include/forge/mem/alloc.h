@@ -14,7 +14,7 @@ typedef struct {
         } alloc;
 } f_alloc;
 
-void f_allocInit(f_alloc *alloc, enum allocType type);
+void f_allocCreate(f_alloc *alloc, enum allocType type);
 
 void *f_allocPush(f_alloc *alloc, size_t bytes);
 
