@@ -52,7 +52,7 @@ void f_rk4(double *dest, double (*f)(double, double), double x0, double y0,
         }
 }
 
-void f_rk4v(f_arena *alloc, f_matd *dest,
+void f_rk4v(f_alloc *alloc, f_matd *dest,
             void (*f)(f_vecd *, f_vecd *, f_vecd *), f_vecd *x, f_vecd *y,
             double h) {
         if ((dest == NULL) || (dest == NULL) || (f == NULL) || (x == NULL) ||
@@ -61,12 +61,12 @@ void f_rk4v(f_arena *alloc, f_matd *dest,
         }
 
         f_vecd desti = {.size = dest->rows, .x = f_matdIdx(dest, 0U, 0U)};
-        f_vecd *k1 = f_arenaPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *k2 = f_arenaPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *k3 = f_arenaPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *k4 = f_arenaPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *xh = f_arenaPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *yh = f_arenaPushZero(alloc, sizeof(f_vecd) * desti.size);
+        f_vecd *k1 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
+        f_vecd *k2 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
+        f_vecd *k3 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
+        f_vecd *k4 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
+        f_vecd *xh = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
+        f_vecd *yh = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
 
         for (size_t i = 0; i < dest->cols; ++i) {
                 rk4Stepv(&desti, f, x, xh, y, yh, h, k1, k2, k3, k4);
