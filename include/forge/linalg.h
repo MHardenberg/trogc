@@ -9,7 +9,8 @@ typedef struct {
         size_t size;
         double *x;
 } f_vecd;
-#define f_vecdSize(n) (sizeof(f_vecd) + n*sizeof(double) // for assigning continuous
+#define f_vecdSize(n)                                                          \
+        (sizeof(f_vecd) + n * sizeof(double)) // for assigning continuous
 
 void f_vecdAssingContinuous(f_vecd *dest, size_t n);
 
