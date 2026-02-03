@@ -5,7 +5,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#define DEFAULT_ARENA_RESERVATION_SIZE (256 * 1024 * 1024) // 256 MB
+#define DEFAULT_ARENA_RESERVATION_SIZE                                         \
+        (256LL * 1000LL * 1000LL * 1000LL) // 256 Gb
 
 #define f_arenaPushArray(arena, type, count)                                   \
         ((type *)ArenaPush((arena), sizeof(type) * (count)))

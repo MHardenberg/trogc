@@ -4,7 +4,7 @@
 #include <forge.h>
 #include <forge/mem/arena.h>
 
-enum allocType { ALLOC_ARENA };
+enum allocType { ALLOC_UNINIT = 0, ALLOC_HEAP, ALLOC_ARENA };
 
 typedef struct {
         enum allocType type;
@@ -19,6 +19,8 @@ void f_allocCreate(f_alloc *alloc, enum allocType type);
 void *f_allocPush(f_alloc *alloc, size_t bytes);
 
 void *f_allocPushZero(f_alloc *alloc, size_t bytes);
+
+void f_allocClear(f_alloc *alloc);
 
 void f_allocFree(f_alloc *alloc, void *ptr);
 

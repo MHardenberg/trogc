@@ -2,37 +2,56 @@
 #define LINALG_H
 
 #include <forge.h>
+#include <openblas/cblas.h>
 #include <stdio.h>
 #include <string.h>
+#include <forge/mem/alloc.h>
+
 // Vectors
 typedef struct {
         size_t size;
         double *x;
 } f_vecd;
-#define f_vecdSize(n)                                                          \
-        (sizeof(f_vecd) + n * sizeof(double)) // for assigning continuous
 
-void f_vecdAssingContinuous(f_vecd *dest, size_t n);
+f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
 
-void f_vecdOnes(f_vecd *vec);
+f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size);
 
-void f_vecdZeros(f_vecd *vec);
+void f_vecdFree(f_alloc *alloc, f_vecd *vector);
 
-double *f_vecdIdx(f_vecd *v, size_t i);
+void f_vecdCopy(f_vecd *dest, f_vecd *source);
 
-void f_vecdAdd(f_vecd *dest, f_vecd *a, f_vecd *b);
+void f_vecdSlice(f_vecd *dest, f_vecd *source, size_t from, size_t to);
 
-void f_vecdIncr(f_vecd *dest, double a, f_vecd *b);
+double *f_vecdIdx(const f_vecd *v, size_t i);
 
-void f_vecdEmul(f_vecd *dest, const double a, f_vecd *x, f_vecd *y);
+size_t f_vecdIMin(const f_vecd *v);
 
-void f_vecdScale(f_vecd *dest, double a, f_vecd *b);
+double *f_vecdMin(const f_vecd *v);
 
-double f_vecdMul(f_vecd *a, f_vecd *b);
+size_t f_vecdIMax(const f_vecd *v);
 
-void f_vecdCross(f_vecd *dest, f_vecd *a, f_vecd *b);
+double *f_vecdMax(const f_vecd *v);
 
-void f_vecdPrint(f_vecd *v);
+void f_vecdOne(f_vecd *vec);
+
+void f_vecdZero(f_vecd *vec);
+
+void f_vecdArange(f_vecd *v, const double start, const double stop);
+
+void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b);
+
+void f_vecdIncr(f_vecd *dest, const double a, const f_vecd *b);
+
+void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b);
+
+void f_vecdEmul(f_vecd *dest, const double a, const f_vecd *x, const f_vecd *y);
+
+double f_vecdMul(const f_vecd *a, const f_vecd *b);
+
+void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b);
+
+void f_vecdPrint(const f_vecd *v);
 
 // Matrices
 typedef struct {
@@ -41,21 +60,31 @@ typedef struct {
         size_t rows;
         double *x;
 } f_matd;
-#define f_matdSize(c, r) (sizeof(f_matd) + c*r*sizeof(double) // for assigning continuous
 
-void f_matdAssingContinuous(f_matd *dest, size_t c, size_t r);
+f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows);
 
-double *f_matdIdx(f_matd *m, size_t c, size_t r);
+f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows);
 
-void f_matdOnes(f_matd *m);
+void f_matdFree(f_alloc *alloc, f_matd *m);
 
-void f_matdZeros(f_matd *m);
+double *f_matdIdx(const f_matd *m, const size_t r, const size_t c);
 
-int f_matdIdent(f_matd *m);
+void f_matdCopy(f_matd *dest, f_matd *source);
 
-void f_matdMVMul(f_vecd *dest, f_matd *m, f_vecd *v, double a, double b);
+void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c);
 
-double f_vecdMul(f_vecd *a, f_vecd *b);
+void f_matdOne(f_matd *m);
+
+void f_matdZero(f_matd *m);
+
+void f_matdIdent(f_matd *m);
+
+void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
+                 const double a);
+
+void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
+                const f_matd *b);
 
 void f_matdPrint(f_matd *m);
+
 #endif

@@ -11,6 +11,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/linalg.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/plot.c
 )
 
 # Compiler settings
@@ -23,6 +24,8 @@ add_compile_options(
     -Wextra
     -Wpedantic
 )
+
+add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
 # Debug-specific options
 # ------------------------------------------------------------------------------
