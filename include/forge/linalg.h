@@ -2,6 +2,7 @@
 #define LINALG_H
 
 #include <forge.h>
+#include <openblas/cblas.h>
 #include <stdio.h>
 #include <string.h>
 // Vectors
@@ -41,19 +42,24 @@ typedef struct {
         size_t rows;
         double *x;
 } f_matd;
-#define f_matdSize(c, r) (sizeof(f_matd) + c*r*sizeof(double) // for assigning continuous
+#define f_matdSize(c, r)                                                       \
+        (sizeof(f_matd) + c * r * sizeof(double)) // for assigning continuous
 
 void f_matdAssingContinuous(f_matd *dest, size_t c, size_t r);
 
 double *f_matdIdx(f_matd *m, size_t c, size_t r);
 
+void f_matdCol(f_vecd *dest, f_matd *m, size_t c);
+
 void f_matdOnes(f_matd *m);
 
 void f_matdZeros(f_matd *m);
 
-int f_matdIdent(f_matd *m);
+void f_matdIdent(f_matd *m);
 
-void f_matdMVMul(f_vecd *dest, f_matd *m, f_vecd *v, double a, double b);
+void f_matdMVMul(f_vecd *dest, f_matd *m, f_vecd *v, double a);
+
+void f_matdMMul(f_matd *dest, double alpha, f_matd *a, f_matd *b);
 
 double f_vecdMul(f_vecd *a, f_vecd *b);
 
