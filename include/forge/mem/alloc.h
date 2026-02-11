@@ -4,7 +4,7 @@
 #include <forge.h>
 #include <forge/mem/arena.h>
 
-enum allocType { ALLOC_ARENA };
+enum allocType { ALLOC_UNINIT = 0, ALLOC_HEAP, ALLOC_ARENA };
 
 typedef struct {
         enum allocType type;
