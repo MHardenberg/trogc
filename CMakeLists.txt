@@ -11,6 +11,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/linalg.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/plot.c
 )
 
 # Compiler settings

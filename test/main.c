@@ -1,6 +1,8 @@
 #include "test.h"
 
 #include <forge/linalg.h>
+#include <forge/plot.h>
+
 // ---------- Linalg ----------------------------------------------------------
 void test_linalg_f_vecdOnes() {
         int res = 0;
@@ -256,5 +258,15 @@ int main() {
         test_linalg_f_matdIdx();
         test_linalg_f_matdMVMul();
         test_linalg_f_matdMMul();
+
+        double x[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        double y[10];
+        for (int i = 0; i < 10; ++i) {
+                y[i] = x[i] * x[i];
+        }
+        f_vecd vx = {.size = 10, .x = x};
+        f_vecd vy = {.size = 10, .x = y};
+
+        f_plot("Test", &vx, &vy, 1);
         return 0;
 }
