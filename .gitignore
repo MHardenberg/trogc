@@ -1,6 +1,11 @@
 # Build
 bin/*
 !bin/.gitkeep
+ 
+
+# Temp
+temp/figures/*
+!temp/figures/.gitkeep
 
 # CMAKE
 .cache/*

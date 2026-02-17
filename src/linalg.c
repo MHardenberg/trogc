@@ -2,7 +2,7 @@
 #include <forge/linalg.h>
 #include <openblas/cblas.h>
 
-double *f_vecdIdx(f_vecd *v, size_t i) {
+double *f_vecdIdx(const f_vecd *v, size_t i) {
         assert(i < v->size);
         return v->x + i;
 }
@@ -24,7 +24,7 @@ void f_vecdZeros(f_vecd *vec) {
         }
 }
 
-void f_vecdAdd(f_vecd *dest, f_vecd *a, f_vecd *b) {
+void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         assert((NULL != dest) && (NULL != a) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < a->size) && (i < b->size);
              ++i) {
@@ -32,14 +32,14 @@ void f_vecdAdd(f_vecd *dest, f_vecd *a, f_vecd *b) {
         }
 }
 
-void f_vecdIncr(f_vecd *dest, double a, f_vecd *b) {
+void f_vecdIncr(f_vecd *dest, const double a, const f_vecd *b) {
         assert((NULL != dest) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < b->size); ++i) {
                 dest->x[i] = a + b->x[i];
         }
 }
 
-void f_vecdScale(f_vecd *dest, double a, f_vecd *b) {
+void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
         assert((NULL != dest) && (NULL != b));
 #ifdef _BLAS
         cblas_dscal(b->size, a, b->x, 1);
@@ -51,14 +51,15 @@ void f_vecdScale(f_vecd *dest, double a, f_vecd *b) {
 #endif
 }
 
-void f_vecdEmul(f_vecd *dest, const double a, f_vecd *x, f_vecd *y) {
+void f_vecdEmul(f_vecd *dest, const double a, const f_vecd *x,
+                const f_vecd *y) {
         assert((dest != NULL) && (x != NULL));
         for (size_t i = 0; (i < dest->size) && (i < x->size); ++i) {
                 dest->x[i] = a * x->x[i] * y->x[i];
         }
 }
 
-double f_vecdMul(f_vecd *a, f_vecd *b) {
+double f_vecdMul(const f_vecd *a, const f_vecd *b) {
         double x = 0;
         if ((a == NULL) || (b == NULL)) {
                 return x;
@@ -73,13 +74,13 @@ double f_vecdMul(f_vecd *a, f_vecd *b) {
         return x;
 }
 
-void f_vecdCross(f_vecd *dest, f_vecd *a, f_vecd *b) {
+void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         assert((3 == a->size) && (3 == b->size) && (3 == dest->size));
         dest->x[0] = a->x[1] * b->x[2] - a->x[2] * b->x[1];
         dest->x[1] = a->x[2] * b->x[0] - a->x[0] * b->x[2];
         dest->x[2] = a->x[0] * b->x[1] - a->x[1] * b->x[0];
 }
-void f_vecdPrint(f_vecd *v) {
+void f_vecdPrint(const f_vecd *v) {
         printf("[ ");
         for (size_t i = 0; i < v->size; ++i) {
                 if (0 == i) {
@@ -92,12 +93,12 @@ void f_vecdPrint(f_vecd *v) {
 }
 
 // Matrices
-double *f_matdIdx(f_matd *m, size_t r, size_t c) {
+double *f_matdIdx(const f_matd *m, const size_t r, const size_t c) {
         assert((r < m->rows) && (c < m->cols));
         return m->x + (c * m->rows + r);
 }
 
-void f_matdCol(f_vecd *dest, f_matd *m, size_t c) {
+void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
         assert(dest->size == m->rows);
         dest->x = m->x + (c * m->rows);
 }
@@ -127,7 +128,8 @@ void f_matdIdent(f_matd *m) {
         }
 }
 
-void f_matdMVMul(f_vecd *dest, f_matd *m, f_vecd *v, double a) {
+void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
+                 const double a) {
 #ifdef _BLAS
         cblas_dgemv(CblasColMajor, CblasNoTrans, m->rows, m->cols, a, m->x,
                     m->rows, v->x, 1, 0.0, dest->x, 1);
@@ -136,7 +138,8 @@ void f_matdMVMul(f_vecd *dest, f_matd *m, f_vecd *v, double a) {
 #endif
 }
 
-void f_matdMMul(f_matd *dest, double alpha, f_matd *a, f_matd *b) {
+void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
+                const f_matd *b) {
 #ifdef _BLAS
         cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, a->rows, b->cols,
                     a->cols, alpha, a->x, a->rows, b->x, b->rows, 1.0, dest->x,

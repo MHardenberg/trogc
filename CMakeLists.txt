@@ -25,6 +25,8 @@ add_compile_options(
     -Wpedantic
 )
 
+add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
+
 # Debug-specific options
 # ------------------------------------------------------------------------------
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

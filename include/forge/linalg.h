@@ -13,28 +13,6 @@ typedef struct {
 #define f_vecdSize(n)                                                          \
         (sizeof(f_vecd) + n * sizeof(double)) // for assigning continuous
 
-void f_vecdAssingContinuous(f_vecd *dest, size_t n);
-
-void f_vecdOnes(f_vecd *vec);
-
-void f_vecdZeros(f_vecd *vec);
-
-double *f_vecdIdx(f_vecd *v, size_t i);
-
-void f_vecdAdd(f_vecd *dest, f_vecd *a, f_vecd *b);
-
-void f_vecdIncr(f_vecd *dest, double a, f_vecd *b);
-
-void f_vecdEmul(f_vecd *dest, const double a, f_vecd *x, f_vecd *y);
-
-void f_vecdScale(f_vecd *dest, double a, f_vecd *b);
-
-double f_vecdMul(f_vecd *a, f_vecd *b);
-
-void f_vecdCross(f_vecd *dest, f_vecd *a, f_vecd *b);
-
-void f_vecdPrint(f_vecd *v);
-
 // Matrices
 typedef struct {
         // column major
@@ -45,11 +23,32 @@ typedef struct {
 #define f_matdSize(c, r)                                                       \
         (sizeof(f_matd) + c * r * sizeof(double)) // for assigning continuous
 
-void f_matdAssingContinuous(f_matd *dest, size_t c, size_t r);
+double *f_vecdIdx(const f_vecd *v, size_t i);
 
-double *f_matdIdx(f_matd *m, size_t c, size_t r);
+void f_vecdAssingContinuous(f_vecd *dest, size_t n);
 
-void f_matdCol(f_vecd *dest, f_matd *m, size_t c);
+void f_vecdOnes(f_vecd *vec);
+
+void f_vecdZeros(f_vecd *vec);
+
+void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b);
+
+void f_vecdIncr(f_vecd *dest, const double a, const f_vecd *b);
+
+void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b);
+
+void f_vecdEmul(f_vecd *dest, const double a, const f_vecd *x, const f_vecd *y);
+
+double f_vecdMul(const f_vecd *a, const f_vecd *b);
+
+void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b);
+
+void f_vecdPrint(const f_vecd *v);
+
+// Matrices
+double *f_matdIdx(const f_matd *m, const size_t r, const size_t c);
+
+void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c);
 
 void f_matdOnes(f_matd *m);
 
@@ -57,11 +56,13 @@ void f_matdZeros(f_matd *m);
 
 void f_matdIdent(f_matd *m);
 
-void f_matdMVMul(f_vecd *dest, f_matd *m, f_vecd *v, double a);
+void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
+                 const double a);
 
-void f_matdMMul(f_matd *dest, double alpha, f_matd *a, f_matd *b);
-
-double f_vecdMul(f_vecd *a, f_vecd *b);
+void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
+                const f_matd *b);
 
 void f_matdPrint(f_matd *m);
+
+void f_matdAssingContinuous(f_matd *dest, size_t c, size_t r);
 #endif

@@ -4,6 +4,16 @@
 #include <forge.h>
 #include <forge/linalg.h>
 
-void f_plot(const char *name, const f_vecd *x, const f_vecd *y, size_t nvecs);
+void f_plotv(const char *title, const f_vecd *x, const f_vecd *ys,
+             const char *label);
+
+void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
+              const char **labels, size_t nvecs);
+
+void f_plota(const char *title, const double *x, const double *ya,
+             const size_t rows, const char *label);
+
+void f_plotas(const char *title, const double *x, const double **yas,
+              const size_t rows, const size_t nvecs, const char **labels);
 
 #endif // PLOT_H
