@@ -72,11 +72,14 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
                 fprintf(gnuplot_pipe, "set title '%s'\n", title);
         }
 
-        fprintf(gnuplot_pipe, "plot ");
+        fprintf(gnuplot_pipe,
+                "set terminal pdfcairo font 'Arial,12' size 5,3\n");
+        fprintf(gnuplot_pipe, "set output '%s.pdf'\n", dest);
 
+        fprintf(gnuplot_pipe, "plot ");
         for (size_t i = 0; i < nvecs; ++i) {
                 fprintf(gnuplot_pipe,
-                        "'%s' using 1:%lu title \"%s\" with linespoints "
+                        "'%s' using 1:%lu title \"%s.dat\" with linespoints "
                         "linewidth 2 "
                         "pointsize 1 pointtype 7%s",
                         dest, i + 2, (labels != NULL) ? labels[i] : "",

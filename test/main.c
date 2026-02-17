@@ -259,6 +259,7 @@ int main() {
         test_linalg_f_matdMVMul();
         test_linalg_f_matdMMul();
 
+        // Plotting
         double x[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         double y0[10];
         double y1[10];
