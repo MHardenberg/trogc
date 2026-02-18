@@ -12,13 +12,13 @@ void f_vecdAssingContinuous(f_vecd *dest, size_t n) {
         dest->x = (double *)(dest + 1);
 }
 
-void f_vecdOnes(f_vecd *vec) {
+void f_vecdOne(f_vecd *vec) {
         for (size_t i = 0; i < vec->size; ++i) {
                 vec->x[i] = 1.0;
         }
 }
 
-void f_vecdZeros(f_vecd *vec) {
+void f_vecdZero(f_vecd *vec) {
         for (size_t i = 0; i < vec->size; ++i) {
                 vec->x[i] = 0.0;
         }
@@ -80,6 +80,32 @@ void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         dest->x[1] = a->x[2] * b->x[0] - a->x[0] * b->x[2];
         dest->x[2] = a->x[0] * b->x[1] - a->x[1] * b->x[0];
 }
+
+f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size) {
+        assert(alloc != NULL);
+        f_vecd *dest = f_allocPush(alloc, sizeof(f_vecd));
+        dest->size = size;
+        dest->x = f_allocPush(alloc, sizeof(double) * size);
+        return dest;
+}
+
+f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size) {
+        assert(alloc != NULL);
+        f_vecd *dest = f_allocPush(alloc, sizeof(f_vecd));
+        dest->size = size;
+        dest->x = f_allocPush(alloc, sizeof(double) * size);
+
+        f_vecdZero(dest);
+        return dest;
+}
+
+void f_vecdFree(f_alloc *alloc, f_vecd *v) {
+        assert(alloc != NULL);
+        assert(v != NULL);
+        f_allocFree(alloc, v->x);
+        f_allocFree(alloc, v);
+}
+
 void f_vecdPrint(const f_vecd *v) {
         printf("[ ");
         for (size_t i = 0; i < v->size; ++i) {
@@ -103,7 +129,7 @@ void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
         dest->x = m->x + (c * m->rows);
 }
 
-void f_matdOnes(f_matd *m) {
+void f_matdOne(f_matd *m) {
         for (size_t r = 0; r < m->rows; ++r) {
                 for (size_t c = 0; c < m->cols; ++c) {
                         *f_matdIdx(m, r, c) = 1.0;
@@ -111,7 +137,7 @@ void f_matdOnes(f_matd *m) {
         }
 }
 
-void f_matdZeros(f_matd *m) {
+void f_matdZero(f_matd *m) {
         for (size_t r = 0; r < m->rows; ++r) {
                 for (size_t c = 0; c < m->cols; ++c) {
                         *f_matdIdx(m, r, c) = 0.0;
@@ -147,6 +173,32 @@ void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
 #else
 #error "Not implemented!"
 #endif
+}
+
+f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows) {
+        assert(alloc != NULL);
+        f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
+        dest->cols = cols;
+        dest->rows = rows;
+        dest->x = f_allocPush(alloc, sizeof(double) * cols * rows);
+        return dest;
+}
+
+f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows) {
+        assert(alloc != NULL);
+        f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
+        dest->cols = cols;
+        dest->rows = rows;
+        dest->x = f_allocPush(alloc, sizeof(double) * cols * rows);
+        f_matdZero(dest);
+        return dest;
+}
+
+void f_matdFree(f_alloc *alloc, f_matd *m) {
+        assert(alloc != NULL);
+        assert(m != NULL);
+        f_allocFree(alloc, m->x);
+        f_allocFree(alloc, m);
 }
 
 void f_matdPrint(f_matd *m) {
