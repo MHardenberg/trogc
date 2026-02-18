@@ -5,13 +5,19 @@
 #include <openblas/cblas.h>
 #include <stdio.h>
 #include <string.h>
+#include <forge/mem/alloc.h>
+
 // Vectors
 typedef struct {
         size_t size;
         double *x;
 } f_vecd;
-#define f_vecdSize(n)                                                          \
-        (sizeof(f_vecd) + n * sizeof(double)) // for assigning continuous
+
+f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
+
+f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size);
+
+void f_vecdFree(f_alloc *alloc, f_vecd *vector);
 
 // Matrices
 typedef struct {
@@ -20,16 +26,20 @@ typedef struct {
         size_t rows;
         double *x;
 } f_matd;
-#define f_matdSize(c, r)                                                       \
-        (sizeof(f_matd) + c * r * sizeof(double)) // for assigning continuous
+
+f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows);
+
+f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows);
+
+void f_matdFree(f_alloc *alloc, f_matd *m);
 
 double *f_vecdIdx(const f_vecd *v, size_t i);
 
 void f_vecdAssingContinuous(f_vecd *dest, size_t n);
 
-void f_vecdOnes(f_vecd *vec);
+void f_vecdOne(f_vecd *vec);
 
-void f_vecdZeros(f_vecd *vec);
+void f_vecdZero(f_vecd *vec);
 
 void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b);
 
@@ -50,9 +60,9 @@ double *f_matdIdx(const f_matd *m, const size_t r, const size_t c);
 
 void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c);
 
-void f_matdOnes(f_matd *m);
+void f_matdOne(f_matd *m);
 
-void f_matdZeros(f_matd *m);
+void f_matdZero(f_matd *m);
 
 void f_matdIdent(f_matd *m);
 
