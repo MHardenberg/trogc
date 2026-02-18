@@ -1,7 +1,6 @@
 #include <forge.h>
 #include <forge/linalg.h>
 #include <openblas/cblas.h>
-#include <stddef.h>
 
 double *f_vecdIdx(const f_vecd *v, size_t i) {
         assert(i < v->size);
