@@ -3,11 +3,13 @@ General library primarily for scientific computing in C.
 Desined with custom maths containers and efficient allocator stategies.
 
 # Renaming Ideas
-- SPANK: Simple Physics and numerical kit
+- SPANK: SimPle mAths & Numerics kit
 - SCUM: Simple Computational Utilities & Maths
 - BARF: Basic Algebra and Runtime Framework
 - SMUK: Simple Maths and Utility Kit
 - SMUT: Simple Maths & Utility Toolkit
+- SCANT: Simple Computation And Numeric Tools
+
 
 ## Dependencies
 - CMake
