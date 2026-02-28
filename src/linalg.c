@@ -1,24 +1,23 @@
-#include "forge/mem/alloc.h"
-#include <float.h>
-#include <forge.h>
-#include <forge/linalg.h>
 #include <openblas/cblas.h>
-#include <stddef.h>
+#include <float.h>
+
+#include <forge.h>
+#include <forge/mem/alloc.h>
+#include <forge/linalg.h>
 
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size) {
         assert(alloc != NULL);
-        f_vecd *dest = f_allocPush(alloc, sizeof(f_vecd));
+        f_vecd *dest =
+            f_allocPush(alloc, sizeof(f_vecd) + sizeof(double) * size);
+        assert(dest != NULL);
+
         dest->size = size;
-        dest->x = f_allocPush(alloc, sizeof(double) * size);
+        dest->x = (double *)(dest + 1);
         return dest;
 }
 
 f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size) {
-        assert(alloc != NULL);
-        f_vecd *dest = f_allocPush(alloc, sizeof(f_vecd));
-        dest->size = size;
-        dest->x = f_allocPush(alloc, sizeof(double) * size);
-
+        f_vecd *dest = f_vecdAlloc(alloc, size);
         f_vecdZero(dest);
         return dest;
 }

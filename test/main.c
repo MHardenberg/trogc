@@ -1,6 +1,7 @@
 #include <string.h>
 #include <forge/linalg.h>
 #include <forge/plot.h>
+#include "test.h"
 #include "test_linalg.h"
 #include "test_alloc.h"
 
@@ -23,7 +24,6 @@ int main() {
 
         const f_vecd *vs[2] = {&vy0, &vy1};
         const char *labels[2] = {"y0", "y1"};
-        LOG(PROJECT_ROOT);
         f_plotv("Test vector", &vx, &vy0, labels[0]);
         f_plotvs("Test vectors", &vx, vs, labels, 2);
 
