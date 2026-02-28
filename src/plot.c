@@ -1,9 +1,50 @@
 #include "forge/linalg.h"
 #include <forge/plot.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <float.h>
 
 #define _BUFFER_LEN 1024
+
+const char pathSeparator =
+#ifdef _WIN32
+    '\\';
+#else
+    '/';
+#endif
+
+void _getTimeStr(char *dest) {
+        time_t now = time(NULL);
+        struct tm *t = localtime(&now);
+        strftime(dest, strlen(dest), "%d_%m_%Y_%H_%M_%S", t);
+}
+
+// Given a file path, create all constituent directories if missing
+void _createPathDirs(const char *dest) {
+        char timeBuffer[_BUFFER_LEN];
+        _getTimeStr(timeBuffer);
+        char *file_path = (char *)malloc(strlen(dest) + strlen(timeBuffer) + 1);
+        strcpy(file_path, dest);
+        strcat(file_path, timeBuffer);
+
+        char *dir_path =
+            (char *)malloc(strlen(file_path) + strlen(timeBuffer) + 1);
+        char *next_sep = strchr(file_path, pathSeparator);
+        while (next_sep != NULL) {
+                int dir_path_len = next_sep - file_path;
+                memcpy(dir_path, file_path, dir_path_len);
+                dir_path[dir_path_len] = '\0';
+                mkdir(dir_path, S_IRWXU | S_IRWXG | S_IROTH);
+                next_sep = strchr(next_sep + 1, pathSeparator);
+        }
+
+        free(file_path);
+        free(dir_path);
+}
 
 void _getFilePath(char *dest, const char *title) {
         if (title != NULL) {
@@ -21,12 +62,12 @@ void _getFilePath(char *dest, const char *title) {
                         strncat(dest, &c, 1);
                 }
 
-                strcat(dest, ".dat");
+                // strcat(dest, ".dat");
 
         } else {
                 size_t result =
                     snprintf(dest, sizeof(char) * _BUFFER_LEN,
-                             "%s/temp/figures/%s.dat", PROJECT_ROOT, "temp");
+                             "%s/temp/figures/%s", PROJECT_ROOT, "temp");
                 assert(result > 0);
                 assert(result <= sizeof(char) * _BUFFER_LEN);
         }
@@ -40,14 +81,15 @@ void _toDatFile(const char *dest, const f_vecd *x, const f_vecd **ys,
                 assert(ys[i]->size == x->size);
         }
 
+        _createPathDirs(dest);
         FILE *fptr;
         fptr = fopen(dest, "w");
         assert(fptr != NULL);
 
         for (size_t r = 0; r < x->size; ++r) {
-                fprintf(fptr, "%f, ", x->x[r]);
+                fprintf(fptr, "%e, ", x->x[r]);
                 for (size_t i = 0; i < nvecs; ++i) {
-                        fprintf(fptr, "%f%s", ys[i]->x[r],
+                        fprintf(fptr, "%e%s", ys[i]->x[r],
                                 (i < nvecs - 1) ? "\t" : "\n");
                 }
         }
@@ -64,6 +106,8 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
               const char **labels, size_t nvecs) {
         // write to temp file
         char dest[_BUFFER_LEN];
+        char timeBuffer[_BUFFER_LEN];
+        _getTimeStr(timeBuffer);
         _getFilePath(dest, title);
         _toDatFile(dest, x, ys, nvecs);
 
@@ -74,19 +118,44 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
 
         fprintf(gnuplot_pipe,
                 "set terminal pdfcairo font 'Arial,12' size 5,3\n");
-        fprintf(gnuplot_pipe, "set output '%s.pdf'\n", dest);
+        fprintf(gnuplot_pipe, "set output '%s_%s.pdf'\n", dest, timeBuffer);
 
+        double upLim = DBL_MIN;
+        double downLim = DBL_MAX;
+
+        // figure out lims
+        for (size_t i = 0; i < nvecs; ++i) {
+                double M = *f_vecdMax(ys[i]);
+                double m = *f_vecdMin(ys[i]);
+                if (upLim < M) {
+                        upLim = M;
+                }
+                if (downLim > m) {
+                        downLim = m;
+                }
+        }
+        upLim > 0 ? (upLim *= 1.25) : (upLim *= 0.75);
+        downLim > 0 ? (downLim *= .75) : (downLim *= 1.25);
+        upLim == 0 ? (upLim = fabs(downLim)) : (upLim *= 1); // noop
+        downLim == 0 ? (downLim = fabs(upLim)) : (downLim *= 1);
+        LOG("%e %e\n", upLim, downLim);
+        assert(upLim > downLim);
+
+        fprintf(gnuplot_pipe, "set yrange [%e:%e]\n", downLim, upLim);
+        fprintf(gnuplot_pipe, "set palette viridis\n");
         fprintf(gnuplot_pipe, "plot ");
         for (size_t i = 0; i < nvecs; ++i) {
                 fprintf(gnuplot_pipe,
-                        "'%s' using 1:%lu title \"%s.dat\" with linespoints "
+                        "'%s' using 1:%lu title \"%s\" with "
+                        "linespoints "
                         "linewidth 2 "
-                        "pointsize 1 pointtype 7%s",
+                        "pointsize .5 pointtype 0%s",
                         dest, i + 2, (labels != NULL) ? labels[i] : "",
                         (i < nvecs - 1) ? ", " : "\n");
         }
 
         fprintf(gnuplot_pipe, "refresh\n");
+        pclose(gnuplot_pipe);
 }
 
 void f_plota(const char *title, const double *xa, const double *ya,

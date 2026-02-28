@@ -2,74 +2,94 @@
 #include <forge/maths.h>
 #include <forge/linalg.h>
 
-static inline double rk4Step(double (*f)(double, double), double x, double y,
-                             double h) {
-        const double k1 = f(x, y);
-        const double k2 = f(x + h / 2, y + h / 2 * k1);
-        const double k3 = f(x + h / 2, y + h / 2 * k2);
-        const double k4 = f(x + h, y + h * k3);
+static inline double rk4Step(double (*f)(double, double, void *), double x,
+                             double y, double h, void *params) {
+        const double k1 = f(x, y, params);
+        const double k2 = f(x + h / 2, y + h / 2 * k1, params);
+        const double k3 = f(x + h / 2, y + h / 2 * k2, params);
+        const double k4 = f(x + h, y + h * k3, params);
 
         return y + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
 }
 
-static inline void rk4Stepv(f_vecd *dest,
-                            void (*f)(f_vecd *, f_vecd *, f_vecd *), f_vecd *x,
-                            f_vecd *xh, f_vecd *y, f_vecd *yh, const double h,
-                            f_vecd *k1, f_vecd *k2, f_vecd *k3, f_vecd *k4) {
-        // y + h*(k1 + 2*k2 + 2*k3 + k4)/6;
-        f(k1, x, y);
-
-        f_vecdIncr(xh, h / 2, x);
-        f_vecdIncr(yh, h / 2, x);
-        f_vecdEmul(dest, 1.0f, yh, k1);
-        f(k2, xh, dest);
-
-        f_vecdEmul(dest, 1.0f, yh, k2);
-        f(k3, xh, dest);
-
-        f_vecdIncr(xh, h / 2.0f, x);
-        f_vecdIncr(yh, h / 2.0f, x);
-        f_vecdEmul(dest, 1.0f, yh, k3);
-        f(k4, xh, dest);
-
-        f_vecdAdd(dest, k2, k3);
-        f_vecdScale(dest, 2.0f, dest);
-        f_vecdAdd(dest, dest, k1);
-        f_vecdAdd(dest, dest, k4);
-        f_vecdScale(dest, h / 6.0f, dest);
-        f_vecdAdd(dest, dest, y);
-        return;
-}
-
-void f_rk4(double *dest, double (*f)(double, double), double x0, double y0,
-           double h, size_t N) {
-        if (dest == NULL) {
-                return;
-        }
-
+void f_rk4(double *dest, double (*f)(double, double, void *), double x0,
+           double y0, double h, size_t N, void *params) {
+        assert(dest != NULL);
         for (size_t i = 0; i < N; ++i) {
-                dest[i] = rk4Step(f, x0, f(x0, y0), h);
+                dest[i] = rk4Step(f, x0, f(x0, y0, params), h, params);
         }
 }
 
-void f_rk4v(f_alloc *alloc, f_matd *dest,
-            void (*f)(f_vecd *, f_vecd *, f_vecd *), f_vecd *x, f_vecd *y,
-            double h) {
-        if ((dest == NULL) || (dest == NULL) || (f == NULL) || (x == NULL) ||
-            (y == NULL)) {
-                return;
-        }
+static inline void rk4Stepv(f_vecd *ynext,
+                            void (*dxdt)(f_vecd *, f_vecd *, double, void *),
+                            double x, f_vecd *yn, f_vecd *ytemp, const double h,
+                            void *params, f_vecd *k1, f_vecd *k2, f_vecd *k3,
+                            f_vecd *k4) {
+        // K1 = h*f(x, yn)
+        dxdt(k1, yn, x, params);
 
-        f_vecd desti = {.size = dest->rows, .x = f_matdIdx(dest, 0U, 0U)};
-        f_vecd *k1 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *k2 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *k3 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *k4 = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *xh = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
-        f_vecd *yh = f_allocPushZero(alloc, sizeof(f_vecd) * desti.size);
+        // K2 = f(x +h/2, yn + k1/2)
+        f_vecdScale(ytemp, .5, k1);
+        f_vecdAdd(ytemp, ytemp, yn);
+        dxdt(k2, ytemp, x + h / 2, params);
 
-        for (size_t i = 0; i < dest->cols; ++i) {
-                rk4Stepv(&desti, f, x, xh, y, yh, h, k1, k2, k3, k4);
-                desti.x = f_matdIdx(dest, 0U, i);
+        // K3 =  f(x+h/2, yn + k2/2)
+        f_vecdScale(ytemp, .5, k2);
+        f_vecdAdd(ytemp, ytemp, yn);
+        dxdt(k3, ytemp, x + h / 2, params);
+
+        // K4 =  f(x+h, yn + k3)
+        f_vecdAdd(ytemp, yn, yn);
+        dxdt(k3, ytemp, x + h, params);
+
+        // ynext = yn + h(k1/6 + k2/3 + k3/3 + k4/6)
+        f_vecdAdd(ynext, k2, k3);
+        f_vecdScale(ynext, 2, ynext);
+
+        f_vecdAdd(ynext, ynext, k1);
+        f_vecdAdd(ynext, ynext, k4);
+        f_vecdScale(ynext, h / 6., ynext);
+
+        f_vecdAdd(ynext, ynext, yn);
+}
+
+// mat schould by rows = dims - cols = steps
+// dxdt function should have signature void ode(f_vecd *dxdt, f_vecd *x, double
+// time, void *params)
+void f_rk4v(f_alloc *alloc, void (*dxdt)(f_vecd *, f_vecd *, double, void *),
+            f_matd *Y, f_vecd *y0, f_vecd *x, double h, void *functionParams) {
+        assert(alloc != NULL);
+        assert(dxdt != NULL);
+        assert(Y != NULL);
+        assert(y0 != NULL);
+        assert(x != NULL);
+        assert(functionParams != NULL);
+
+        assert(x->size == Y->cols);
+        assert(y0->size == Y->rows);
+
+        f_vecd *k1 = f_vecdAlloc(alloc, Y->rows);
+        f_vecd *k2 = f_vecdAlloc(alloc, Y->rows);
+        f_vecd *k3 = f_vecdAlloc(alloc, Y->rows);
+        f_vecd *k4 = f_vecdAlloc(alloc, Y->rows);
+
+        f_vecd *ynow = f_vecdAlloc(alloc, Y->rows);
+        f_matdCol(ynow, Y, 0);
+        f_vecdCopy(ynow, y0);
+        f_vecdPrint(ynow);
+        f_matdPrint(Y);
+        LOG("\n\n\n\n");
+
+        f_vecd *ynext = f_vecdAlloc(alloc, Y->rows);
+        // for holding temp vectors during stepping
+        f_vecd *ytemp = f_vecdAlloc(alloc, Y->rows);
+
+        // for every step we compute the ynext value and put it into
+        // y now, which is a cloumn in dest
+        for (size_t i = 0; i < Y->cols - 1; ++i) {
+                f_matdCol(ynow, Y, i);
+                f_matdCol(ynext, Y, i + 1);
+                rk4Stepv(ynext, dxdt, *f_vecdIdx(x, i), ynow, ytemp, h,
+                         functionParams, k1, k2, k3, k4);
         }
 }

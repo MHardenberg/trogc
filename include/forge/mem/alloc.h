@@ -20,6 +20,8 @@ void *f_allocPush(f_alloc *alloc, size_t bytes);
 
 void *f_allocPushZero(f_alloc *alloc, size_t bytes);
 
+void f_allocClear(f_alloc *alloc);
+
 void f_allocFree(f_alloc *alloc, void *ptr);
 
 // Dangerous if allocator doesnt track allocations!

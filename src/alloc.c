@@ -1,3 +1,4 @@
+#include "forge/mem/arena.h"
 #include <assert.h>
 #include <forge/mem/alloc.h>
 #include <stdlib.h>
@@ -59,6 +60,21 @@ void f_allocFree(f_alloc *alloc, void *ptr) {
         }
         case ALLOC_HEAP: {
                 free(ptr);
+                break;
+        }
+        default: // Should never happen.
+                assert(0 && "Not initialised!");
+        }
+}
+
+void f_allocClear(f_alloc *alloc) {
+        assert(alloc != NULL);
+        switch (alloc->type) {
+        case ALLOC_ARENA: {
+                f_arenaClear(&alloc->alloc.allocArena);
+        }
+        case ALLOC_HEAP: {
+                // noop
                 break;
         }
         default: // Should never happen.
