@@ -258,6 +258,43 @@ void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
 #endif
 }
 
+void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
+                const f_matd *b) {
+#ifdef _BLAS
+        cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, a->rows, b->cols,
+                    a->cols, alpha, a->x, a->rows, b->x, b->rows, 1.0, dest->x,
+                    dest->rows);
+#else
+#error "Not implemented!"
+#endif
+}
+
+f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows) {
+        assert(alloc != NULL);
+        f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
+        dest->cols = cols;
+        dest->rows = rows;
+        dest->x = f_allocPush(alloc, sizeof(double) * cols * rows);
+        return dest;
+}
+
+f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows) {
+        assert(alloc != NULL);
+        f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
+        dest->cols = cols;
+        dest->rows = rows;
+        dest->x = f_allocPush(alloc, sizeof(double) * cols * rows);
+        f_matdZero(dest);
+        return dest;
+}
+
+void f_matdFree(f_alloc *alloc, f_matd *m) {
+        assert(alloc != NULL);
+        assert(m != NULL);
+        f_allocFree(alloc, m->x);
+        f_allocFree(alloc, m);
+}
+
 void f_matdPrint(f_matd *m) {
         for (size_t r = 0; r < m->rows; ++r) {
                 printf("| ");
