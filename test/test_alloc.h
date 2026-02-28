@@ -1,5 +1,6 @@
 #ifndef _TEST_ALLOC
 #define _TEST_ALLOC
+#include "forge.h"
 #include "forge/mem/alloc.h"
 #include <test.h>
 
@@ -9,9 +10,17 @@ static void test_f_arenaPush() {
         f_alloc arena;
         f_allocCreate(&arena, ALLOC_ARENA);
 
-        char *mems = f_allocPush(&arena, PAGE_SIZE);
-        TEST_TRUE((mems != NULL));
-        TEST_TRUE((arena.alloc.allocArena.offset >= PAGE_SIZE));
+        int res = 0;
+        for (size_t i = 0; i < 100; ++i) {
+                char *mems = f_allocPush(&arena, PAGE_SIZE);
+                if (mems == NULL) {
+                        ++res;
+                }
+                if (arena.alloc.allocArena.offset <= i * PAGE_SIZE) {
+                        ++res;
+                }
+        }
+        TEST_ZERO(res);
 
         f_allocClear(&arena);
         TEST_TRUE((arena.alloc.allocArena.offset == 0));
@@ -22,18 +31,23 @@ static void test_f_arenaPushZero() {
         f_alloc arena;
         f_allocCreate(&arena, ALLOC_ARENA);
 
-        char *mems = f_allocPushZero(&arena, PAGE_SIZE);
         int res = 0;
-        TEST_TRUE((mems != NULL));
-        TEST_TRUE((arena.alloc.allocArena.offset >= PAGE_SIZE));
-
-        for (size_t i = 0; i < arena.alloc.allocArena.offset; ++i) {
-                if (mems[i] != 0) {
-                        res++;
+        for (size_t i = 0; i < 100; ++i) {
+                char *mems = f_allocPushZero(&arena, PAGE_SIZE);
+                if (mems == NULL) {
+                        LOGERROR("NULL output\n");
+                        ++res;
+                }
+                if (arena.alloc.allocArena.offset <= i * PAGE_SIZE) {
+                        ++res;
+                        LOGERROR("Arena offset error\n");
+                }
+                for (size_t j = 0; j < PAGE_SIZE; ++j) {
+                        if (mems[j] != 0) {
+                                res++;
+                        }
                 }
         }
-
-        TEST_ZERO(res);
 
         f_allocClear(&arena);
         TEST_TRUE((arena.alloc.allocArena.offset == 0));

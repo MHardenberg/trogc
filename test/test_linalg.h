@@ -1,8 +1,32 @@
-#ifndef _TEST_ZERO_LINALG
-#define _TEST_ZERO_LINALG
+#ifndef TEST_ZERO_LINALG
+#define TEST_ZERO_LINALG
+#include "forge/mem/alloc.h"
 #include <forge.h>
 #include <forge/linalg.h>
 #include <test.h>
+
+static void test_linalg_f_vecdAlloc() {
+        f_alloc alloc;
+        size_t N = 100;
+        f_allocCreate(&alloc, ALLOC_ARENA);
+        f_vecd *v = f_vecdAlloc(&alloc, N);
+        TEST_TRUE((v->x != NULL));
+        TEST_TRUE((v->size == N));
+
+        f_vecd *w = f_vecdAllocZero(&alloc, N);
+        TEST_TRUE((w->x != NULL));
+        TEST_TRUE((w->size == N));
+
+        int res = 0;
+        for (size_t i = 0; i < w->size; ++i) {
+                if (*f_vecdIdx(w, i) != 0) {
+                        ++res;
+                }
+        }
+
+        TEST_ZERO(res);
+        f_allocDestroy(&alloc);
+}
 
 static void test_linalg_f_vecdOne() {
         int res = 0;
@@ -245,6 +269,7 @@ static void test_linalg_f_matdMMul() {
 
 void test_modLinalg() {
         // vectors
+        test_linalg_f_vecdAlloc();
         test_linalg_f_vecdZero();
         test_linalg_f_vecdOne();
         test_linalg_f_vecdIdx();
@@ -260,4 +285,4 @@ void test_modLinalg() {
         test_linalg_f_matdMMul();
 }
 
-#endif // _TEST_ZERO_LINALG
+#endif // TEST_ZERO_LINALG_

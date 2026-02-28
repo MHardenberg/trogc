@@ -36,6 +36,7 @@ void *arenaResize(f_arena *arena, size_t bytes) {
         // commit at least a page
         bytes = (bytes > PAGE_SIZE) ? bytes : PAGE_SIZE;
         if (arena->offset + bytes > arena->reserved) {
+                // This really shouldnt happen
                 LOGERROR("Out of reserved addresses.");
                 return NULL;
         }
@@ -82,7 +83,7 @@ void f_arenaDestroy(f_arena *arena) {
 }
 
 void *f_arenaPush(f_arena *arena, size_t bytes) {
-        if (arena->offset + bytes > arena->capacity) {
+        if (arena->offset + bytes >= arena->capacity) {
                 // resize if out of cap
                 if (arenaResize(arena, bytes) == NULL) {
                         LOGERROR("Memory resize failed.");
