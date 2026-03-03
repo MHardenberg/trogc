@@ -49,6 +49,7 @@ static void test_f_arenaPushZero() {
                 }
         }
 
+        TEST_ZERO(res);
         f_allocClear(&arena);
         TEST_TRUE((arena.alloc.allocArena.offset == 0));
         f_allocDestroy(&arena);

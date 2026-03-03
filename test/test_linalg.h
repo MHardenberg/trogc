@@ -3,23 +3,58 @@
 #include "forge/mem/alloc.h"
 #include <forge.h>
 #include <forge/linalg.h>
+#include <stddef.h>
 #include <test.h>
 
 static void test_linalg_f_vecdAlloc() {
         f_alloc alloc;
-        size_t N = 100;
+        size_t M = 100;
+
         f_allocCreate(&alloc, ALLOC_ARENA);
-        f_vecd *v = f_vecdAlloc(&alloc, N);
-        TEST_TRUE((v->x != NULL));
-        TEST_TRUE((v->size == N));
 
-        f_vecd *w = f_vecdAllocZero(&alloc, N);
-        TEST_TRUE((w->x != NULL));
-        TEST_TRUE((w->size == N));
-
+        f_vecd *v;
         int res = 0;
-        for (size_t i = 0; i < w->size; ++i) {
-                if (*f_vecdIdx(w, i) != 0) {
+        for (size_t i = 0; i < M; ++i) {
+                v = f_vecdAlloc(&alloc, i + 1);
+                for (size_t j = 0; j < i + 1; ++j) {
+                        *f_vecdIdx(v, j) = j;
+                } // test writeable
+
+                if (v->x == NULL) {
+                        ++res;
+                }
+
+                if (v->size != i + 1) {
+                        ++res;
+                }
+        }
+
+        TEST_ZERO(res);
+        f_allocDestroy(&alloc);
+}
+
+static void test_linalg_f_vecdAllocZero() {
+        f_alloc alloc;
+        size_t M = 100;
+
+        f_allocCreate(&alloc, ALLOC_ARENA);
+
+        f_vecd *v;
+        int res = 0;
+        for (size_t i = 0; i < M; ++i) {
+                v = f_vecdAllocZero(&alloc, i + 1);
+                for (size_t j = 0; j < i + 1; ++j) {
+                        if (*f_vecdIdx(v, i) != 0) {
+                                ++res;
+                        }
+                        *f_vecdIdx(v, j) = j; // test writeable
+                }
+
+                if (v->x == NULL) {
+                        ++res;
+                }
+
+                if (v->size != i + 1) {
                         ++res;
                 }
         }
@@ -270,8 +305,11 @@ static void test_linalg_f_matdMMul() {
 void test_modLinalg() {
         // vectors
         test_linalg_f_vecdAlloc();
+        test_linalg_f_vecdAllocZero();
+
         test_linalg_f_vecdZero();
         test_linalg_f_vecdOne();
+
         test_linalg_f_vecdIdx();
         test_linalg_f_vecdAdd();
         test_linalg_f_vecdIncr();
