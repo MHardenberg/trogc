@@ -76,9 +76,6 @@ void f_rk4v(f_alloc *alloc, void (*dxdt)(f_vecd *, f_vecd *, double, void *),
         f_vecd *ynow = f_vecdAlloc(alloc, Y->rows);
         f_matdCol(ynow, Y, 0);
         f_vecdCopy(ynow, y0);
-        f_vecdPrint(ynow);
-        f_matdPrint(Y);
-        LOG("\n\n\n\n");
 
         f_vecd *ynext = f_vecdAlloc(alloc, Y->rows);
         // for holding temp vectors during stepping

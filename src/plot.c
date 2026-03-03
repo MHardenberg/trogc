@@ -1,6 +1,7 @@
 #include "forge/linalg.h"
 #include <forge/plot.h>
 #include <math.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -9,6 +10,7 @@
 #include <float.h>
 
 #define _BUFFER_LEN 1024
+#define _MAX_PLOT_POINTS 10000LL
 
 const char pathSeparator =
 #ifdef _WIN32
@@ -86,7 +88,12 @@ void _toDatFile(const char *dest, const f_vecd *x, const f_vecd **ys,
         fptr = fopen(dest, "w");
         assert(fptr != NULL);
 
-        for (size_t r = 0; r < x->size; ++r) {
+        size_t incr = 1;
+        if (x->size > _MAX_PLOT_POINTS) {
+                incr = x->size / _MAX_PLOT_POINTS;
+        }
+
+        for (size_t r = 0; r < x->size; r += incr) {
                 fprintf(fptr, "%e, ", x->x[r]);
                 for (size_t i = 0; i < nvecs; ++i) {
                         fprintf(fptr, "%e%s", ys[i]->x[r],
