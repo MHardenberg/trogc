@@ -22,6 +22,29 @@ f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size) {
         return dest;
 }
 
+void f_vecdFree(f_alloc *alloc, f_vecd *v) {
+        assert(alloc != NULL);
+        assert(v != NULL);
+        f_allocFree(alloc, v->x);
+        f_allocFree(alloc, v);
+}
+
+double *f_vecdIdx(const f_vecd *v, size_t i) {
+        assert(i < v->size);
+        return v->x + i;
+}
+
+void f_vecdPrint(const f_vecd *v) {
+        printf("[ ");
+        for (size_t i = 0; i < v->size; ++i) {
+                if (0 == i) {
+                        printf("%.6e", *f_vecdIdx(v, i));
+                } else {
+                        printf(", %.6e", *f_vecdIdx(v, i));
+                }
+        }
+        printf(" ]\n\n");
+}
 void f_vecdCopy(f_vecd *dest, f_vecd *source) {
         dest->size = source->size;
         memcpy(dest->x, source->x, sizeof(double) * dest->size);
@@ -66,18 +89,6 @@ size_t f_vecdIMax(const f_vecd *v) {
 
 double *f_vecdMax(const f_vecd *v) {
         return f_vecdIdx(v, f_vecdIMax(v));
-}
-
-void f_vecdFree(f_alloc *alloc, f_vecd *v) {
-        assert(alloc != NULL);
-        assert(v != NULL);
-        f_allocFree(alloc, v->x);
-        f_allocFree(alloc, v);
-}
-
-double *f_vecdIdx(const f_vecd *v, size_t i) {
-        assert(i < v->size);
-        return v->x + i;
 }
 
 void f_vecdOne(f_vecd *vec) {
@@ -156,118 +167,29 @@ void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         dest->x[2] = a->x[0] * b->x[1] - a->x[1] * b->x[0];
 }
 
-void f_vecdPrint(const f_vecd *v) {
-        printf("[ ");
+double f_vecdMean(f_vecd *v) {
+        double sum = 0;
+        assert(v != NULL);
         for (size_t i = 0; i < v->size; ++i) {
-                if (0 == i) {
-                        printf("%.6e", *f_vecdIdx(v, i));
-                } else {
-                        printf(", %.6e", *f_vecdIdx(v, i));
-                }
+                sum += v->x[i];
         }
-        printf(" ]\n\n");
+        return sum / v->size;
 }
 
-// Matrices
+void f_vecdEMean(f_vecd *dest, f_vecd **vecs, size_t nvecs) {
+        assert(dest != NULL);
+        assert(vecs != NULL);
 
-f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows) {
-        assert(alloc != NULL);
-        f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
-        dest->x = f_allocPush(alloc, sizeof(double) * cols * rows);
-        dest->cols = cols;
-        dest->rows = rows;
-        return dest;
-}
-
-f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows) {
-        assert(alloc != NULL);
-        f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
-        dest->x = f_allocPushZero(alloc, sizeof(double) * cols * rows);
-        dest->cols = cols;
-        dest->rows = rows;
-        return dest;
-}
-
-void f_matdFree(f_alloc *alloc, f_matd *m) {
-        assert(alloc != NULL);
-        assert(m != NULL);
-        f_allocFree(alloc, m->x);
-        f_allocFree(alloc, m);
-}
-
-void f_matdCopy(f_matd *dest, f_matd *source) {
-        dest->cols = source->cols;
-        dest->rows = source->rows;
-        memcpy(dest->x, source->x, sizeof(double) * dest->cols * dest->rows);
-}
-
-double *f_matdIdx(const f_matd *m, const size_t r, const size_t c) {
-        assert((r < m->rows) && (c < m->cols));
-        return m->x + (c * m->rows + r);
-}
-
-void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
-        assert(dest->size == m->rows);
-        dest->x = f_matdIdx(m, 0, c);
-}
-
-void f_matdOne(f_matd *m) {
-        for (size_t r = 0; r < m->rows; ++r) {
-                for (size_t c = 0; c < m->cols; ++c) {
-                        *f_matdIdx(m, r, c) = 1.0;
-                }
+        for (size_t i = 0; i < nvecs; ++i) {
+                assert(vecs[i] != 0);
+                assert(vecs[i]->size == dest->size);
         }
-}
 
-void f_matdZero(f_matd *m) {
-        for (size_t r = 0; r < m->rows; ++r) {
-                for (size_t c = 0; c < m->cols; ++c) {
-                        *f_matdIdx(m, r, c) = 0.0;
+        for (size_t i = 0; i < dest->size; ++i) {
+                dest->x[i] = 0;
+                for (size_t j = 0; j < nvecs; ++j) {
+                        dest->x[i] += vecs[j]->x[i];
                 }
+                dest->x[i] /= nvecs;
         }
-}
-
-void f_matdIdent(f_matd *m) {
-        assert(m->rows == m->cols);
-        for (size_t c = 0; c < m->cols; ++c) {
-                for (size_t r = 0; r < m->rows; ++r) {
-                        *f_matdIdx(m, r, c) = (c == r) ? 1.0 : 0.0;
-                }
-        }
-}
-
-void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
-                 const double a) {
-#ifdef _BLAS
-        cblas_dgemv(CblasColMajor, CblasNoTrans, m->rows, m->cols, a, m->x,
-                    m->rows, v->x, 1, 0.0, dest->x, 1);
-#else
-#error "Not implemented!"
-#endif
-}
-
-void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
-                const f_matd *b) {
-#ifdef _BLAS
-        cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, a->rows, b->cols,
-                    a->cols, alpha, a->x, a->rows, b->x, b->rows, 1.0, dest->x,
-                    dest->rows);
-#else
-#error "Not implemented!"
-#endif
-}
-
-void f_matdPrint(f_matd *m) {
-        for (size_t r = 0; r < m->rows; ++r) {
-                printf("| ");
-                for (size_t c = 0; c < m->cols; ++c) {
-                        if (0 == c) {
-                                printf("%.6e", *f_matdIdx(m, r, c));
-                        } else {
-                                printf(", %.6e", *f_matdIdx(m, r, c));
-                        }
-                }
-                printf(" |\n");
-        }
-        printf("\n");
 }
