@@ -1,9 +1,12 @@
+#include <assert.h>
+#include <math.h>
 #include <openblas/cblas.h>
 #include <float.h>
 
 #include <forge.h>
 #include <forge/mem/alloc.h>
 #include <forge/linalg.h>
+#include <stddef.h>
 
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size) {
         assert(alloc != NULL);
@@ -45,12 +48,14 @@ void f_vecdPrint(const f_vecd *v) {
         }
         printf(" ]\n\n");
 }
-void f_vecdCopy(f_vecd *dest, f_vecd *source) {
+
+void f_vecdCopy(f_vecd *dest, const f_vecd *source) {
         dest->size = source->size;
         memcpy(dest->x, source->x, sizeof(double) * dest->size);
 }
 
-void f_vecdSlice(f_vecd *dest, f_vecd *source, size_t from, size_t to) {
+void f_vecdSlice(f_vecd *dest, const f_vecd *source, const size_t from,
+                 const size_t to) {
         assert(to <= source->size);
         assert(from < to);
         dest->size = to - from;
@@ -116,6 +121,14 @@ void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         }
 }
 
+void f_vecdDiff(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
+        assert((NULL != dest) && (NULL != a) && (NULL != b));
+        for (size_t i = 0; (i < dest->size) && (i < a->size) && (i < b->size);
+             ++i) {
+                dest->x[i] = a->x[i] - b->x[i];
+        }
+}
+
 void f_vecdIncr(f_vecd *dest, const double a, const f_vecd *b) {
         assert((NULL != dest) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < b->size); ++i) {
@@ -133,6 +146,30 @@ void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
         }
 
 #endif
+}
+
+double f_vecdNorm(const f_vecd *v) {
+        assert(v != NULL);
+        return sqrt(f_vecdMul(v, v));
+}
+
+void f_vecdENorm(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
+        assert(dest != NULL);
+        assert(vecs != NULL);
+
+        for (size_t i = 0; i < nvecs; ++i) {
+                assert(vecs[i] != 0);
+                assert(vecs[i]->size == dest->size);
+        }
+
+        for (size_t i = 0; i < dest->size; ++i) {
+                dest->x[i] = 0;
+                for (size_t j = 0; j < nvecs; ++j) {
+                        dest->x[i] += pow(vecs[j]->x[i], 2);
+                }
+
+                dest->x[i] = sqrt(dest->x[i]);
+        }
 }
 
 void f_vecdEmul(f_vecd *dest, const double a, const f_vecd *x,
@@ -165,7 +202,7 @@ void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         dest->x[2] = a->x[0] * b->x[1] - a->x[1] * b->x[0];
 }
 
-double f_vecdSum(f_vecd *v) {
+double f_vecdSum(const f_vecd *v) {
         double sum = 0;
         assert(v != NULL);
         for (size_t i = 0; i < v->size; ++i) {
@@ -174,11 +211,12 @@ double f_vecdSum(f_vecd *v) {
 
         return sum;
 }
-double f_vecdMean(f_vecd *v) {
+
+double f_vecdMean(const f_vecd *v) {
         return f_vecdSum(v) / v->size;
 }
 
-void f_vecdEMean(f_vecd *dest, f_vecd **vecs, size_t nvecs) {
+void f_vecdEMean(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
         assert(dest != NULL);
         assert(vecs != NULL);
 

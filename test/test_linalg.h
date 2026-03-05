@@ -4,6 +4,7 @@
 #include <forge.h>
 #include <forge/linalg.h>
 #include <forge/mem/alloc.h>
+#include <math.h>
 #include <stddef.h>
 #include <test.h>
 
@@ -126,6 +127,40 @@ static void test_linalg_f_vecdSum() {
         TEST_ZERO(actualSum - f_vecdSum(v));
 }
 
+static void test_linalg_fvecdNorm() {
+        double xs[] = {1, 2, 3, 4, 5};
+        f_vecd v = {.size = 5, .x = xs};
+
+        double actualNorm = 0;
+        for (size_t i = 0; i < 5; ++i) {
+                actualNorm += xs[i] * xs[i];
+        }
+
+        actualNorm = sqrt(actualNorm);
+
+        TEST_EQUAL(actualNorm, f_vecdNorm(&v));
+}
+
+static void test_linalg_fvecdENorm() {
+        double xs[] = {1, 2, 3, 4, 5};
+        double ns[5];
+        double rs[5];
+
+        f_vecd v = {.size = 5, .x = xs};
+        f_vecd elemNorm = {.size = 5, .x = rs};
+        const f_vecd *vs[] = {&v, &v};
+        f_vecd res = {.size = 5, .x = rs};
+
+        for (size_t i = 0; i < 5; ++i) {
+                ns[i] = sqrt(pow(xs[i], 2) * 2);
+        }
+        f_vecd actualNorm = {.size = 5, .x = ns};
+
+        f_vecdENorm(&elemNorm, vs, 2);
+        f_vecdDiff(&res, &elemNorm, &actualNorm);
+        TEST_ZERO(f_vecdSum(&res));
+}
+
 static void test_linalg_f_vecdMean() {
         f_alloc arena;
         f_allocCreate(&arena, ALLOC_ARENA);
@@ -153,7 +188,7 @@ static void test_linalg_f_vecdEMean() {
                 *f_vecdIdx(w, i) = i * i;
                 *f_vecdIdx(testV, i) = ((double)(i + i * i)) / 2;
         }
-        f_vecd *vs[] = {v, w};
+        const f_vecd *vs[] = {v, w};
         f_vecdEMean(testW, vs, 2);
 
         int res = 0;
@@ -168,21 +203,40 @@ static void test_linalg_f_vecdEMean() {
 static void test_linalg_f_vecdAdd() {
         double x[] = {1.0f, 2.0f, 3.0f};
         double y[] = {4.0f, 5.0f, 6.0f};
+        double z[3];
 
         f_vecd v = {.size = 3U, .x = x};
         f_vecd w = {.size = 3U, .x = y};
+        f_vecd r = {.size = 3U, .x = z};
         int res = 0;
 
-        f_vecdAdd(&v, &v, &w);
+        f_vecdAdd(&r, &v, &w);
         for (uint8_t i = 0; i < v.size; ++i) {
-                if (x[i] != *f_vecdIdx(&v, i)) {
+                if (x[i] + y[i] != *f_vecdIdx(&r, i)) {
                         ++res;
                 }
         }
 
-        if (v.size != 3U) {
-                ++res;
+        TEST_ZERO(res);
+}
+
+static void test_linalg_f_vecdDiff() {
+        double x[] = {1.0f, 2.0f, 3.0f};
+        double y[] = {4.0f, 5.0f, 6.0f};
+        double z[3];
+
+        f_vecd v = {.size = 3U, .x = x};
+        f_vecd w = {.size = 3U, .x = y};
+        f_vecd r = {.size = 3U, .x = z};
+        int res = 0;
+
+        f_vecdDiff(&r, &v, &w);
+        for (uint8_t i = 0; i < v.size; ++i) {
+                if (x[i] - y[i] != *f_vecdIdx(&r, i)) {
+                        ++res;
+                }
         }
+
         TEST_ZERO(res);
 }
 
@@ -365,11 +419,14 @@ void test_modLinalg() {
 
         test_linalg_f_vecdIdx();
         test_linalg_f_vecdAdd();
+        test_linalg_f_vecdDiff();
         test_linalg_f_vecdIncr();
         test_linalg_f_vecdEmul();
         test_linalg_f_vecdMul();
         test_linalg_f_vecdScale();
 
+        test_linalg_fvecdENorm();
+        test_linalg_fvecdNorm();
         test_linalg_f_vecdSum();
         test_linalg_f_vecdEMean();
         test_linalg_f_vecdMean();

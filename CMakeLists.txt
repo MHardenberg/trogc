@@ -59,4 +59,4 @@ target_include_directories(forgetest
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/test
 )
-target_link_libraries(forgetest PUBLIC forge openblas)
+target_link_libraries(forgetest PUBLIC forge openblas m)

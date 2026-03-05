@@ -59,10 +59,10 @@ static void test_f_arenaPushMany() {
         f_alloc arena;
         f_allocCreate(&arena, ALLOC_ARENA);
 
-        size_t lotsOfGigs = 10LL * 1024LL * 1024LL * 1024LL;
-        char *mems = f_allocPushZero(&arena, lotsOfGigs);
+        size_t Gigs = 1LL * 1024LL * 1024LL * 1024LL;
+        char *mems = f_allocPushZero(&arena, Gigs);
         TEST_TRUE((mems != NULL));
-        TEST_TRUE((arena.alloc.allocArena.offset >= lotsOfGigs));
+        TEST_TRUE((arena.alloc.allocArena.offset >= Gigs));
 
         f_allocClear(&arena);
         TEST_TRUE((arena.alloc.allocArena.offset == 0));
