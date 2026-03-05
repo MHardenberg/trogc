@@ -48,8 +48,6 @@ void f_vecdPrint(const f_vecd *v) {
 void f_vecdCopy(f_vecd *dest, f_vecd *source) {
         dest->size = source->size;
         memcpy(dest->x, source->x, sizeof(double) * dest->size);
-        f_vecdPrint(source);
-        f_vecdPrint(dest);
 }
 
 void f_vecdSlice(f_vecd *dest, f_vecd *source, size_t from, size_t to) {
