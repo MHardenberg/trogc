@@ -167,13 +167,17 @@ void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         dest->x[2] = a->x[0] * b->x[1] - a->x[1] * b->x[0];
 }
 
-double f_vecdMean(f_vecd *v) {
+double f_vecdSum(f_vecd *v) {
         double sum = 0;
         assert(v != NULL);
         for (size_t i = 0; i < v->size; ++i) {
                 sum += v->x[i];
         }
-        return sum / v->size;
+
+        return sum;
+}
+double f_vecdMean(f_vecd *v) {
+        return f_vecdSum(v) / v->size;
 }
 
 void f_vecdEMean(f_vecd *dest, f_vecd **vecs, size_t nvecs) {

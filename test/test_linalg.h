@@ -113,6 +113,19 @@ static void test_linalg_f_vecdIdx() {
         TEST_ZERO(res);
 }
 
+static void test_linalg_f_vecdSum() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+        f_vecd *v = f_vecdAllocZero(&arena, 100);
+
+        double actualSum = 0;
+        for (size_t i = 0; i < v->size; ++i) {
+                *f_vecdIdx(v, i) = i;
+                actualSum += i;
+        }
+        TEST_ZERO(actualSum - f_vecdSum(v));
+}
+
 static void test_linalg_f_vecdMean() {
         f_alloc arena;
         f_allocCreate(&arena, ALLOC_ARENA);
@@ -357,6 +370,7 @@ void test_modLinalg() {
         test_linalg_f_vecdMul();
         test_linalg_f_vecdScale();
 
+        test_linalg_f_vecdSum();
         test_linalg_f_vecdEMean();
         test_linalg_f_vecdMean();
 
