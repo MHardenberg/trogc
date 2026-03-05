@@ -13,28 +13,22 @@ typedef struct {
         double *x;
 } f_vecd;
 
+// data procs
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
 
 f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size);
 
 void f_vecdFree(f_alloc *alloc, f_vecd *vector);
 
+double *f_vecdIdx(const f_vecd *v, size_t i);
+
+void f_vecdPrint(const f_vecd *v);
+
 void f_vecdCopy(f_vecd *dest, f_vecd *source);
 
 void f_vecdSlice(f_vecd *dest, f_vecd *source, size_t from, size_t to);
 
-double *f_vecdIdx(const f_vecd *v, size_t i);
-
-size_t f_vecdIMin(const f_vecd *v);
-
-double *f_vecdMin(const f_vecd *v);
-
-size_t f_vecdIMax(const f_vecd *v);
-
-double *f_vecdMax(const f_vecd *v);
-
-void f_vecdOne(f_vecd *vec);
-
+// linear alg procs
 void f_vecdZero(f_vecd *vec);
 
 void f_vecdArange(f_vecd *v, const double start, const double stop);
@@ -51,7 +45,20 @@ double f_vecdMul(const f_vecd *a, const f_vecd *b);
 
 void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b);
 
-void f_vecdPrint(const f_vecd *v);
+// Element procs
+size_t f_vecdIMin(const f_vecd *v);
+
+double *f_vecdMin(const f_vecd *v);
+
+size_t f_vecdIMax(const f_vecd *v);
+
+double *f_vecdMax(const f_vecd *v);
+
+void f_vecdOne(f_vecd *vec);
+
+void f_vecdEMean(f_vecd *dest, f_vecd **vecs, size_t nvecs);
+
+double f_vecdMean(f_vecd *v);
 
 // Matrices
 typedef struct {

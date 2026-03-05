@@ -3,6 +3,7 @@
 #include "forge/mem/alloc.h"
 #include <forge.h>
 #include <forge/linalg.h>
+#include <forge/mem/alloc.h>
 #include <stddef.h>
 #include <test.h>
 
@@ -108,6 +109,45 @@ static void test_linalg_f_vecdIdx() {
 
         if (v.size != 3U) {
                 ++res;
+        }
+        TEST_ZERO(res);
+}
+
+static void test_linalg_f_vecdMean() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+        f_vecd *v = f_vecdAllocZero(&arena, 100);
+
+        double actualMean = 0;
+        for (size_t i = 0; i < v->size; ++i) {
+                *f_vecdIdx(v, i) = i;
+                actualMean += i;
+        }
+        actualMean /= v->size;
+        TEST_ZERO(actualMean - f_vecdMean(v));
+}
+
+static void test_linalg_f_vecdEMean() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+        f_vecd *v = f_vecdAlloc(&arena, 100);
+        f_vecd *w = f_vecdAlloc(&arena, 100);
+        f_vecd *testV = f_vecdAlloc(&arena, 100);
+        f_vecd *testW = f_vecdAllocZero(&arena, 100);
+
+        for (size_t i = 0; i < v->size; ++i) {
+                *f_vecdIdx(v, i) = i;
+                *f_vecdIdx(w, i) = i * i;
+                *f_vecdIdx(testV, i) = ((double)(i + i * i)) / 2;
+        }
+        f_vecd *vs[] = {v, w};
+        f_vecdEMean(testW, vs, 2);
+
+        int res = 0;
+        for (size_t i = 0; i < v->size; ++i) {
+                if (*f_vecdIdx(testV, i) != *f_vecdIdx(testW, i)) {
+                        ++res;
+                }
         }
         TEST_ZERO(res);
 }
@@ -316,6 +356,9 @@ void test_modLinalg() {
         test_linalg_f_vecdEmul();
         test_linalg_f_vecdMul();
         test_linalg_f_vecdScale();
+
+        test_linalg_f_vecdEMean();
+        test_linalg_f_vecdMean();
 
         // matrices
         test_linalg_f_matdIdx();

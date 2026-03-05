@@ -3,16 +3,17 @@
 
 #include <stdio.h>
 #include <forge.h>
+#include <string.h>
 inline static void test_print_fail(const char *file, const char *func,
                                    const int line) {
-        fprintf(stderr, "\033[31;1;4mTEST FAILED:\033[0m %s\t\t%s\tl:%d\n",
-                func, file, line);
+        fprintf(stderr, "\033[31;1;4mTEST FAILED: %s %*s l:%d\033[0m\n", func,
+                (int)(strlen(file) - strlen(func) + 80), file, line);
 }
 
 inline static void test_print_pass(const char *file, const char *func,
                                    const int line) {
-        fprintf(stderr, "\033[32mTEST PASSED: %s\033[0m\t\t%s\tl:%d\n", func,
-                file, line);
+        fprintf(stderr, "\033[32mTEST PASSED: %s\033[0m %*s l:%d\n", func,
+                (int)(strlen(file) - strlen(func) + 80), file, line);
 }
 
 #define TEST_ZERO(t)                                                           \
