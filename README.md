@@ -8,6 +8,8 @@ Desined with custom maths containers and efficient allocator stategies.
 - BARF: Basic Algebra and Runtime Framework
 - SMUK: Simple Maths and Utility Kit
 - SMUT: Simple Maths & Utility Toolkit
+- Creep 
+- Havoc
 
 ## Dependencies
 - CMake
