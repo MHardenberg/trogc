@@ -60,6 +60,8 @@ void f_vecdEMean(f_vecd *dest, f_vecd **vecs, size_t nvecs);
 
 double f_vecdMean(f_vecd *v);
 
+double f_vecdSum(f_vecd *v);
+
 // Matrices
 typedef struct {
         // column major
