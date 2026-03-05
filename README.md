@@ -10,6 +10,10 @@ Desined with custom maths containers and efficient allocator stategies.
 - SMUT: Simple Maths & Utility Toolkit
 - Creep 
 - Havoc
+Ritual
+TRAP
+
+Technical Resources for Algorithms and Processing
 
 ## Dependencies
 - CMake
