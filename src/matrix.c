@@ -46,6 +46,26 @@ void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
         dest->x = f_matdIdx(m, 0, c);
 }
 
+void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r,
+                  size_t stride) {
+        assert(dest->size == m->cols / stride);
+        assert(stride > 0 && stride <= m->cols);
+        assert(dest->size <= m->cols);
+        for (size_t i = 0; i < dest->size; i += stride) {
+                dest->x[i] = *f_matdIdx(m, r, i);
+        }
+}
+
+void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c,
+                  size_t stride) {
+        assert(dest->size == m->rows / stride);
+        assert(stride > 0 && stride <= m->rows);
+        assert(dest->size <= m->rows);
+        for (size_t i = 0; i < dest->size; i += stride) {
+                dest->x[i] = *f_matdIdx(m, i, c);
+        }
+}
+
 void f_matdOne(f_matd *m) {
         for (size_t r = 0; r < m->rows; ++r) {
                 for (size_t c = 0; c < m->cols; ++c) {
@@ -95,11 +115,38 @@ void f_matdMMul(f_matd *dest, const double alpha, const f_matd *a,
 void f_matdPrint(f_matd *m) {
         for (size_t r = 0; r < m->rows; ++r) {
                 printf("| ");
+
+                // shorten
+                if (r > 10) {
+                        for (size_t c = 0; c < m->cols; ++c) {
+                                if (0 == c) {
+                                        printf(":");
+                                } else {
+                                        printf(", :");
+                                }
+                        }
+                        for (size_t c = 0; c < m->cols; ++c) {
+                                if (0 == c) {
+                                        printf("%.6e",
+                                               *f_matdIdx(m, m->rows - 1, c));
+                                } else {
+                                        printf(", %.6e",
+                                               *f_matdIdx(m, m->rows - 1, c));
+                                }
+                        }
+                        break;
+                }
+                // actual print
                 for (size_t c = 0; c < m->cols; ++c) {
+                        if (c > 10) {
+                                printf(", ...");
+                                printf(", %.4e", *f_matdIdx(m, r, c));
+                                break;
+                        }
                         if (0 == c) {
-                                printf("%.6e", *f_matdIdx(m, r, c));
+                                printf("%.4e", *f_matdIdx(m, r, c));
                         } else {
-                                printf(", %.6e", *f_matdIdx(m, r, c));
+                                printf(", %.4e", *f_matdIdx(m, r, c));
                         }
                 }
                 printf(" |\n");

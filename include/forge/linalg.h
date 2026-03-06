@@ -87,6 +87,10 @@ double *f_matdIdx(const f_matd *m, const size_t r, const size_t c);
 
 void f_matdCopy(f_matd *dest, f_matd *source);
 
+void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c, size_t stride);
+
+void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r, size_t stride);
+
 void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c);
 
 void f_matdOne(f_matd *m);

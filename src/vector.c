@@ -7,6 +7,7 @@
 #include <forge/mem/alloc.h>
 #include <forge/linalg.h>
 #include <stddef.h>
+#include <stdio.h>
 
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size) {
         assert(alloc != NULL);
@@ -40,10 +41,15 @@ double *f_vecdIdx(const f_vecd *v, size_t i) {
 void f_vecdPrint(const f_vecd *v) {
         printf("[ ");
         for (size_t i = 0; i < v->size; ++i) {
+                if (i > 10) {
+                        printf(", ...");
+                        printf(", %.4e", *f_vecdIdx(v, v->size - 1));
+                        break;
+                }
                 if (0 == i) {
-                        printf("%.6e", *f_vecdIdx(v, i));
+                        printf("%.4e", *f_vecdIdx(v, i));
                 } else {
-                        printf(", %.6e", *f_vecdIdx(v, i));
+                        printf(", %.4e", *f_vecdIdx(v, i));
                 }
         }
         printf(" ]\n\n");

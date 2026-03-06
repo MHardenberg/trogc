@@ -73,9 +73,9 @@ void f_rk4v(f_alloc *alloc, void (*dxdt)(f_vecd *, f_vecd *, double, void *),
         f_vecd *k3 = f_vecdAlloc(alloc, Y->rows);
         f_vecd *k4 = f_vecdAlloc(alloc, Y->rows);
 
-        f_vecd *ynow = f_vecdAlloc(alloc, Y->rows);
-        f_matdCol(ynow, Y, 0);
-        f_vecdCopy(ynow, y0);
+        f_vecd ynow = {.size = Y->rows};
+        f_matdCol(&ynow, Y, 0);
+        f_vecdCopy(&ynow, y0);
 
         f_vecd *ynext = f_vecdAlloc(alloc, Y->rows);
         // for holding temp vectors during stepping
@@ -84,9 +84,9 @@ void f_rk4v(f_alloc *alloc, void (*dxdt)(f_vecd *, f_vecd *, double, void *),
         // for every step we compute the ynext value and put it into
         // y now, which is a cloumn in dest
         for (size_t i = 0; i < Y->cols - 1; ++i) {
-                f_matdCol(ynow, Y, i);
+                f_matdCol(&ynow, Y, i);
                 f_matdCol(ynext, Y, i + 1);
-                rk4Stepv(ynext, dxdt, *f_vecdIdx(x, i), ynow, ytemp, h,
+                rk4Stepv(ynext, dxdt, *f_vecdIdx(x, i), &ynow, ytemp, h,
                          functionParams, k1, k2, k3, k4);
         }
 }

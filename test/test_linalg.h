@@ -409,6 +409,62 @@ static void test_linalg_f_matdMMul() {
         TEST_ZERO(res)
 }
 
+void test_linalg_f_matdRowCpy() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+
+        size_t stride = 3;
+        f_matd *M = f_matdAlloc(&arena, 10, 20);
+        f_vecd *row = f_vecdAlloc(&arena, M->cols / stride);
+
+        for (size_t r = 0; r < M->rows; ++r) {
+                for (size_t c = 0; c < M->cols; ++c) {
+                        *f_matdIdx(M, r, c) = r * c;
+                }
+        }
+
+        f_matdColCpy(row, M, 4, stride);
+
+        int res = 0;
+
+        for (size_t c = 0; c < M->cols / stride; ++c) {
+                if (*f_matdIdx(M, 4, c) != *f_vecdIdx(row, c)) {
+                        ++res;
+                }
+        }
+
+        TEST_ZERO(res);
+}
+
+void test_linalg_f_matdColCpy() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+
+        size_t stride = 3;
+        f_matd *M = f_matdAlloc(&arena, 10, 20);
+        f_vecd *col = f_vecdAlloc(&arena, M->rows / stride);
+
+        for (size_t r = 0; r < M->rows; ++r) {
+                for (size_t c = 0; c < M->cols; ++c) {
+                        *f_matdIdx(M, r, c) = r * c;
+                }
+        }
+
+        f_matdColCpy(col, M, 4, stride);
+
+        int res = 0;
+
+        for (size_t r = 0; r < M->rows / stride; ++r) {
+                if (*f_matdIdx(M, r, 4) != *f_vecdIdx(col, r)) {
+                        ++res;
+                }
+        }
+
+        TEST_ZERO(res);
+}
+
+void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r, size_t stride);
+
 void test_modLinalg() {
         // vectors
         test_linalg_f_vecdAlloc();
