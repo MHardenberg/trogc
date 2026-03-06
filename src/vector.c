@@ -64,7 +64,7 @@ void f_vecdSlice(f_vecd *dest, const f_vecd *source, const size_t from,
 
 size_t f_vecdIMin(const f_vecd *v) {
         double m = DBL_MAX;
-        size_t midx;
+        size_t midx = 0;
         for (size_t i = 0; i < v->size; ++i) {
                 if (v->x[i] < m) {
                         m = v->x[i];
@@ -79,8 +79,8 @@ double *f_vecdMin(const f_vecd *v) {
 }
 
 size_t f_vecdIMax(const f_vecd *v) {
-        double M = DBL_MIN;
-        size_t Midx;
+        double M = -DBL_MAX;
+        size_t Midx = 0;
         for (size_t i = 0; i < v->size; ++i) {
                 if (v->x[i] > M) {
                         M = v->x[i];
