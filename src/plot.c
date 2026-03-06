@@ -106,11 +106,11 @@ void _toDatFile(const char *dest, const f_vecd *x, const f_vecd **ys,
 
 void f_plotv(const char *title, const f_vecd *x, const f_vecd *ys,
              const char *label) {
-        f_plotvs(title, x, &ys, &label, 1);
+        f_plotvs(title, x, &ys, 1, &label);
 }
 
 void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
-              const char **labels, size_t nvecs) {
+              const size_t nvecs, const char **labels) {
         // write to temp file
         char dest[_BUFFER_LEN];
         char timeBuffer[_BUFFER_LEN];
@@ -189,7 +189,7 @@ void f_plotas(const char *title, const double *xa, const double **yas,
                 ys_ptrs[i] = &ys_vals[i];
         }
 
-        f_plotvs(title, &xv, (const f_vecd **)ys_ptrs, labels, nvecs);
+        f_plotvs(title, &xv, (const f_vecd **)ys_ptrs, nvecs, labels);
         free(ys_vals);
         free(ys_ptrs);
 }

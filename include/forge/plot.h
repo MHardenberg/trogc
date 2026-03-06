@@ -8,7 +8,7 @@ void f_plotv(const char *title, const f_vecd *x, const f_vecd *ys,
              const char *label);
 
 void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
-              const char **labels, size_t nvecs);
+              const size_t nvecs, const char **labels);
 
 void f_plota(const char *title, const double *x, const double *ya,
              const size_t rows, const char *label);
