@@ -42,7 +42,9 @@ double *f_matdIdx(const f_matd *m, const size_t r, const size_t c) {
 }
 
 void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
-        assert(dest->size == m->rows);
+        assert(dest != NULL);
+        assert(m != NULL);
+        dest->size = m->rows;
         dest->x = f_matdIdx(m, 0, c);
 }
 
