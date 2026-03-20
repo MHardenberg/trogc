@@ -85,7 +85,7 @@ double *f_vecdMin(const f_vecd *v) {
 
 size_t f_vecdIMax(const f_vecd *v) {
         double M = -DBL_MAX;
-        size_t Midx = 0;
+        size_t Midx;
         for (size_t i = 0; i < v->size; ++i) {
                 if (v->x[i] > M) {
                         M = v->x[i];

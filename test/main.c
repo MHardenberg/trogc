@@ -24,10 +24,10 @@ int main() {
 
         const f_vecd *vs[2] = {&vy0, &vy1};
         const char *labels[2] = {"y0", "y1"};
-        f_plotv("Test vector", &vx, &vy0, labels[0]);
-        f_plotvs("Test vectors", &vx, vs, 2, labels);
+        f_plotv("Test vector", &vx, &vy0, "x", labels[0]);
+        f_plotvs("Test vectors", &vx, vs, 2, "x", labels);
 
-        f_plota("Test array", vx.x, vy0.x, vx.size, labels[0]);
-        f_plotas("Test arrays", x, ys, vx.size, 2, labels);
+        f_plota("Test array", vx.x, vy0.x, vx.size, "x", labels[0]);
+        f_plotas("Test arrays", x, ys, vx.size, 2, "x", labels);
         return 0;
 }

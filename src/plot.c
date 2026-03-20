@@ -75,8 +75,8 @@ void _getFilePath(char *dest, const char *title) {
         }
 }
 
-void _toDatFile(const char *dest, const f_vecd *x, const f_vecd **ys,
-                const size_t nvecs) {
+void _toCSVfile(const char *dest, const f_vecd *x, const f_vecd **ys,
+                const size_t nvecs, const char *xLabel, const char **labels) {
         assert(x != NULL);
         for (size_t i = 0; i < nvecs; ++i) {
                 assert(ys[i] != NULL);
@@ -93,11 +93,16 @@ void _toDatFile(const char *dest, const f_vecd *x, const f_vecd **ys,
                 incr = x->size / _MAX_PLOT_POINTS;
         }
 
+        fprintf(fptr, "%s, ", xLabel);
+        for (size_t i = 0; i < nvecs; ++i) {
+                fprintf(fptr, "%s%s", labels[i], (i < nvecs - 1) ? ", " : "\n");
+        }
+
         for (size_t r = 0; r < x->size; r += incr) {
                 fprintf(fptr, "%e, ", x->x[r]);
                 for (size_t i = 0; i < nvecs; ++i) {
                         fprintf(fptr, "%e%s", ys[i]->x[r],
-                                (i < nvecs - 1) ? "\t" : "\n");
+                                (i < nvecs - 1) ? ", " : "\n");
                 }
         }
         // Close the file
@@ -105,18 +110,18 @@ void _toDatFile(const char *dest, const f_vecd *x, const f_vecd **ys,
 }
 
 void f_plotv(const char *title, const f_vecd *x, const f_vecd *ys,
-             const char *label) {
-        f_plotvs(title, x, &ys, 1, &label);
+             const char *xLabel, const char *label) {
+        f_plotvs(title, x, &ys, 1, xLabel, &label);
 }
 
 void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
-              const size_t nvecs, const char **labels) {
+              const size_t nvecs, const char *xLabel, const char **labels) {
         // write to temp file
         char dest[_BUFFER_LEN];
         char timeBuffer[_BUFFER_LEN];
         _getTimeStr(timeBuffer);
         _getFilePath(dest, title);
-        _toDatFile(dest, x, ys, nvecs);
+        _toCSVfile(dest, x, ys, nvecs, xLabel, labels);
 
         FILE *gnuplot_pipe = popen("gnuplot -persistent", "w");
         if (title != NULL) {
@@ -166,18 +171,19 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
 }
 
 void f_plota(const char *title, const double *xa, const double *ya,
-             const size_t rows, const char *label) {
+             const size_t rows, const char *xLabel, const char *label) {
         f_vecd yv, xv;
         xv.size = rows;
         yv.size = rows;
         xv.x = (double *)xa; // I hate this too - just seems nicer
         yv.x = (double *)ya;
 
-        f_plotv(title, &xv, &yv, label);
+        f_plotv(title, &xv, &yv, xLabel, label);
 }
 
 void f_plotas(const char *title, const double *xa, const double **yas,
-              const size_t rows, const size_t nvecs, const char **labels) {
+              const size_t rows, const size_t nvecs, const char *xLabel,
+              const char **labels) {
         f_vecd xv = {.size = rows, .x = (double *)xa};
 
         f_vecd **ys_ptrs = malloc(sizeof(f_vecd *) * nvecs);
@@ -189,7 +195,7 @@ void f_plotas(const char *title, const double *xa, const double **yas,
                 ys_ptrs[i] = &ys_vals[i];
         }
 
-        f_plotvs(title, &xv, (const f_vecd **)ys_ptrs, nvecs, labels);
+        f_plotvs(title, &xv, (const f_vecd **)ys_ptrs, nvecs, xLabel, labels);
         free(ys_vals);
         free(ys_ptrs);
 }

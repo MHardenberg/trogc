@@ -18,6 +18,14 @@ f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
 
 f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size);
 
+static inline f_vecd *f_vecdAllocLike(f_alloc *alloc, f_vecd *source) {
+        return f_vecdAlloc(alloc, source->size);
+}
+
+static inline f_vecd *f_vecdAllocZeroLike(f_alloc *alloc, f_vecd *source) {
+        return f_vecdAllocZero(alloc, source->size);
+}
+
 void f_vecdFree(f_alloc *alloc, f_vecd *vector);
 
 double *f_vecdIdx(const f_vecd *v, size_t i);
@@ -80,6 +88,14 @@ typedef struct {
 f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows);
 
 f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows);
+
+static inline f_matd *f_matdAllocLike(f_alloc *alloc, f_matd *source) {
+        return f_matdAlloc(alloc, source->rows, source->cols);
+}
+
+static inline f_matd *f_matdAllocLikeZero(f_alloc *alloc, f_matd *source) {
+        return f_matdAllocZero(alloc, source->rows, source->cols);
+}
 
 void f_matdFree(f_alloc *alloc, f_matd *m);
 
