@@ -66,6 +66,42 @@ void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c,
         }
 }
 
+bool f_matdIsTranspose(f_matd *m0, f_matd *m1) {
+        if (m0->rows != m1->cols) {
+                return false;
+        }
+        if (m1->rows != m0->cols) {
+                return false;
+        }
+
+        for (size_t r = 0; r < m0->rows; ++r) {
+                for (size_t c = 0; c < m0->cols; ++c) {
+                        if (*f_matdIdx(m0, r, c) != *f_matdIdx(m1, c, r))
+                                return false;
+                }
+        }
+        return true;
+}
+
+void f_matdTranspose(f_matd *dest, const f_matd *m) {
+        assert(m != NULL);
+        assert(dest != NULL);
+        // check if enough allocated space
+        assert(dest->cols * dest->rows == m->rows * m->cols);
+        assert(dest->x != m->x); // cannot be inplace!
+
+        // allow for inplace transposition by repurposing memory later
+        f_matd mT = {.rows = m->cols, .cols = m->rows, .x = dest->x};
+        for (size_t c = 0; c < m->cols; ++c) {
+                for (size_t r = 0; r < m->rows; ++r) {
+                        *f_matdIdx(&mT, c, r) = *f_matdIdx(m, r, c);
+                }
+        }
+
+        *dest = mT; // copy / overwrite settings so that inplace works
+                    // (its like 3 numbers - live with it)
+}
+
 void f_matdOne(f_matd *m) {
         for (size_t r = 0; r < m->rows; ++r) {
                 for (size_t c = 0; c < m->cols; ++c) {

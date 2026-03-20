@@ -7,7 +7,6 @@
 #include <forge/mem/alloc.h>
 #include <forge/linalg.h>
 #include <stddef.h>
-#include <stdio.h>
 
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size) {
         assert(alloc != NULL);

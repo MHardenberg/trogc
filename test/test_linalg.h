@@ -346,6 +346,36 @@ static void test_linalg_f_matdIdx() {
         TEST_ZERO(res);
 }
 
+static void test_linalg_f_matdIsTranspose() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+        f_matd *m0 = f_matdAlloc(&arena, 4, 6);
+        f_matd *m1 = f_matdAlloc(&arena, 6, 4);
+
+        for (size_t r = 0; r < m0->rows; ++r) {
+                for (size_t c = 0; c < m0->cols; ++c) {
+                        *f_matdIdx(m0, r, c) = r * c;
+                        *f_matdIdx(m1, c, r) = r * c;
+                }
+        }
+
+        TEST_TRUE(f_matdIsTranspose(m0, m1));
+}
+static void test_linalg_f_matdTranspose() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+        f_matd *m = f_matdAlloc(&arena, 10, 5);
+        f_matd *mT = f_matdAlloc(&arena, 5, 10);
+        for (size_t r = 0; r < m->rows; ++r) {
+                for (size_t c = 0; c < m->cols; ++c) {
+                        *f_matdIdx(m, r, c) = r * c;
+                }
+        }
+
+        f_matdTranspose(mT, m);
+        TEST_TRUE(f_matdIsTranspose(mT, m));
+}
+
 static void test_linalg_f_matdMVMul() {
         int res = 0;
 
@@ -406,6 +436,7 @@ static void test_linalg_f_matdMMul() {
                         }
                 }
         }
+
         TEST_ZERO(res)
 }
 
@@ -491,6 +522,8 @@ void test_modLinalg() {
         test_linalg_f_matdIdx();
         test_linalg_f_matdMVMul();
         test_linalg_f_matdMMul();
+        test_linalg_f_matdIsTranspose();
+        test_linalg_f_matdTranspose();
 }
 
 #endif // TEST_ZERO_LINALG_

@@ -85,6 +85,10 @@ void f_matdFree(f_alloc *alloc, f_matd *m);
 
 double *f_matdIdx(const f_matd *m, const size_t r, const size_t c);
 
+bool f_matdIsTranspose(f_matd *m0, f_matd *m1);
+
+void f_matdTranspose(f_matd *dest, const f_matd *m);
+
 void f_matdCopy(f_matd *dest, f_matd *source);
 
 void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c, size_t stride);

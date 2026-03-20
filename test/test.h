@@ -18,7 +18,7 @@ inline static void test_print_pass(const char *file, const char *func,
 
 #define TEST_ZERO(t)                                                           \
         {                                                                      \
-                if (t != 0) {                                                  \
+                if ((t) != 0) {                                                \
                         test_print_fail(__FILE__, __func__, __LINE__);         \
                 } else {                                                       \
                         test_print_pass(__FILE__, __func__, __LINE__);         \
@@ -27,7 +27,16 @@ inline static void test_print_pass(const char *file, const char *func,
 
 #define TEST_TRUE(t)                                                           \
         {                                                                      \
-                if ((bool)t == false) {                                        \
+                if ((bool)(t) == false) {                                      \
+                        test_print_fail(__FILE__, __func__, __LINE__);         \
+                } else {                                                       \
+                        test_print_pass(__FILE__, __func__, __LINE__);         \
+                }                                                              \
+        }
+
+#define TEST_EQUAL(a, b)                                                       \
+        {                                                                      \
+                if ((a) != (b)) {                                              \
                         test_print_fail(__FILE__, __func__, __LINE__);         \
                 } else {                                                       \
                         test_print_pass(__FILE__, __func__, __LINE__);         \
