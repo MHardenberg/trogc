@@ -1,5 +1,4 @@
 #include "forge/mem/arena.h"
-#include <assert.h>
 #include <forge/mem/alloc.h>
 #include <stdlib.h>
 

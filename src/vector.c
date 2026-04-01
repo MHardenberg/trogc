@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <math.h>
 #include <openblas/cblas.h>
 #include <float.h>

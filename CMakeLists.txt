@@ -13,6 +13,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/plot.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/forgeAssert.c
 )
 
 # Compiler settings
@@ -47,8 +48,7 @@ target_include_directories(forge
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(forge PUBLIC openblas)
-
+target_link_libraries(forge PRIVATE backtrace openblas)
 # Executable
 # ------------------------------------------------------------------------------
 add_executable(forgetest
@@ -59,4 +59,4 @@ target_include_directories(forgetest
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/test
 )
-target_link_libraries(forgetest PUBLIC forge openblas m)
+target_link_libraries(forgetest PUBLIC forge backtrace openblas m)
