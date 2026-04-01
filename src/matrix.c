@@ -5,7 +5,7 @@
 #include <forge/mem/alloc.h>
 #include <forge/linalg.h>
 
-f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows) {
+f_matd *f_matdAlloc(f_alloc *alloc, size_t rows, size_t cols) {
         assert(alloc != NULL);
         f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
         dest->x = f_allocPush(alloc, sizeof(double) * cols * rows);
@@ -14,7 +14,7 @@ f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows) {
         return dest;
 }
 
-f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows) {
+f_matd *f_matdAllocZero(f_alloc *alloc, size_t rows, size_t cols) {
         assert(alloc != NULL);
         f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
         dest->x = f_allocPushZero(alloc, sizeof(double) * cols * rows);

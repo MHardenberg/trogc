@@ -85,9 +85,9 @@ typedef struct {
         double *x;
 } f_matd;
 
-f_matd *f_matdAlloc(f_alloc *alloc, size_t cols, size_t rows);
+f_matd *f_matdAlloc(f_alloc *alloc, size_t rows, size_t cols);
 
-f_matd *f_matdAllocZero(f_alloc *alloc, size_t cols, size_t rows);
+f_matd *f_matdAllocZero(f_alloc *alloc, size_t rows, size_t cols);
 
 static inline f_matd *f_matdAllocLike(f_alloc *alloc, f_matd *source) {
         return f_matdAlloc(alloc, source->rows, source->cols);
