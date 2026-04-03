@@ -119,6 +119,11 @@ void f_matdZero(f_matd *m);
 
 void f_matdIdent(f_matd *m);
 
+#warning needs testing
+void f_matdScale(f_matd *dest, f_matd *m, double a);
+
+void f_matdIncr(f_matd *dest, f_matd *m, double a);
+
 void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
                  const double a);
 

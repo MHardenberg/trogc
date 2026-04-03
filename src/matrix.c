@@ -129,6 +129,24 @@ void f_matdIdent(f_matd *m) {
         }
 }
 
+void f_matdScale(f_matd *dest, f_matd *m, double a) {
+        assert(dest != NULL);
+        assert(m != NULL);
+        assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        for (size_t i = 0; i < m->cols * m->rows; ++i) {
+                dest->x[i] = m->x[i] * a;
+        }
+}
+
+void f_matdIncr(f_matd *dest, f_matd *m, double a) {
+        assert(dest != NULL);
+        assert(m != NULL);
+        assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        for (size_t i = 0; i < m->cols * m->rows; ++i) {
+                dest->x[i] = m->x[i] + a;
+        }
+}
+
 void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
                  const double a) {
 #ifdef _BLAS
