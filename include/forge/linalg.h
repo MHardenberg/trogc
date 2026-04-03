@@ -124,6 +124,10 @@ void f_matdScale(f_matd *dest, f_matd *m, double a);
 
 void f_matdIncr(f_matd *dest, f_matd *m, double a);
 
+void f_matdAdd(f_matd *dest, f_matd *m, f_matd *n);
+
+void f_matdScAdd(f_matd *dest, f_matd *m, double a, f_matd *n);
+
 void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
                  const double a);
 

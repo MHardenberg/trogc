@@ -147,6 +147,30 @@ void f_matdIncr(f_matd *dest, f_matd *m, double a) {
         }
 }
 
+void f_matdAdd(f_matd *dest, f_matd *m, f_matd *n) {
+        assert(dest != NULL);
+        assert(m != NULL);
+        assert(n != NULL);
+        assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        assert((n->cols = m->cols) && (n->rows = m->rows));
+
+        for (size_t i = 0; i < m->cols * m->rows; ++i) {
+                dest->x[i] = m->x[i] + n->x[i];
+        }
+}
+
+void f_matdScAdd(f_matd *dest, f_matd *m, double a, f_matd *n) {
+        assert(dest != NULL);
+        assert(m != NULL);
+        assert(n != NULL);
+        assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        assert((n->cols = m->cols) && (n->rows = m->rows));
+
+        for (size_t i = 0; i < m->cols * m->rows; ++i) {
+                dest->x[i] = m->x[i] + a * n->x[i];
+        }
+}
+
 void f_matdMVMul(f_vecd *dest, const f_matd *m, const f_vecd *v,
                  const double a) {
 #ifdef _BLAS
