@@ -7,13 +7,15 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SOURCES 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/forgeAssert.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/arena.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/vector.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/plot.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/forgeAssert.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/data.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/alist.c
 )
 
 # Compiler settings
