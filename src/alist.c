@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -31,13 +32,20 @@ void *f_alistIdx(f_Alist *list, size_t i) {
         return (int8_t *)list->data + list->dataBytes * i;
 }
 
-void f_alistPushback(f_Alist *list, void *elem, size_t number) {
+void f_alistPushback(f_Alist *list, void *elem) {
+        if (list->capacity <= list->size + 1) {
+                f_alistResize(list, list->capacity * 2);
+        }
+        memcpy(list->data, elem, list->dataBytes);
+        list->size++;
+}
+
+void f_alistPushbackArray(f_Alist *list, void *elem, size_t number) {
+        assert(list != NULL);
+        assert(elem != NULL);
         if (list->capacity <= list->size + number) {
                 f_alistResize(list, list->capacity * 2);
         }
-
-        for (size_t i = 0; i < number; ++i) {
-                memcpy(list->data, elem, list->dataBytes * number);
-        }
+        memcpy(list->data, elem, list->dataBytes * number);
         list->size += number;
 }
