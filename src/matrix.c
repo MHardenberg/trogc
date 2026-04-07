@@ -4,6 +4,7 @@
 #include <forge.h>
 #include <forge/mem/alloc.h>
 #include <forge/linalg.h>
+#include <string.h>
 
 f_matd *f_matdAlloc(f_alloc *alloc, size_t rows, size_t cols) {
         assert(alloc != NULL);
@@ -86,6 +87,8 @@ bool f_matdIsTranspose(f_matd *m0, f_matd *m1) {
 }
 
 void f_matdTranspose(f_matd *dest, const f_matd *m) {
+        f_alloc alloc;
+        f_allocCreate(&alloc, ALLOC_HEAP);
         assert(m != NULL);
         assert(dest != NULL);
         // check if enough allocated space
@@ -93,15 +96,15 @@ void f_matdTranspose(f_matd *dest, const f_matd *m) {
         assert(dest->x != m->x); // cannot be inplace!
 
         // allow for inplace transposition by repurposing memory later
-        f_matd mT = {.rows = m->cols, .cols = m->rows, .x = dest->x};
+        f_matd *mT = f_matdAlloc(&alloc, dest->rows, dest->cols);
         for (size_t c = 0; c < m->cols; ++c) {
                 for (size_t r = 0; r < m->rows; ++r) {
-                        *f_matdIdx(&mT, c, r) = *f_matdIdx(m, r, c);
+                        *f_matdIdx(mT, c, r) = *f_matdIdx(m, r, c);
                 }
         }
 
-        *dest = mT; // copy / overwrite settings so that inplace works
-                    // (its like 3 numbers - live with it)
+        memcpy(dest->x, mT->x, sizeof(double) * mT->rows * mT->cols);
+        f_matdFree(&alloc, mT);
 }
 
 void f_matdOne(f_matd *m) {
