@@ -93,7 +93,6 @@ void f_matdTranspose(f_matd *dest, const f_matd *m) {
         assert(dest != NULL);
         // check if enough allocated space
         assert(dest->cols * dest->rows == m->rows * m->cols);
-        assert(dest->x != m->x); // cannot be inplace!
 
         // allow for inplace transposition by repurposing memory later
         f_matd *mT = f_matdAlloc(&alloc, dest->rows, dest->cols);

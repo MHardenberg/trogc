@@ -1,7 +1,6 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-#warning Should be global!
 #define _DEBUG
 #ifdef _DEBUG
 #include <stdio.h>
