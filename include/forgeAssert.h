@@ -1,7 +1,7 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-static void printStackTrace();
+void printStackTrace();
 
 #define _DEBUG
 #include <stdlib.h>
