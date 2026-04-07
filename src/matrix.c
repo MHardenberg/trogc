@@ -95,7 +95,7 @@ void f_matdTranspose(f_matd *dest, const f_matd *m) {
         assert(dest->cols * dest->rows == m->rows * m->cols);
 
         // allow for inplace transposition by repurposing memory later
-        f_matd *mT = f_matdAlloc(&alloc, dest->rows, dest->cols);
+        f_matd *mT = f_matdAlloc(&alloc, dest->cols, dest->rows);
         for (size_t c = 0; c < m->cols; ++c) {
                 for (size_t r = 0; r < m->rows; ++r) {
                         *f_matdIdx(mT, c, r) = *f_matdIdx(m, r, c);
@@ -202,11 +202,12 @@ void f_matdPrint(f_matd *m) {
                 if (r > 10) {
                         for (size_t c = 0; c < m->cols; ++c) {
                                 if (0 == c) {
-                                        printf(":");
+                                        printf("     :      ");
                                 } else {
-                                        printf(", :");
+                                        printf(",      :      ");
                                 }
                         }
+                        printf(" |\n| ");
                         for (size_t c = 0; c < m->cols; ++c) {
                                 if (0 == c) {
                                         printf("%.6e",
@@ -216,22 +217,24 @@ void f_matdPrint(f_matd *m) {
                                                *f_matdIdx(m, m->rows - 1, c));
                                 }
                         }
+
+                        printf(" |\n");
                         break;
                 }
                 // actual print
                 for (size_t c = 0; c < m->cols; ++c) {
                         if (c > 10) {
                                 printf(", ...");
-                                printf(", %.4e", *f_matdIdx(m, r, c));
+                                printf(", %.6e", *f_matdIdx(m, r, c));
                                 break;
                         }
                         if (0 == c) {
-                                printf("%.4e", *f_matdIdx(m, r, c));
+                                printf("%.6e", *f_matdIdx(m, r, c));
                         } else {
-                                printf(", %.4e", *f_matdIdx(m, r, c));
+                                printf(", %.6e", *f_matdIdx(m, r, c));
                         }
                 }
                 printf(" |\n");
         }
-        printf("\n");
+        printf("<%lu by %lu matrix>\n", m->rows, m->cols);
 }
