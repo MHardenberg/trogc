@@ -57,7 +57,7 @@ void f_getFilePath(char *dest, const char *title) {
                         strncat(dest, &c, 1);
                 }
 
-                // strcat(dest, ".dat");
+                strcat(dest, ".dat");
 
         } else {
                 size_t result =

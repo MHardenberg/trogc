@@ -1,8 +1,8 @@
 #ifndef _F_CONST
 #define _F_CONST
 
-#define f_PI 3.14159265359
+#define f_PI 3.14159265358979323846264338327 // 30 digits
 
-#define f_EULER 2.71828182846
+#define f_EULER 2.718281828459045235360287471352 // 30 digits
 
 #endif // _F_CONST

@@ -3,6 +3,7 @@
 
 void printStackTrace();
 
+#warning should be global!
 #define _DEBUG
 #include <stdlib.h>
 #include <stdio.h>

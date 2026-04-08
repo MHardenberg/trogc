@@ -38,7 +38,8 @@ void f_matdCopy(f_matd *dest, f_matd *source) {
 }
 
 double *f_matdIdx(const f_matd *m, const size_t r, const size_t c) {
-        assert((r < m->rows) && (c < m->cols));
+        assert(r < m->rows);
+        assert(c < m->cols);
         return m->x + (c * m->rows + r);
 }
 
@@ -87,23 +88,36 @@ bool f_matdIsTranspose(f_matd *m0, f_matd *m1) {
 }
 
 void f_matdTranspose(f_matd *dest, const f_matd *m) {
-        f_alloc alloc;
-        f_allocCreate(&alloc, ALLOC_HEAP);
         assert(m != NULL);
         assert(dest != NULL);
         // check if enough allocated space
         assert(dest->cols * dest->rows == m->rows * m->cols);
 
-        // allow for inplace transposition by repurposing memory later
-        f_matd *mT = f_matdAlloc(&alloc, dest->cols, dest->rows);
+        f_matd *mT;
+        f_alloc alloc;
+        size_t srcRows = m->rows;
+        size_t srcCols = m->cols;
+        if (dest == m) {
+                // allow for inplace transposition by copying memory later
+                f_allocCreate(&alloc, ALLOC_HEAP);
+                mT = f_matdAlloc(&alloc, srcCols, srcRows);
+        } else {
+                mT = dest;
+        }
+
         for (size_t c = 0; c < m->cols; ++c) {
                 for (size_t r = 0; r < m->rows; ++r) {
                         *f_matdIdx(mT, c, r) = *f_matdIdx(m, r, c);
                 }
         }
 
-        memcpy(dest->x, mT->x, sizeof(double) * mT->rows * mT->cols);
-        f_matdFree(&alloc, mT);
+        if (dest == m) {
+                memcpy(dest->x, mT->x, sizeof(double) * mT->rows * mT->cols);
+                f_matdFree(&alloc, mT);
+        }
+
+        dest->cols = srcRows;
+        dest->rows = srcCols;
 }
 
 void f_matdOne(f_matd *m) {
