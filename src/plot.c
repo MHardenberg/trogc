@@ -1,3 +1,4 @@
+#include "forge/mem/alloc.h"
 #include <math.h>
 #include <float.h>
 
@@ -16,11 +17,10 @@ void f_plotv(const char *title, const f_vecd *x, const f_vecd *ys,
 void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
               const size_t nvecs, const char *xLabel, const char **labels) {
         // write to temp file
-        char dest[_BUFFER_LEN];
-        char timeBuffer[_BUFFER_LEN];
-        f_getTimeStr(timeBuffer);
-        f_getFilePath(dest, title);
-        f_toCSVfile(dest, x, ys, nvecs, xLabel, labels);
+        f_alloc alloc;
+        f_allocCreate(&alloc, ALLOC_ARENA);
+        char *path = f_allocPush(&alloc, 2048);
+        f_getFilePath(path, title);
 
         FILE *gnuplot_pipe = popen("gnuplot -persistent", "w");
         if (title != NULL) {
@@ -29,7 +29,7 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
 
         fprintf(gnuplot_pipe,
                 "set terminal pdfcairo font 'Arial,12' size 5,3\n");
-        fprintf(gnuplot_pipe, "set output '%s_%s.pdf'\n", dest, timeBuffer);
+        fprintf(gnuplot_pipe, "set output '%s.pdf'\n", path);
 
         double upLim = DBL_MIN;
         double downLim = DBL_MAX;
@@ -61,7 +61,7 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
                         "linespoints "
                         "linewidth 2 "
                         "pointsize .5 pointtype 0%s",
-                        dest, i + 2, (labels != NULL) ? labels[i] : "",
+                        path, i + 2, (labels != NULL) ? labels[i] : "",
                         (i < nvecs - 1) ? ", " : "\n");
         }
 

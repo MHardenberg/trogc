@@ -4,14 +4,14 @@
 #include <forge.h>
 #include <forge/linalg.h>
 
-void f_getTimeStr(char *dest);
+void f_getTimeStr(char *dest, size_t capacity);
 
 // Given a file path, create all constituent directories if missing
 void f_createPathDirs(const char *dest);
 
 void f_getFilePath(char *dest, const char *title);
 
-void f_toCSVfile(const char *dest, const f_vecd *x, const f_vecd **ys,
-                 const size_t nvecs, const char *xLabel, const char **labels);
+void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
+              f_vecd **ys, size_t nvecs, char *xLabel, char **labels);
 
 #endif // DATA_H

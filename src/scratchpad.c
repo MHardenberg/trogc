@@ -6,6 +6,7 @@
 
 f_ScratchPad *f_ScratchPadCreate(f_alloc *alloc, size_t bytes) {
         f_ScratchPad *pad = f_allocPush(alloc, sizeof(f_ScratchPad));
+        pad->alloc = alloc;
         pad->capacity = bytes;
         pad->buffer = f_allocPush(alloc, bytes);
         assert(pad->buffer != NULL);
