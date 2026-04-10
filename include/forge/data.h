@@ -7,7 +7,7 @@
 void f_getTimeStr(char *dest, size_t capacity);
 
 // Given a file path, create all constituent directories if missing
-void f_createPathDirs(const char *dest);
+void f_createPathDirs(f_alloc *alloc, const char *dest);
 
 void f_getFilePath(char *dest, const char *title);
 

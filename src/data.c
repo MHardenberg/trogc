@@ -20,9 +20,9 @@ void f_getTimeStr(char *dest, size_t capacity) {
 }
 
 // Given a file path, create all constituent directories if missing
-void f_createPathDirs(const char *dest) {
+void f_createPathDirs(f_alloc *alloc, const char *dest) {
         const char *next_sep = strchr(dest, pathSeparator);
-        char dirPath[1024];
+        char *dirPath = f_allocPush(alloc, 1024);
         while (next_sep != NULL) {
                 int dirPathLen = next_sep - dest;
                 memcpy(dirPath, dest, dirPathLen);
@@ -30,6 +30,8 @@ void f_createPathDirs(const char *dest) {
                 mkdir(dirPath, S_IRWXU | S_IRWXG | S_IROTH);
                 next_sep = strchr(next_sep + 1, pathSeparator);
         }
+
+        f_allocFree(alloc, dirPath);
 }
 
 void f_getFilePath(char *dest, const char *title) {
@@ -88,7 +90,7 @@ void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
                 f_makeDataPath(alloc, path, fileName);
         }
 
-        f_createPathDirs(path);
+        f_createPathDirs(alloc, path);
         LOG("path");
         FILE *fptr;
         fptr = fopen(path, "w");
