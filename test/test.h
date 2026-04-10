@@ -43,13 +43,4 @@ inline static void test_print_pass(const char *file, const char *func,
                 }                                                              \
         }
 
-#define TEST_EQUAL(a, b)                                                       \
-        {                                                                      \
-                if (a != b) {                                                  \
-                        test_print_fail(__FILE__, __func__, __LINE__);         \
-                } else {                                                       \
-                        test_print_pass(__FILE__, __func__, __LINE__);         \
-                }                                                              \
-        }
-
 #endif

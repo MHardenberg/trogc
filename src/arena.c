@@ -1,8 +1,8 @@
 #include <forge/mem/arena.h>
+#include <forge/mem/mem.h>
 #include <forge.h>
 #ifdef __linux__
 #include <sys/mman.h>
-#include <unistd.h>
 
 /*
 #define MEM_RESERVE(bytes)                                                     \
@@ -36,26 +36,9 @@
 #define MEM_RELEASE(dest, bytes) VirtualFree((dest), 0, MEM_RELEASE)
 #endif
 
-#define PAGE_SIZE 4096
-#define DEFAULT_ALIGNMENT (2 * sizeof(void *))
-
-static inline uintptr_t alignForward(uintptr_t ptr) {
-        assert(!(DEFAULT_ALIGNMENT % 2));
-        uintptr_t modulo = ptr & (uintptr_t)(DEFAULT_ALIGNMENT - 1);
-        if (modulo != 0) {
-                ptr += DEFAULT_ALIGNMENT - modulo;
-        }
-        return ptr;
-}
-
-static inline size_t alignPages(size_t bytes) {
-        return (bytes % PAGE_SIZE) ? PAGE_SIZE * (bytes / PAGE_SIZE + 1)
-                                   : bytes;
-}
-
 void *arenaResize(f_arena *arena, size_t bytes) {
         // commit full pages
-        bytes = alignPages(bytes);
+        bytes = f_alignPages(bytes);
         if (arena->offset + bytes > arena->reserved) {
                 // This really shouldnt happen
                 LOGERROR("Out of reserved addresses.");
@@ -75,7 +58,7 @@ void *arenaResize(f_arena *arena, size_t bytes) {
 }
 
 int f_arenaCreate(f_arena *arena) {
-        arena->reserved = alignPages(DEFAULT_ARENA_RESERVATION_SIZE);
+        arena->reserved = f_alignPages(DEFAULT_ARENA_RESERVATION_SIZE);
         arena->capacity = PAGE_SIZE;
         arena->offset = 0;
 
@@ -120,8 +103,9 @@ void *f_arenaPush(f_arena *arena, size_t bytes) {
         }
 
         // align offset and move by bytes
-        arena->offset = alignForward((uintptr_t)arena->buffer + arena->offset) -
-                        (uintptr_t)arena->buffer;
+        arena->offset =
+            f_alignForward((uintptr_t)arena->buffer + arena->offset) -
+            (uintptr_t)arena->buffer;
         void *loc = (void *)((uintptr_t)arena->buffer + arena->offset);
         arena->offset += bytes;
         return loc;
@@ -138,23 +122,4 @@ void *f_arenaPushZero(f_arena *arena, size_t bytes) {
 
 void f_arenaClear(f_arena *arena) {
         arena->offset = 0;
-}
-
-// scratchPad
-ScratchPad *f_ScratchPadBegin(f_arena *arena, size_t bytes) {
-        size_t prevOffset = arena->offset;
-        ScratchPad *pad = f_arenaPush(arena, bytes + sizeof(ScratchPad));
-        if (pad == NULL) {
-                return NULL;
-        }
-
-        pad->arena = arena;
-        pad->prevOffset = prevOffset;
-        pad->buffer = (void *)((uintptr_t)arena->buffer + prevOffset +
-                               sizeof(ScratchPad));
-        return pad;
-}
-
-void f_ScratchPadEnd(ScratchPad *pad) {
-        pad->arena->offset = pad->prevOffset;
 }

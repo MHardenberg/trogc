@@ -1,7 +1,6 @@
-#include <string.h>
 #include <forge/linalg.h>
 #include <forge/plot.h>
-#include "test.h"
+
 #include "test_linalg.h"
 #include "test_alloc.h"
 

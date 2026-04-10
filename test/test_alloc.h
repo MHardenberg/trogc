@@ -1,7 +1,8 @@
 #ifndef _TEST_ALLOC
 #define _TEST_ALLOC
-#include "forge.h"
-#include "forge/mem/alloc.h"
+#include <forge.h>
+#include <forge/mem/alloc.h>
+#include <forge/mem/scratchpad.h>
 #include <test.h>
 
 #define PAGE_SIZE 4096
@@ -69,9 +70,32 @@ static void test_f_arenaPushMany() {
         f_allocDestroy(&arena);
 }
 
+static void test_f_ScratchPad() {
+        f_alloc arena;
+        f_allocCreate(&arena, ALLOC_ARENA);
+        f_ScratchPad *pad = f_ScratchPadCreate(&arena, 1024);
+        TEST_TRUE((pad->buffer != NULL));
+
+        // push
+        char *str = f_ScratchPadPush(pad, 64);
+        TEST_TRUE((str != NULL));
+        TEST_TRUE((pad->offset >= 64));
+
+        // push too much
+        size_t offsetBefore = pad->offset;
+        void *dest = f_ScratchPadPush(pad, 2048);
+        TEST_EQUAL(dest, NULL);
+        TEST_EQUAL(offsetBefore, pad->offset);
+
+        // clear
+        f_ScratchPadClear(pad);
+        TEST_EQUAL(pad->offset, 0);
+}
+
 void test_f_alloc() {
         test_f_arenaPush();
         test_f_arenaPushMany();
         test_f_arenaPushZero();
+        test_f_ScratchPad();
 }
 #endif //_TEST_ALLOC
