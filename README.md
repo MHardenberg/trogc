@@ -8,12 +8,15 @@ Desined with custom maths containers and efficient allocator stategies.
 - BARF: Basic Algebra and Runtime Framework
 - SMUK: Simple Maths and Utility Kit
 - SMUT: Simple Maths & Utility Toolkit
+- SPUNK: SimPle utility and Numeric compution Kit
+- Cauldron
+- Chalice
+- Mirth
 - Creep 
 - Havoc
-Ritual
-TRAP
-
-Technical Resources for Algorithms and Processing
+- Gremlin
+- Ritual
+TRAP - Technical Resources for Algorithms and Processing
 
 ## Dependencies
 - CMake
