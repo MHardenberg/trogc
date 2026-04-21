@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <math.h>
 #include <openblas/cblas.h>
 #include <float.h>
@@ -32,6 +33,7 @@ void f_vecdFree(f_alloc *alloc, f_vecd *v) {
 }
 
 double *f_vecdIdx(const f_vecd *v, size_t i) {
+        assert(v != NULL);
         assert(i < v->size);
         return v->x + i;
 }
@@ -110,10 +112,21 @@ void f_vecdZero(f_vecd *vec) {
         }
 }
 
-void f_vecdArange(f_vecd *v, const double start, const double stop) {
-        double step = (stop - start) / v->size;
+void f_vecdLinspace(f_vecd *v, const double start, const double stop) {
+        assert(v != NULL);
+        assert(v->x != NULL);
+        double step = (stop - start) / (v->size - 1);
         for (size_t i = 0; i < v->size; ++i) {
                 v->x[i] = start + step * i;
+        }
+}
+
+void f_vecdArange(f_vecd *v, const double scale) {
+        assert(v != NULL);
+        assert(v->x != NULL);
+
+        for (size_t i = 0; i < v->size; ++i) {
+                v->x[i] = scale * i;
         }
 }
 
@@ -142,14 +155,17 @@ void f_vecdIncr(f_vecd *dest, const double a, const f_vecd *b) {
 
 void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
         assert((NULL != dest) && (NULL != b));
-#ifdef _BLAS
-        cblas_dscal(b->size, a, b->x, 1);
-#else
+
+        // buggy blas impl
+        // #ifdef _BLAS
+        //     cblas_dscal(b->size, a, b->x, 1);  <--- this is inplace and needs
+        //     to be replace for the logic to work
+        // #else
         for (size_t i = 0; (i < dest->size) && (i < b->size); ++i) {
                 dest->x[i] = a * b->x[i];
         }
 
-#endif
+        // #endif
 }
 
 double f_vecdNorm(const f_vecd *v) {

@@ -1,13 +1,12 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-void printStackTrace();
-
-#define _DEBUG
+#ifdef _DEBUG
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef _DEBUG
+void printStackTrace();
+
 #define assert(condition)                                                      \
         do {                                                                   \
                 if (!(condition)) {                                            \

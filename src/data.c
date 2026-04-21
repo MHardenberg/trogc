@@ -1,4 +1,6 @@
+#include "forge/linalg.h"
 #include "forge/mem/scratchpad.h"
+#include <stdio.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <float.h>
@@ -91,7 +93,6 @@ void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
         }
 
         f_createPathDirs(alloc, path);
-        LOG("path");
         FILE *fptr;
         fptr = fopen(path, "w");
         assert(fptr != NULL);

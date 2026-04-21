@@ -5,6 +5,9 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
 endif()
 
+
+
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SOURCES 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/forgeAssert.c
@@ -34,8 +37,9 @@ add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
 # Debug-specific options
 # ------------------------------------------------------------------------------
+add_compile_definitions(_BLAS)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_definitions(DEBUG)
+    add_compile_definitions(_DEBUG)
     add_compile_options(-fsanitize=address -O0 -g)
     add_link_options(-fsanitize=address)
 endif()

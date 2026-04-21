@@ -1,7 +1,6 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-#define _DEBUG
 #ifdef _DEBUG
 #include <stdio.h>
 #include <stdlib.h>

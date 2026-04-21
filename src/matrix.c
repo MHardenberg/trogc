@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <openblas/cblas.h>
 #include <float.h>
 
@@ -32,12 +33,15 @@ void f_matdFree(f_alloc *alloc, f_matd *m) {
 }
 
 void f_matdCopy(f_matd *dest, f_matd *source) {
+        assert(dest != NULL);
+        assert(source != NULL);
         dest->cols = source->cols;
         dest->rows = source->rows;
         memcpy(dest->x, source->x, sizeof(double) * dest->cols * dest->rows);
 }
 
 double *f_matdIdx(const f_matd *m, const size_t r, const size_t c) {
+        assert(m != NULL);
         assert(r < m->rows);
         assert(c < m->cols);
         return m->x + (c * m->rows + r);
@@ -48,6 +52,19 @@ void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
         assert(m != NULL);
         dest->size = m->rows;
         dest->x = f_matdIdx(m, 0, c);
+}
+
+void f_matdColslice(f_matd *dest, const f_matd *m, const size_t fromCol,
+                    const size_t toCol) {
+        assert(dest != NULL);
+        assert(m != NULL);
+        assert(fromCol < m->cols);
+        assert(toCol <= m->cols);
+
+        dest->cols = toCol - fromCol;
+        dest->rows = m->rows;
+
+        dest->x = f_matdIdx(m, 0, fromCol);
 }
 
 void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r,

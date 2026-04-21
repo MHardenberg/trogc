@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef _DEBUG
 #include <backtrace.h>
 
 // Global state for libbacktrace
@@ -41,3 +43,4 @@ void printStackTrace() {
                                NULL);
         }
 }
+#endif

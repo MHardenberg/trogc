@@ -19,10 +19,12 @@ f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
 f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size);
 
 static inline f_vecd *f_vecdAllocLike(f_alloc *alloc, f_vecd *source) {
+        assert(source != NULL);
         return f_vecdAlloc(alloc, source->size);
 }
 
 static inline f_vecd *f_vecdAllocZeroLike(f_alloc *alloc, f_vecd *source) {
+        assert(source != NULL);
         return f_vecdAllocZero(alloc, source->size);
 }
 
@@ -40,7 +42,9 @@ void f_vecdSlice(f_vecd *dest, const f_vecd *source, const size_t from,
 // linear alg procs
 void f_vecdZero(f_vecd *vec);
 
-void f_vecdArange(f_vecd *v, const double start, const double stop);
+void f_vecdArange(f_vecd *v, const double scale);
+
+void f_vecdLinspace(f_vecd *v, const double start, const double stop);
 
 void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b);
 
@@ -90,10 +94,12 @@ f_matd *f_matdAlloc(f_alloc *alloc, size_t rows, size_t cols);
 f_matd *f_matdAllocZero(f_alloc *alloc, size_t rows, size_t cols);
 
 static inline f_matd *f_matdAllocLike(f_alloc *alloc, f_matd *source) {
+        assert(source != NULL);
         return f_matdAlloc(alloc, source->rows, source->cols);
 }
 
 static inline f_matd *f_matdAllocLikeZero(f_alloc *alloc, f_matd *source) {
+        assert(source != NULL);
         return f_matdAllocZero(alloc, source->rows, source->cols);
 }
 
@@ -112,6 +118,10 @@ void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c, size_t stride);
 void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r, size_t stride);
 
 void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c);
+
+#warning needs testing
+void f_matdColslice(f_matd *dest, const f_matd *m, const size_t fromCol,
+                    const size_t toCol);
 
 void f_matdOne(f_matd *m);
 
