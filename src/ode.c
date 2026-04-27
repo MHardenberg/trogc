@@ -22,7 +22,7 @@ void f_rk4(double *dest, double (*f)(double, double, void *), const double x0,
         }
 }
 
-static inline void
+extern inline void
 rk4Stepv(f_vecd *ynext,
          void (*dvdt)(f_vecd *, f_vecd *, const double, const void *),
          const double x, f_vecd *yn, f_vecd *ytemp, const double h,
