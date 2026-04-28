@@ -3,7 +3,7 @@
 #include <forge/maths.h>
 #include <forge/linalg.h>
 
-static inline double rk4Step(double (*f)(double, double, void *),
+extern inline double rk4Step(double (*f)(double, double, void *),
                              const double x, const double y, const double h,
                              void *params) {
         const double k1 = f(x, y, params);
@@ -22,28 +22,27 @@ void f_rk4(double *dest, double (*f)(double, double, void *), const double x0,
         }
 }
 
-extern inline void
-rk4Stepv(f_vecd *ynext,
-         void (*dvdt)(f_vecd *, f_vecd *, const double, const void *),
-         const double x, f_vecd *yn, f_vecd *ytemp, const double h,
-         const void *params, f_vecd *k1, f_vecd *k2, f_vecd *k3, f_vecd *k4) {
+extern inline void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x,
+                            f_vecd *yn, f_vecd *ytemp, const double h,
+                            const void *params, f_vecd *k1, f_vecd *k2,
+                            f_vecd *k3, f_vecd *k4) {
         // K1 = f(x, yn)
-        dvdt(k1, yn, x, params);
+        dvdt(k1, yn, x, 0., params);
 
         // K2 = f(x + h/2, yn + h * k1/2)
         f_vecdScale(ytemp, h / 2, k1);
         f_vecdAdd(ytemp, ytemp, yn);
-        dvdt(k2, ytemp, x + h / 2, params);
+        dvdt(k2, ytemp, x, h / 2, params);
 
         // K3 =  f(x+h/2, yn + h * k2/2)
         f_vecdScale(ytemp, h / 2, k2);
         f_vecdAdd(ytemp, ytemp, yn);
-        dvdt(k3, ytemp, x + h / 2, params);
+        dvdt(k3, ytemp, x, h / 2, params);
 
         // K4 =  f(x+h, yn + k3)
         f_vecdScale(ytemp, h, k3);
         f_vecdAdd(ytemp, yn, ytemp);
-        dvdt(k4, ytemp, x + h, params);
+        dvdt(k4, ytemp, x, h, params);
 
         assert(ynext != k1);
         assert(ynext != k2);
@@ -65,10 +64,8 @@ rk4Stepv(f_vecd *ynext,
 // mat schould by rows = dims - cols = steps
 // dvdt function should have signature void ode(f_vecd *dvdt, f_vecd *x, double
 // time, void *params)
-void f_rk4v(f_alloc *alloc,
-            void (*dvdt)(f_vecd *, f_vecd *, const double, const void *),
-            f_matd *Y, const f_vecd *y0, const f_vecd *x, const double h,
-            const void *functionParams) {
+void f_rk4v(f_alloc *alloc, dvdt_fn dvdt, f_matd *Y, const f_vecd *y0,
+            const f_vecd *x, const double h, const void *functionParams) {
         assert(alloc != NULL);
         assert(dvdt != NULL);
         assert(Y != NULL);
