@@ -5,4 +5,6 @@
 #include <forgeLogging.h>
 #include <forgeAssert.h>
 
+#define f_max(a, b) ((a) > (b) ? (a) : (b));
+
 #endif // FORGE_H

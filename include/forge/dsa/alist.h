@@ -8,21 +8,22 @@
 typedef struct {
         size_t size;
         size_t capacity;
-        size_t dataBytes;
+        size_t element_size;
         f_alloc *alloc;
         void *data;
-} f_Alist;
+} f_alist;
 
-f_Alist f_alistCreate(f_alloc *alloc, size_t capacity, size_t dataBytes);
+void f_alistCreate(f_alloc *alloc, f_alist *list, size_t capacity,
+                   size_t element_size);
 
-void f_alistDestroy(f_Alist *list);
+void f_alistDestroy(f_alist *list);
 
-void f_alistResize(f_Alist *list, size_t newCapacity);
+void f_alistResizeElements(f_alist *list, size_t newCapacity);
 
-void *f_alistIdx(f_Alist *list, size_t i);
+void *f_alistIdx(f_alist *list, size_t i);
 
-void f_alistPushback(f_Alist *list, void *elem);
+void *f_alistPushback(f_alist *list, void *elem);
 
-void f_alistPushbackarray(f_Alist *list, void *elem, size_t number);
+void *f_alistPushbackArray(f_alist *list, void *elem, size_t number);
 
 #endif // ALIST_H
