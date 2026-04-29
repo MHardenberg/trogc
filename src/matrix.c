@@ -254,7 +254,7 @@ void f_matdPrint(f_matd *m) {
                 }
                 // actual print
                 for (size_t c = 0; c < m->cols; ++c) {
-                        if (c > 10) {
+                        if (c > 5) {
                                 printf(", ...");
                                 printf(", %.6e", *f_matdIdx(m, r, c));
                                 break;
