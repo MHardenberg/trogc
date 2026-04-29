@@ -24,6 +24,10 @@ void *f_alistIdx(f_alist *list, size_t i);
 
 void *f_alistPushback(f_alist *list, void *elem);
 
+void *f_alistNext(f_alist *list);
+
 void *f_alistPushbackArray(f_alist *list, void *elem, size_t number);
+
+void *f_alistNextArray(f_alist *list, size_t number);
 
 #endif // ALIST_H

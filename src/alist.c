@@ -31,30 +31,39 @@ void *f_alistIdx(f_alist *list, size_t i) {
         return (int8_t *)list->data + list->element_size * i;
 }
 
-void *f_alistPushback(f_alist *list, void *elem) {
-        if (list->capacity <= list->size + 1) {
-                if (list->capacity <= list->size + 1) {
-                        f_alistResizeElements(list, 2 * (list->size + 1));
-                }
+void *f_alistNext(f_alist *list) {
+        if (list->capacity < list->size + 1) {
+                f_alistResizeElements(list, 2 * (list->size + 1));
         }
 
         void *dest = f_alistIdx(list, list->size);
-        memcpy(dest, elem, list->element_size);
-        list->size++;
-
+        ++list->size;
         return dest;
 }
 
-void *f_alistPushbackArray(f_alist *list, void *elem, size_t number) {
+void *f_alistPushback(f_alist *list, void *elem) {
         assert(list != NULL);
         assert(elem != NULL);
+        void *dest = f_alistNext(list);
+        memcpy(dest, elem, list->element_size);
+        return dest;
+}
+
+void *f_alistNextArray(f_alist *list, size_t number) {
+        assert(list != NULL);
         if (list->capacity <= list->size + number) {
                 f_alistResizeElements(list, 2 * (list->size + number));
         }
 
         void *dest = f_alistIdx(list, list->size);
-        memcpy(dest, elem, list->element_size * number);
         list->size += number;
+        return dest;
+}
+void *f_alistPushbackArray(f_alist *list, void *elem, size_t number) {
+        assert(list != NULL);
+        assert(elem != NULL);
+        void *dest = f_alistNextArray(list, number);
 
+        memcpy(dest, elem, list->element_size * number);
         return dest;
 }
