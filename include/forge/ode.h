@@ -7,8 +7,8 @@
 // dydt = fn(y ,x, h, params)
 typedef double (*dydt_fn)(double, double, void *);
 
-extern inline double rk4Step(dydt_fn f, const double x, const double y,
-                             const double h, void *params);
+double rk4Step(dydt_fn f, const double x, const double y, const double h,
+               void *params);
 
 void f_rk4(double *dest, double (*f)(double, double, void *), const double x0,
            double y0, const double h, const size_t N, void *params);
@@ -21,10 +21,9 @@ void f_rk4(double *dest, double (*f)(double, double, void *), const double x0,
 typedef void (*dvdt_fn)(f_vecd *, f_vecd *, const double, const double,
                         const void *);
 
-extern inline void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x,
-                            f_vecd *yn, f_vecd *ytemp, const double h,
-                            const void *params, f_vecd *k1, f_vecd *k2,
-                            f_vecd *k3, f_vecd *k4);
+void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x, f_vecd *yn,
+              f_vecd *ytemp, const double h, const void *params, f_vecd *k1,
+              f_vecd *k2, f_vecd *k3, f_vecd *k4);
 
 void f_rk4v(f_alloc *alloc, dvdt_fn dvdt, f_matd *Y, const f_vecd *y0,
             const f_vecd *x, const double h, const void *functionParams);

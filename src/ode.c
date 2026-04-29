@@ -3,9 +3,8 @@
 #include <forge/maths.h>
 #include <forge/linalg.h>
 
-extern inline double rk4Step(double (*f)(double, double, void *),
-                             const double x, const double y, const double h,
-                             void *params) {
+double rk4Step(double (*f)(double, double, void *), const double x,
+               const double y, const double h, void *params) {
         const double k1 = f(x, y, params);
         const double k2 = f(x + h / 2, y + h / 2 * k1, params);
         const double k3 = f(x + h / 2, y + h / 2 * k2, params);
@@ -22,10 +21,9 @@ void f_rk4(double *dest, double (*f)(double, double, void *), const double x0,
         }
 }
 
-extern inline void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x,
-                            f_vecd *yn, f_vecd *ytemp, const double h,
-                            const void *params, f_vecd *k1, f_vecd *k2,
-                            f_vecd *k3, f_vecd *k4) {
+void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x, f_vecd *yn,
+              f_vecd *ytemp, const double h, const void *params, f_vecd *k1,
+              f_vecd *k2, f_vecd *k3, f_vecd *k4) {
         // K1 = f(x, yn)
         dvdt(k1, yn, x, 0., params);
 

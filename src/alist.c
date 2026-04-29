@@ -4,8 +4,8 @@
 
 #include <forge/dsa/alist.h>
 
-void f_alistCreate(f_alloc *alloc, f_alist *list, size_t capacity,
-                   size_t element_size) {
+void f_alistCreate(f_alloc *alloc, f_alist *list, const size_t capacity,
+                   const size_t element_size) {
         list->capacity = capacity;
         list->size = 0;
         list->element_size = element_size;
@@ -17,7 +17,7 @@ void f_alistDestroy(f_alist *list) {
         f_allocFree(list->alloc, list->data);
 }
 
-void f_alistResizeElements(f_alist *list, size_t newCapacity) {
+void f_alistResizeElements(f_alist *list, const size_t newCapacity) {
         assert(newCapacity > list->capacity);
         void *new = f_allocPush(list->alloc, newCapacity * list->element_size);
         memcpy(new, list->data, list->size * list->element_size);
@@ -27,7 +27,7 @@ void f_alistResizeElements(f_alist *list, size_t newCapacity) {
         list->capacity = newCapacity;
 }
 
-void *f_alistIdx(f_alist *list, size_t i) {
+void *f_alistIdx(const f_alist *list, const size_t i) {
         return (int8_t *)list->data + list->element_size * i;
 }
 
@@ -41,7 +41,7 @@ void *f_alistNext(f_alist *list) {
         return dest;
 }
 
-void *f_alistPushback(f_alist *list, void *elem) {
+void *f_alistPushback(f_alist *list, const void *elem) {
         assert(list != NULL);
         assert(elem != NULL);
         void *dest = f_alistNext(list);
@@ -49,7 +49,7 @@ void *f_alistPushback(f_alist *list, void *elem) {
         return dest;
 }
 
-void *f_alistNextArray(f_alist *list, size_t number) {
+void *f_alistNextArray(f_alist *list, const size_t number) {
         assert(list != NULL);
         if (list->capacity <= list->size + number) {
                 f_alistResizeElements(list, 2 * (list->size + number));
@@ -59,7 +59,8 @@ void *f_alistNextArray(f_alist *list, size_t number) {
         list->size += number;
         return dest;
 }
-void *f_alistPushbackArray(f_alist *list, void *elem, size_t number) {
+void *f_alistPushbackArray(f_alist *list, const void *elem,
+                           const size_t number) {
         assert(list != NULL);
         assert(elem != NULL);
         void *dest = f_alistNextArray(list, number);
