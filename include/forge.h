@@ -2,6 +2,7 @@
 #define FORGE_H
 #include <stdint.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <forgeLogging.h>
 #include <forgeAssert.h>
 

@@ -102,7 +102,7 @@ void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
                 incr = x->size / _MAX_PLOT_POINTS;
         }
 
-        LOG("Saving to %s", path);
+        LOG("Saving to %s\n", path);
         // Labels to file
         fprintf(fptr, "%s, ", xLabel);
         for (size_t i = 0; i < nvecs; ++i) {

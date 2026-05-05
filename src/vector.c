@@ -6,7 +6,6 @@
 #include <forge.h>
 #include <forge/mem/alloc.h>
 #include <forge/linalg.h>
-#include <stddef.h>
 
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size) {
         assert(alloc != NULL);
@@ -101,12 +100,16 @@ double *f_vecdMax(const f_vecd *v) {
 }
 
 void f_vecdOne(f_vecd *vec) {
+        assert(vec != NULL);
+        assert(vec->x != NULL);
         for (size_t i = 0; i < vec->size; ++i) {
                 vec->x[i] = 1.0;
         }
 }
 
 void f_vecdZero(f_vecd *vec) {
+        assert(vec != NULL);
+        assert(vec->x != NULL);
         for (size_t i = 0; i < vec->size; ++i) {
                 vec->x[i] = 0.0;
         }
@@ -252,4 +255,40 @@ void f_vecdEMean(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
                 }
                 dest->x[i] /= nvecs;
         }
+}
+
+void f_vecdRotatex(f_vecd *dest, const f_vecd *v, const double phase) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(v->size == 3);
+
+        const double vy = *f_vecdIdx(v, 1);
+        const double vz = *f_vecdIdx(v, 2);
+
+        *f_vecdIdx(dest, 1) = vy * cos(phase) - vz * sin(phase);
+        *f_vecdIdx(dest, 2) = vy * sin(phase) + vz * sin(phase);
+}
+
+void f_vecdRotatey(f_vecd *dest, const f_vecd *v, const double phase) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(v->size == 3);
+
+        const double vx = *f_vecdIdx(v, 0);
+        const double vz = *f_vecdIdx(v, 2);
+
+        *f_vecdIdx(dest, 0) = vx * cos(phase) + vz * sin(phase);
+        *f_vecdIdx(dest, 2) = -vx * sin(phase) + vz * cos(phase);
+}
+
+void f_vecdRotatez(f_vecd *dest, const f_vecd *v, const double phase) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(v->size == 3);
+
+        const double vx = *f_vecdIdx(v, 0);
+        const double vy = *f_vecdIdx(v, 1);
+
+        *f_vecdIdx(dest, 0) = vx * cos(phase) - vy * sin(phase);
+        *f_vecdIdx(dest, 1) = vx * sin(phase) + vy * cos(phase);
 }

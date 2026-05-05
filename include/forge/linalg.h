@@ -81,6 +81,12 @@ double f_vecdMean(const f_vecd *v);
 
 double f_vecdSum(const f_vecd *v);
 
+void f_vecdRotatex(f_vecd *dest, const f_vecd *v, const double phase);
+
+void f_vecdRotatey(f_vecd *dest, const f_vecd *v, const double phase);
+
+void f_vecdRotatez(f_vecd *dest, const f_vecd *v, const double phase);
+
 // Matrices
 typedef struct {
         // column major
@@ -119,7 +125,6 @@ void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r, size_t stride);
 
 void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c);
 
-#warning needs testing
 void f_matdColslice(f_matd *dest, const f_matd *m, const size_t fromCol,
                     const size_t toCol);
 
@@ -129,7 +134,6 @@ void f_matdZero(f_matd *m);
 
 void f_matdIdent(f_matd *m);
 
-#warning needs testing
 void f_matdScale(f_matd *dest, f_matd *m, double a);
 
 void f_matdIncr(f_matd *dest, f_matd *m, double a);

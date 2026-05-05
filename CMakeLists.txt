@@ -39,9 +39,13 @@ add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 # ------------------------------------------------------------------------------
 add_compile_definitions(_BLAS)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_definitions(_DEBUG)
-    add_compile_options(-fsanitize=address -O0 -g)
-    add_link_options(-fsanitize=address)
+    #add_compile_definitions(_DEBUG)
+    #add_compile_options(-fsanitize=address -O0 -g)
+    #add_link_options(-fsanitize=address)
+    add_compile_options( -O3 -s)
+
+else()
+    add_compile_options(-O3 -s)
 endif()
 
 # Library
