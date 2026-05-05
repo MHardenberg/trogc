@@ -21,11 +21,12 @@ void f_rk4(double *dest, double (*f)(double, double, void *), const double x0,
 typedef void (*dvdt_fn)(f_vecd *, f_vecd *, const double, const double,
                         const void *);
 
-void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x, f_vecd *yn,
-              f_vecd *ytemp, const double h, const void *params, f_vecd *k1,
-              f_vecd *k2, f_vecd *k3, f_vecd *k4);
+void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x, f_vecd *restrict yn,
+              f_vecd *restrict ytemp, const double h, const void *params,
+              f_vecd *restrict k1, f_vecd *restrict k2, f_vecd *restrict k3,
+              f_vecd *restrict k4);
 
-void f_rk4v(f_alloc *alloc, dvdt_fn dvdt, f_matd *Y, const f_vecd *y0,
-            const f_vecd *x, const double h, const void *functionParams);
-
+void f_rk4v(f_alloc *alloc, dvdt_fn dvdt, f_matd *restrict Y,
+            const f_vecd *restrict y0, const f_vecd *restrict x, const double h,
+            const void *functionParams);
 #endif
