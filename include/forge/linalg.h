@@ -13,6 +13,24 @@ typedef struct {
         double *x;
 } f_vecd;
 
+typedef struct {
+        double x;
+        double y;
+} f_vecd2;
+
+typedef struct {
+        double x;
+        double y;
+        double z;
+} f_vecd3;
+
+typedef struct {
+        double a;
+        double b;
+        double c;
+        double d;
+} f_vecd4;
+
 // data procs
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
 
