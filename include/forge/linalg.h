@@ -3,8 +3,6 @@
 
 #include <forge.h>
 #include <openblas/cblas.h>
-#include <stdio.h>
-#include <string.h>
 #include <forge/mem/alloc.h>
 
 // Vectors
@@ -16,20 +14,20 @@ typedef struct {
 typedef struct {
         double x;
         double y;
-} f_vecd2;
+} f_vec2d;
 
 typedef struct {
         double x;
         double y;
         double z;
-} f_vecd3;
+} f_vec3d;
 
 typedef struct {
         double a;
         double b;
         double c;
         double d;
-} f_vecd4;
+} f_vec4d;
 
 // data procs
 f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
@@ -77,6 +75,18 @@ void f_vecdEmul(f_vecd *dest, const double a, const f_vecd *x, const f_vecd *y);
 double f_vecdMul(const f_vecd *a, const f_vecd *b);
 
 void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b);
+
+double f_vec2dCross(const f_vec2d *a, const f_vec2d *b);
+
+void f_vec3dCross(f_vec3d *dest, const f_vec3d *a, const f_vec3d *b);
+
+double f_vecdNorm(f_vecd *v);
+
+double f_vec2dNorm(f_vec2d *v);
+
+double f_vec3dNorm(f_vec3d *v);
+
+double f_vec4dNorm(f_vec4d *v);
 
 // Element procs
 size_t f_vecdIMin(const f_vecd *v);

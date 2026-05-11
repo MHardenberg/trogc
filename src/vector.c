@@ -171,9 +171,27 @@ void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
         // #endif
 }
 
-double f_vecdNorm(const f_vecd *v) {
+double f_vecdNorm(f_vecd *v) {
         assert(v != NULL);
-        return sqrt(f_vecdMul(v, v));
+
+        double norm = 0;
+        for (size_t i = 0; i < v->size; ++i) {
+                norm += (v->x[i] * v->x[i]);
+        }
+
+        return norm;
+}
+
+double f_vec2dNorm(f_vec2d *v) {
+        return v->x * v->x + v->y * v->y;
+}
+
+double f_vec3dNorm(f_vec3d *v) {
+        return v->x * v->x + v->y * v->y + v->z * v->z;
+}
+
+double f_vec4dNorm(f_vec4d *v) {
+        return v->a * v->a + v->b * v->b + v->c * v->c + v->d * v->d;
 }
 
 void f_vecdENorm(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
@@ -223,6 +241,23 @@ void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         dest->x[0] = a->x[1] * b->x[2] - a->x[2] * b->x[1];
         dest->x[1] = a->x[2] * b->x[0] - a->x[0] * b->x[2];
         dest->x[2] = a->x[0] * b->x[1] - a->x[1] * b->x[0];
+}
+
+double f_vec2dCross(const f_vec2d *a, const f_vec2d *b) {
+        assert(a != NULL);
+        assert(b != NULL);
+
+        return a->x * b->y - a->y * b->x;
+}
+
+void f_vec3dCross(f_vec3d *dest, const f_vec3d *a, const f_vec3d *b) {
+        assert(dest != NULL);
+        assert(a != NULL);
+        assert(b != NULL);
+
+        dest->x = a->y * b->z - a->z * b->y;
+        dest->y = a->z * b->x - a->x * b->z;
+        dest->z = a->x * b->y - a->y * b->x;
 }
 
 double f_vecdSum(const f_vecd *v) {
