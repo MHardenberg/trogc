@@ -217,17 +217,23 @@ void f_matdTranspose(f_matd *dest, const f_matd *m);
 
 void f_matdCopy(f_matd *dest, f_matd *source);
 
+void f_vec2dCopy(f_vec2d *dest, const f_vec2d *source);
+
+void f_vec3dCopy(f_vec3d *dest, const f_vec3d *source);
+
+void f_vec4dCopy(f_vec4d *dest, const f_vec4d *source);
+
 void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c, size_t stride);
 
 void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r, size_t stride);
 
 void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c);
 
-f_vec2d *f_matdColVec2(const f_matd *m, const size_t c);
+f_vec2d *f_matdColv2(const f_matd *m, const size_t c);
 
-f_vec3d *f_matdColVec3(const f_matd *m, const size_t c);
+f_vec3d *f_matdColv3(const f_matd *m, const size_t c);
 
-f_vec4d *f_matdColVec4(const f_matd *m, const size_t c);
+f_vec4d *f_matdColv4(const f_matd *m, const size_t c);
 
 void f_matdColslice(f_matd *dest, const f_matd *m, const size_t fromCol,
                     const size_t toCol);

@@ -54,21 +54,21 @@ void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
         dest->x = f_matdIdx(m, 0, c);
 }
 
-f_vec2d *f_matdColVec2(const f_matd *m, const size_t c) {
+f_vec2d *f_matdColv2(const f_matd *m, const size_t c) {
         assert(m != NULL);
         assert(m->rows == 2);
         f_vec2d *v = (void *)f_matdIdx(m, 0, c);
         return v;
 }
 
-f_vec3d *f_matdColVec3(const f_matd *m, const size_t c) {
+f_vec3d *f_matdColv3(const f_matd *m, const size_t c) {
         assert(m != NULL);
         assert(m->rows == 3);
         f_vec3d *v = (void *)f_matdIdx(m, 0, c);
         return v;
 }
 
-f_vec4d *f_matdColVec4(const f_matd *m, const size_t c) {
+f_vec4d *f_matdColv4(const f_matd *m, const size_t c) {
         assert(m != NULL);
         assert(m->rows == 4);
         f_vec4d *v = (void *)f_matdIdx(m, 0, c);

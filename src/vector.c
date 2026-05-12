@@ -59,6 +59,24 @@ void f_vecdCopy(f_vecd *dest, const f_vecd *source) {
         memcpy(dest->x, source->x, sizeof(double) * dest->size);
 }
 
+void f_vec2dCopy(f_vec2d *dest, const f_vec2d *source) {
+        dest->x = source->x;
+        dest->y = source->y;
+}
+
+void f_vec3dCopy(f_vec3d *dest, const f_vec3d *source) {
+        dest->x = source->x;
+        dest->y = source->y;
+        dest->z = source->z;
+}
+
+void f_vec4dCopy(f_vec4d *dest, const f_vec4d *source) {
+        dest->a = source->a;
+        dest->b = source->b;
+        dest->c = source->c;
+        dest->d = source->d;
+}
+
 void f_vecdSlice(f_vecd *dest, const f_vecd *source, const size_t from,
                  const size_t to) {
         assert(to <= source->size);
