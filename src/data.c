@@ -55,20 +55,20 @@ void f_getFilePath(char *dest, const char *title) {
         } else {
                 size_t result = snprintf(dest, sizeof(char) * _BUFFER_LEN,
                                          "%s/temp/%s", PROJECT_ROOT, "temp");
-                assert(result > 0);
-                assert(result <= sizeof(char) * _BUFFER_LEN);
+                f_assert(result > 0);
+                f_assert(result <= sizeof(char) * _BUFFER_LEN);
         }
 }
 
 void f_makeDataPath(f_alloc *alloc, char *dest, char *fileName) {
-        assert(dest != NULL);
+        f_assert(dest != NULL);
         f_ScratchPad *pad = f_ScratchPadCreate(alloc, 3072);
 
         char *time = f_ScratchPadPush(pad, 1024);
         char *stampedFile = f_ScratchPadPush(pad, 1024);
         f_getTimeStr(time, 1024);
-        assert(time != NULL);
-        assert(dest != NULL);
+        f_assert(time != NULL);
+        f_assert(dest != NULL);
         sprintf(stampedFile, "%s%s%s", time, "_", fileName);
         f_getFilePath(dest, stampedFile);
         f_ScratchPadDestroy(pad);
@@ -76,14 +76,14 @@ void f_makeDataPath(f_alloc *alloc, char *dest, char *fileName) {
 
 void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
               f_vecd **ys, size_t nvecs, char *xLabel, char **labels) {
-        assert(alloc != NULL);
-        assert((fileName != NULL) ^ (path != NULL));
-        assert(xLabel != NULL);
-        assert(labels != NULL);
-        assert(x != NULL);
+        f_assert(alloc != NULL);
+        f_assert((fileName != NULL) ^ (path != NULL));
+        f_assert(xLabel != NULL);
+        f_assert(labels != NULL);
+        f_assert(x != NULL);
         for (size_t i = 0; i < nvecs; ++i) {
-                assert(ys[i] != NULL);
-                assert(ys[i]->size == x->size);
+                f_assert(ys[i] != NULL);
+                f_assert(ys[i]->size == x->size);
         }
 
         f_ScratchPad *pad = f_ScratchPadCreate(alloc, 4096);
@@ -95,7 +95,7 @@ void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
         f_createPathDirs(alloc, path);
         FILE *fptr;
         fptr = fopen(path, "w");
-        assert(fptr != NULL);
+        f_assert(fptr != NULL);
 
         size_t incr = 1;
         if (x->size > _MAX_PLOT_POINTS) {

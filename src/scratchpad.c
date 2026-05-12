@@ -9,7 +9,7 @@ f_ScratchPad *f_ScratchPadCreate(f_alloc *alloc, size_t bytes) {
         pad->alloc = alloc;
         pad->capacity = bytes;
         pad->buffer = f_allocPush(alloc, bytes);
-        assert(pad->buffer != NULL);
+        f_assert(pad->buffer != NULL);
         return pad;
 }
 
@@ -30,7 +30,7 @@ void *f_ScratchPadPush(f_ScratchPad *pad, size_t bytes) {
 
 void *f_ScratchPadPushZero(f_ScratchPad *pad, size_t bytes) {
         void *dest = f_ScratchPadPush(pad, bytes);
-        assert(dest != NULL);
+        f_assert(dest != NULL);
         memset(dest, 0, bytes);
         return dest;
 }

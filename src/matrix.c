@@ -8,7 +8,7 @@
 #include <string.h>
 
 f_matd *f_matdAlloc(f_alloc *alloc, size_t rows, size_t cols) {
-        assert(alloc != NULL);
+        f_assert(alloc != NULL);
         f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
         dest->x = f_allocPush(alloc, sizeof(double) * cols * rows);
         dest->cols = cols;
@@ -17,7 +17,7 @@ f_matd *f_matdAlloc(f_alloc *alloc, size_t rows, size_t cols) {
 }
 
 f_matd *f_matdAllocZero(f_alloc *alloc, size_t rows, size_t cols) {
-        assert(alloc != NULL);
+        f_assert(alloc != NULL);
         f_matd *dest = f_allocPush(alloc, sizeof(f_matd));
         dest->x = f_allocPushZero(alloc, sizeof(double) * cols * rows);
         dest->cols = cols;
@@ -26,61 +26,61 @@ f_matd *f_matdAllocZero(f_alloc *alloc, size_t rows, size_t cols) {
 }
 
 void f_matdFree(f_alloc *alloc, f_matd *m) {
-        assert(alloc != NULL);
-        assert(m != NULL);
+        f_assert(alloc != NULL);
+        f_assert(m != NULL);
         f_allocFree(alloc, m->x);
         f_allocFree(alloc, m);
 }
 
 void f_matdCopy(f_matd *dest, f_matd *source) {
-        assert(dest != NULL);
-        assert(source != NULL);
+        f_assert(dest != NULL);
+        f_assert(source != NULL);
         dest->cols = source->cols;
         dest->rows = source->rows;
         memcpy(dest->x, source->x, sizeof(double) * dest->cols * dest->rows);
 }
 
 double *f_matdIdx(const f_matd *m, const size_t r, const size_t c) {
-        assert(m != NULL);
-        assert(r < m->rows);
-        assert(c < m->cols);
+        f_assert(m != NULL);
+        f_assert(r < m->rows);
+        f_assert(c < m->cols);
         return m->x + (c * m->rows + r);
 }
 
 void f_matdCol(f_vecd *dest, const f_matd *m, const size_t c) {
-        assert(dest != NULL);
-        assert(m != NULL);
+        f_assert(dest != NULL);
+        f_assert(m != NULL);
         dest->size = m->rows;
         dest->x = f_matdIdx(m, 0, c);
 }
 
 f_vec2d *f_matdColv2(const f_matd *m, const size_t c) {
-        assert(m != NULL);
-        assert(m->rows == 2);
+        f_assert(m != NULL);
+        f_assert(m->rows == 2);
         f_vec2d *v = (void *)f_matdIdx(m, 0, c);
         return v;
 }
 
 f_vec3d *f_matdColv3(const f_matd *m, const size_t c) {
-        assert(m != NULL);
-        assert(m->rows == 3);
+        f_assert(m != NULL);
+        f_assert(m->rows == 3);
         f_vec3d *v = (void *)f_matdIdx(m, 0, c);
         return v;
 }
 
 f_vec4d *f_matdColv4(const f_matd *m, const size_t c) {
-        assert(m != NULL);
-        assert(m->rows == 4);
+        f_assert(m != NULL);
+        f_assert(m->rows == 4);
         f_vec4d *v = (void *)f_matdIdx(m, 0, c);
         return v;
 }
 
 void f_matdColslice(f_matd *dest, const f_matd *m, const size_t fromCol,
                     const size_t toCol) {
-        assert(dest != NULL);
-        assert(m != NULL);
-        assert(fromCol < m->cols);
-        assert(toCol <= m->cols);
+        f_assert(dest != NULL);
+        f_assert(m != NULL);
+        f_assert(fromCol < m->cols);
+        f_assert(toCol <= m->cols);
 
         dest->cols = toCol - fromCol;
         dest->rows = m->rows;
@@ -90,9 +90,9 @@ void f_matdColslice(f_matd *dest, const f_matd *m, const size_t fromCol,
 
 void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r,
                   size_t stride) {
-        assert(dest->size == m->cols / stride);
-        assert(stride > 0 && stride <= m->cols);
-        assert(dest->size <= m->cols);
+        f_assert(dest->size == m->cols / stride);
+        f_assert(stride > 0 && stride <= m->cols);
+        f_assert(dest->size <= m->cols);
         for (size_t i = 0; i < dest->size; i += stride) {
                 dest->x[i] = *f_matdIdx(m, r, i);
         }
@@ -100,9 +100,9 @@ void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r,
 
 void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c,
                   size_t stride) {
-        assert(dest->size == m->rows / stride);
-        assert(stride > 0 && stride <= m->rows);
-        assert(dest->size <= m->rows);
+        f_assert(dest->size == m->rows / stride);
+        f_assert(stride > 0 && stride <= m->rows);
+        f_assert(dest->size <= m->rows);
         for (size_t i = 0; i < dest->size; i += stride) {
                 dest->x[i] = *f_matdIdx(m, i, c);
         }
@@ -126,10 +126,10 @@ bool f_matdIsTranspose(f_matd *m0, f_matd *m1) {
 }
 
 void f_matdTranspose(f_matd *dest, const f_matd *m) {
-        assert(m != NULL);
-        assert(dest != NULL);
+        f_assert(m != NULL);
+        f_assert(dest != NULL);
         // check if enough allocated space
-        assert(dest->cols * dest->rows == m->rows * m->cols);
+        f_assert(dest->cols * dest->rows == m->rows * m->cols);
 
         f_matd *mT;
         f_alloc alloc;
@@ -175,7 +175,7 @@ void f_matdZero(f_matd *m) {
 }
 
 void f_matdIdent(f_matd *m) {
-        assert(m->rows == m->cols);
+        f_assert(m->rows == m->cols);
         for (size_t c = 0; c < m->cols; ++c) {
                 for (size_t r = 0; r < m->rows; ++r) {
                         *f_matdIdx(m, r, c) = (c == r) ? 1.0 : 0.0;
@@ -184,29 +184,29 @@ void f_matdIdent(f_matd *m) {
 }
 
 void f_matdScale(f_matd *dest, f_matd *m, double a) {
-        assert(dest != NULL);
-        assert(m != NULL);
-        assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        f_assert(dest != NULL);
+        f_assert(m != NULL);
+        f_assert((dest->cols = m->cols) && (dest->rows = m->rows));
         for (size_t i = 0; i < m->cols * m->rows; ++i) {
                 dest->x[i] = m->x[i] * a;
         }
 }
 
 void f_matdIncr(f_matd *dest, f_matd *m, double a) {
-        assert(dest != NULL);
-        assert(m != NULL);
-        assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        f_assert(dest != NULL);
+        f_assert(m != NULL);
+        f_assert((dest->cols = m->cols) && (dest->rows = m->rows));
         for (size_t i = 0; i < m->cols * m->rows; ++i) {
                 dest->x[i] = m->x[i] + a;
         }
 }
 
 void f_matdAdd(f_matd *dest, f_matd *m, f_matd *n) {
-        assert(dest != NULL);
-        assert(m != NULL);
-        assert(n != NULL);
-        assert((dest->cols = m->cols) && (dest->rows = m->rows));
-        assert((n->cols = m->cols) && (n->rows = m->rows));
+        f_assert(dest != NULL);
+        f_assert(m != NULL);
+        f_assert(n != NULL);
+        f_assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        f_assert((n->cols = m->cols) && (n->rows = m->rows));
 
         for (size_t i = 0; i < m->cols * m->rows; ++i) {
                 dest->x[i] = m->x[i] + n->x[i];
@@ -214,11 +214,11 @@ void f_matdAdd(f_matd *dest, f_matd *m, f_matd *n) {
 }
 
 void f_matdScAdd(f_matd *dest, f_matd *m, double a, f_matd *n) {
-        assert(dest != NULL);
-        assert(m != NULL);
-        assert(n != NULL);
-        assert((dest->cols = m->cols) && (dest->rows = m->rows));
-        assert((n->cols = m->cols) && (n->rows = m->rows));
+        f_assert(dest != NULL);
+        f_assert(m != NULL);
+        f_assert(n != NULL);
+        f_assert((dest->cols = m->cols) && (dest->rows = m->rows));
+        f_assert((n->cols = m->cols) && (n->rows = m->rows));
 
         for (size_t i = 0; i < m->cols * m->rows; ++i) {
                 dest->x[i] = m->x[i] + a * n->x[i];

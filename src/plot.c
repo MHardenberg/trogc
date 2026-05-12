@@ -50,7 +50,7 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
         upLim == 0 ? (upLim = fabs(downLim)) : (upLim *= 1); // noop
         downLim == 0 ? (downLim = fabs(upLim)) : (downLim *= 1);
         LOG("%e %e\n", upLim, downLim);
-        assert(upLim > downLim);
+        f_assert(upLim > downLim);
 
         fprintf(gnuplot_pipe, "set yrange [%e:%e]\n", downLim, upLim);
         fprintf(gnuplot_pipe, "set palette viridis\n");

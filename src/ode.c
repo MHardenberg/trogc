@@ -15,7 +15,7 @@ double rk4Step(double (*f)(double, double, void *), const double x,
 
 void f_rk4(double *dest, double (*f)(double, double, void *), const double x0,
            double y0, const double h, const size_t N, void *params) {
-        assert(dest != NULL);
+        f_assert(dest != NULL);
         for (size_t i = 0; i < N; ++i) {
                 dest[i] = rk4Step(f, x0, f(x0, y0, params), h, params);
         }
@@ -43,11 +43,11 @@ void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x, f_vecd *restrict yn,
         f_vecdAdd(ytemp, yn, ytemp);
         dvdt(k4, ytemp, x, h, params);
 
-        assert(ynext != k1);
-        assert(ynext != k2);
-        assert(ynext != k3);
-        assert(ynext != k4);
-        assert(ynext != ytemp);
+        f_assert(ynext != k1);
+        f_assert(ynext != k2);
+        f_assert(ynext != k3);
+        f_assert(ynext != k4);
+        f_assert(ynext != ytemp);
 
         // ynext = yn + h(k1/6 + k2/3 + k3/3 + k4/6)
         f_vecdAdd(ynext, k2, k3);
@@ -66,15 +66,15 @@ void rk4Stepv(f_vecd *ynext, dvdt_fn dvdt, const double x, f_vecd *restrict yn,
 void f_rk4v(f_alloc *alloc, dvdt_fn dvdt, f_matd *restrict Y,
             const f_vecd *restrict y0, const f_vecd *restrict x, const double h,
             const void *functionParams) {
-        assert(alloc != NULL);
-        assert(dvdt != NULL);
-        assert(Y != NULL);
-        assert(y0 != NULL);
-        assert(x != NULL);
-        assert(functionParams != NULL);
+        f_assert(alloc != NULL);
+        f_assert(dvdt != NULL);
+        f_assert(Y != NULL);
+        f_assert(y0 != NULL);
+        f_assert(x != NULL);
+        f_assert(functionParams != NULL);
 
-        assert(x->size == Y->cols);
-        assert(y0->size == Y->rows);
+        f_assert(x->size == Y->cols);
+        f_assert(y0->size == Y->rows);
 
         f_vecd *k1 = f_vecdAllocZero(alloc, Y->rows);
         f_vecd *k2 = f_vecdAllocZero(alloc, Y->rows);

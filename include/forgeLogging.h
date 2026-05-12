@@ -27,10 +27,6 @@
         do {                                                                   \
         } while (0)
 
-#define assert(condition)                                                      \
-        do {                                                                   \
-        } while (0)
-
 #endif
 
 #endif // LOGGING_H

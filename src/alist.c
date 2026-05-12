@@ -19,7 +19,7 @@ void f_alistDestroy(f_alist *list) {
 }
 
 void f_alistResizeElements(f_alist *list, const size_t newCapacity) {
-        assert(newCapacity > list->capacity);
+        f_assert(newCapacity > list->capacity);
         void *new = f_allocPush(list->alloc, newCapacity * list->element_size);
         memcpy(new, list->data, list->size * list->element_size);
 
@@ -43,15 +43,15 @@ void *f_alistNext(f_alist *list) {
 }
 
 void *f_alistPushback(f_alist *list, const void *elem) {
-        assert(list != NULL);
-        assert(elem != NULL);
+        f_assert(list != NULL);
+        f_assert(elem != NULL);
         void *dest = f_alistNext(list);
         memcpy(dest, elem, list->element_size);
         return dest;
 }
 
 void *f_alistNextArray(f_alist *list, const size_t number) {
-        assert(list != NULL);
+        f_assert(list != NULL);
         if (list->capacity <= list->size + number) {
                 f_alistResizeElements(list, 2 * (list->size + number));
         }
@@ -62,8 +62,8 @@ void *f_alistNextArray(f_alist *list, const size_t number) {
 }
 void *f_alistPushbackArray(f_alist *list, const void *elem,
                            const size_t number) {
-        assert(list != NULL);
-        assert(elem != NULL);
+        f_assert(list != NULL);
+        f_assert(elem != NULL);
         void *dest = f_alistNextArray(list, number);
 
         memcpy(dest, elem, list->element_size * number);

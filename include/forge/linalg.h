@@ -47,12 +47,12 @@ f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size);
 f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size);
 
 static inline f_vecd *f_vecdAllocLike(f_alloc *alloc, f_vecd *source) {
-        assert(source != NULL);
+        f_assert(source != NULL);
         return f_vecdAlloc(alloc, source->size);
 }
 
 static inline f_vecd *f_vecdAllocZeroLike(f_alloc *alloc, f_vecd *source) {
-        assert(source != NULL);
+        f_assert(source != NULL);
         return f_vecdAllocZero(alloc, source->size);
 }
 
@@ -198,12 +198,12 @@ f_matd *f_matdAlloc(f_alloc *alloc, size_t rows, size_t cols);
 f_matd *f_matdAllocZero(f_alloc *alloc, size_t rows, size_t cols);
 
 static inline f_matd *f_matdAllocLike(f_alloc *alloc, f_matd *source) {
-        assert(source != NULL);
+        f_assert(source != NULL);
         return f_matdAlloc(alloc, source->rows, source->cols);
 }
 
 static inline f_matd *f_matdAllocLikeZero(f_alloc *alloc, f_matd *source) {
-        assert(source != NULL);
+        f_assert(source != NULL);
         return f_matdAllocZero(alloc, source->rows, source->cols);
 }
 

@@ -6,7 +6,7 @@
 #define DEFAULT_ALIGNMENT (2 * sizeof(void *))
 
 static inline uintptr_t f_alignForward(uintptr_t ptr) {
-        assert(!(DEFAULT_ALIGNMENT % 2));
+        f_assert(!(DEFAULT_ALIGNMENT % 2));
         uintptr_t modulo = ptr & (uintptr_t)(DEFAULT_ALIGNMENT - 1);
         if (modulo != 0) {
                 ptr += DEFAULT_ALIGNMENT - modulo;
