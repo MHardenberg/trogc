@@ -141,6 +141,36 @@ void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         }
 }
 
+void f_vec2dAdd(f_vec2d *dest, const f_vec2d *a, const f_vec2d *b) {
+        assert(dest != NULL);
+        assert(a != NULL);
+        assert(b != NULL);
+
+        dest->x = a->x + b->x;
+        dest->y = a->y + b->y;
+}
+
+void f_vec3dAdd(f_vec3d *dest, const f_vec3d *a, const f_vec3d *b) {
+        assert(dest != NULL);
+        assert(a != NULL);
+        assert(b != NULL);
+
+        dest->x = a->x + b->x;
+        dest->y = a->y + b->y;
+        dest->z = a->z + b->z;
+}
+
+void f_vec4dAdd(f_vec4d *dest, const f_vec4d *a, const f_vec4d *b) {
+        assert(dest != NULL);
+        assert(a != NULL);
+        assert(b != NULL);
+
+        dest->a = a->a + b->a;
+        dest->b = a->b + b->b;
+        dest->c = a->c + b->c;
+        dest->d = a->d + b->d;
+}
+
 void f_vecdDiff(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         assert((NULL != dest) && (NULL != a) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < a->size) && (i < b->size);
@@ -149,11 +179,68 @@ void f_vecdDiff(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
         }
 }
 
+void f_vec2dDiff(f_vec2d *dest, const f_vec2d *a, const f_vec2d *b) {
+        assert(dest != NULL);
+        assert(a != NULL);
+        assert(b != NULL);
+
+        dest->x = a->x - b->x;
+        dest->y = a->y - b->y;
+}
+
+void f_vec3dDiff(f_vec3d *dest, const f_vec3d *a, const f_vec3d *b) {
+        assert(dest != NULL);
+        assert(a != NULL);
+        assert(b != NULL);
+
+        dest->x = a->x - b->x;
+        dest->y = a->y - b->y;
+        dest->z = a->z - b->z;
+}
+
+void f_vec4dDiff(f_vec4d *dest, const f_vec4d *a, const f_vec4d *b) {
+        assert(dest != NULL);
+        assert(a != NULL);
+        assert(b != NULL);
+
+        dest->a = a->a - b->a;
+        dest->b = a->b - b->b;
+        dest->c = a->c - b->c;
+        dest->d = a->d - b->d;
+}
+
 void f_vecdIncr(f_vecd *dest, const double a, const f_vecd *b) {
         assert((NULL != dest) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < b->size); ++i) {
                 dest->x[i] = a + b->x[i];
         }
+}
+
+void f_vec2dIncr(f_vec2d *dest, const double a, const f_vec2d *b) {
+        assert(dest != NULL);
+        assert(b != NULL);
+
+        dest->x = a + b->x;
+        dest->y = a + b->y;
+}
+
+void f_vec3dIncr(f_vec3d *dest, const double a, const f_vec3d *b) {
+        assert(dest != NULL);
+        assert(b != NULL);
+
+        dest->x = a + b->x;
+        dest->y = a + b->y;
+        dest->z = a + b->z;
+}
+
+void f_vec4dIncr(f_vec4d *dest, const double a, const f_vec4d *b) {
+        assert(dest != NULL);
+        assert(b != NULL);
+
+        dest->a = a + b->a;
+        dest->b = a + b->b;
+        dest->c = a + b->c;
+        dest->d = a + b->d;
 }
 
 void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
@@ -169,6 +256,117 @@ void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
         }
 
         // #endif
+}
+
+void f_vec2dScale(f_vec2d *dest, const double a, const f_vec2d *b) {
+        assert(dest != NULL);
+        assert(b != NULL);
+
+        dest->x = a * b->x;
+        dest->y = a * b->y;
+}
+
+void f_vec3dScale(f_vec3d *dest, const double a, const f_vec3d *b) {
+        assert(dest != NULL);
+        assert(b != NULL);
+
+        dest->x = a * b->x;
+        dest->y = a * b->y;
+        dest->z = a * b->z;
+}
+
+void f_vec4dScale(f_vec4d *dest, const double a, const f_vec4d *b) {
+        assert(dest != NULL);
+        assert(b != NULL);
+
+        dest->a = a * b->a;
+        dest->b = a * b->b;
+        dest->c = a * b->c;
+        dest->d = a * b->d;
+}
+
+void f_vecdScAdd(f_vecd *dest, const double a, const f_vecd *v,
+                 const f_vecd *w) {
+        assert((NULL != dest) && (NULL != v) && (NULL != w));
+        for (size_t i = 0; (i < dest->size) && (i < v->size) && (i < w->size);
+             ++i) {
+                dest->x[i] = v->x[i] + a * w->x[i];
+        }
+}
+
+void f_vec2dScAdd(f_vec2d *dest, const double a, const f_vec2d *v,
+                  const f_vec2d *w) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(w != NULL);
+
+        dest->x = v->x + a * w->x;
+        dest->y = v->y + a * w->y;
+}
+
+void f_vec3dScAdd(f_vec3d *dest, const double a, const f_vec3d *v,
+                  const f_vec3d *w) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(w != NULL);
+
+        dest->x = v->x + a * w->x;
+        dest->y = v->y + a * w->y;
+        dest->z = v->z + a * w->z;
+}
+
+void f_vec4dScAdd(f_vec4d *dest, const double a, const f_vec4d *v,
+                  const f_vec4d *w) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(w != NULL);
+
+        dest->a = v->a + a * w->a;
+        dest->b = v->b + a * w->b;
+        dest->c = v->c + a * w->c;
+        dest->c = v->d + a * w->d;
+}
+
+void f_vecdAddSc(f_vecd *dest, const double a, const f_vecd *v,
+                 const f_vecd *w) {
+        assert((NULL != dest) && (NULL != v) && (NULL != w));
+        for (size_t i = 0; (i < dest->size) && (i < v->size) && (i < w->size);
+             ++i) {
+                dest->x[i] = a * (v->x[i] + w->x[i]);
+        }
+}
+
+void f_vec2dAddSc(f_vec2d *dest, const double a, const f_vec2d *v,
+                  const f_vec2d *w) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(w != NULL);
+
+        dest->x = a * (v->x + a * w->x);
+        dest->y = a * (v->y + a * w->y);
+}
+
+void f_vec3dAddSc(f_vec3d *dest, const double a, const f_vec3d *v,
+                  const f_vec3d *w) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(w != NULL);
+
+        dest->x = a * (v->x + w->x);
+        dest->y = a * (v->y + w->y);
+        dest->z = a * (v->z + w->z);
+}
+
+void f_vec4dAddSc(f_vec4d *dest, const double a, const f_vec4d *v,
+                  const f_vec4d *w) {
+        assert(dest != NULL);
+        assert(v != NULL);
+        assert(w != NULL);
+
+        dest->a = a * (v->a + w->a);
+        dest->b = a * (v->b + w->b);
+        dest->c = a * (v->c + w->c);
+        dest->c = a * (v->d + w->d);
 }
 
 double f_vecdNorm(f_vecd *v) {
@@ -292,38 +490,54 @@ void f_vecdEMean(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
         }
 }
 
-void f_vecdRotatex(f_vecd *dest, const f_vecd *v, const double phase) {
+void f_vec2dRotate(f_vec2d *dest, const f_vec2d *v, const double phase) {
         assert(dest != NULL);
         assert(v != NULL);
-        assert(v->size == 3);
 
-        const double vy = *f_vecdIdx(v, 1);
-        const double vz = *f_vecdIdx(v, 2);
+        const double vx = v->x;
+        const double vy = v->y;
+        const double cos_phase = cos(phase);
+        const double sin_phase = sin(phase);
 
-        *f_vecdIdx(dest, 1) = vy * cos(phase) - vz * sin(phase);
-        *f_vecdIdx(dest, 2) = vy * sin(phase) + vz * sin(phase);
+        dest->x = vx * cos_phase - vy * sin_phase;
+        dest->y = vx * sin_phase + vy * cos_phase;
 }
 
-void f_vecdRotatey(f_vecd *dest, const f_vecd *v, const double phase) {
+void f_vec3dRotatex(f_vec3d *dest, const f_vec3d *v, const double phase) {
         assert(dest != NULL);
         assert(v != NULL);
-        assert(v->size == 3);
 
-        const double vx = *f_vecdIdx(v, 0);
-        const double vz = *f_vecdIdx(v, 2);
+        const double vy = v->y;
+        const double vz = v->z;
+        const double cos_phase = cos(phase);
+        const double sin_phase = sin(phase);
 
-        *f_vecdIdx(dest, 0) = vx * cos(phase) + vz * sin(phase);
-        *f_vecdIdx(dest, 2) = -vx * sin(phase) + vz * cos(phase);
+        dest->y = vy * cos_phase - vz * sin_phase;
+        dest->z = vy * sin_phase + vz * sin_phase;
 }
 
-void f_vecdRotatez(f_vecd *dest, const f_vecd *v, const double phase) {
+void f_vec3dRotatey(f_vec3d *dest, const f_vec3d *v, const double phase) {
         assert(dest != NULL);
         assert(v != NULL);
-        assert(v->size == 3);
 
-        const double vx = *f_vecdIdx(v, 0);
-        const double vy = *f_vecdIdx(v, 1);
+        const double vx = v->x;
+        const double vz = v->z;
+        const double cos_phase = cos(phase);
+        const double sin_phase = sin(phase);
 
-        *f_vecdIdx(dest, 0) = vx * cos(phase) - vy * sin(phase);
-        *f_vecdIdx(dest, 1) = vx * sin(phase) + vy * cos(phase);
+        dest->x = vx * cos_phase + vz * sin_phase;
+        dest->z = -vx * sin_phase + vz * cos_phase;
+}
+
+void f_vec3dRotatez(f_vec3d *dest, const f_vec3d *v, const double phase) {
+        assert(dest != NULL);
+        assert(v != NULL);
+
+        const double vx = v->x;
+        const double vy = v->z;
+        const double cos_phase = cos(phase);
+        const double sin_phase = sin(phase);
+
+        dest->x = vx * cos_phase - vy * sin_phase;
+        dest->y = vx * sin_phase + vy * cos_phase;
 }

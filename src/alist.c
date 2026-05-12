@@ -15,6 +15,7 @@ void f_alistCreate(f_alloc *alloc, f_alist *list, const size_t capacity,
 
 void f_alistDestroy(f_alist *list) {
         f_allocFree(list->alloc, list->data);
+        f_allocFree(list->alloc, list);
 }
 
 void f_alistResizeElements(f_alist *list, const size_t newCapacity) {
