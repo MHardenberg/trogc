@@ -285,7 +285,7 @@ void f_vec4dScale(f_vec4d *dest, const double a, const f_vec4d *b) {
         dest->d = a * b->d;
 }
 
-void f_vecdScAdd(f_vecd *dest, const double a, const f_vecd *v,
+void f_vecdScAdd(f_vecd *dest, const f_vecd *v, const double a,
                  const f_vecd *w) {
         assert((NULL != dest) && (NULL != v) && (NULL != w));
         for (size_t i = 0; (i < dest->size) && (i < v->size) && (i < w->size);
@@ -294,7 +294,7 @@ void f_vecdScAdd(f_vecd *dest, const double a, const f_vecd *v,
         }
 }
 
-void f_vec2dScAdd(f_vec2d *dest, const double a, const f_vec2d *v,
+void f_vec2dScAdd(f_vec2d *dest, const f_vec2d *v, const double a,
                   const f_vec2d *w) {
         assert(dest != NULL);
         assert(v != NULL);
@@ -304,7 +304,7 @@ void f_vec2dScAdd(f_vec2d *dest, const double a, const f_vec2d *v,
         dest->y = v->y + a * w->y;
 }
 
-void f_vec3dScAdd(f_vec3d *dest, const double a, const f_vec3d *v,
+void f_vec3dScAdd(f_vec3d *dest, const f_vec3d *v, const double a,
                   const f_vec3d *w) {
         assert(dest != NULL);
         assert(v != NULL);
@@ -315,7 +315,7 @@ void f_vec3dScAdd(f_vec3d *dest, const double a, const f_vec3d *v,
         dest->z = v->z + a * w->z;
 }
 
-void f_vec4dScAdd(f_vec4d *dest, const double a, const f_vec4d *v,
+void f_vec4dScAdd(f_vec4d *dest, const f_vec4d *v, const double a,
                   const f_vec4d *w) {
         assert(dest != NULL);
         assert(v != NULL);

@@ -125,16 +125,16 @@ void f_vec4dAddSc(f_vec4d *dest, const double a, const f_vec4d *v,
                   const f_vec4d *w);
 
 // v + a * w
-void f_vecdScAdd(f_vecd *dest, const double a, const f_vecd *v,
+void f_vecdScAdd(f_vecd *dest, const f_vecd *v, const double a,
                  const f_vecd *w);
 
-void f_vec2dScAdd(f_vec2d *dest, const double a, const f_vec2d *v,
+void f_vec2dScAdd(f_vec2d *dest, const f_vec2d *v, const double a,
                   const f_vec2d *w);
 
-void f_vec3dScAdd(f_vec3d *dest, const double a, const f_vec3d *v,
+void f_vec3dScAdd(f_vec3d *dest, const f_vec3d *v, const double a,
                   const f_vec3d *w);
 
-void f_vec4dScAdd(f_vec4d *dest, const double a, const f_vec4d *v,
+void f_vec4dScAdd(f_vec4d *dest, const f_vec4d *v, const double a,
                   const f_vec4d *w);
 
 void f_vecdEmul(f_vecd *dest, const double a, const f_vecd *x, const f_vecd *y);
