@@ -1,7 +1,3 @@
-#include <stddef.h>
-#include <stdint.h>
-#include <string.h>
-
 #include <forge/dsa/alist.h>
 
 void f_alistCreate(f_alloc *alloc, f_alist *list, const size_t capacity,
@@ -64,6 +60,7 @@ void *f_alistNextArray(f_alist *list, const size_t number) {
         list->size += number;
         return dest;
 }
+
 void *f_alistPushbackArray(f_alist *list, const void *elem,
                            const size_t number) {
         f_assert(list != NULL);
