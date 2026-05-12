@@ -5,23 +5,27 @@
 #include <forge/dsa/alist.h>
 
 void f_alistCreate(f_alloc *alloc, f_alist *list, const size_t capacity,
-                   const size_t element_size) {
+                   const size_t stride) {
         list->capacity = capacity;
         list->size = 0;
-        list->element_size = element_size;
+        list->stride = stride;
         list->alloc = alloc;
-        list->data = f_allocPush(alloc, capacity * element_size);
+        list->data = f_allocPush(alloc, capacity * stride);
 }
 
 void f_alistDestroy(f_alist *list) {
+        f_allocFree(list->alloc, list->data);
+}
+
+void f_alistFree(f_alist *list) {
         f_allocFree(list->alloc, list->data);
         f_allocFree(list->alloc, list);
 }
 
 void f_alistResizeElements(f_alist *list, const size_t newCapacity) {
         f_assert(newCapacity > list->capacity);
-        void *new = f_allocPush(list->alloc, newCapacity * list->element_size);
-        memcpy(new, list->data, list->size * list->element_size);
+        void *new = f_allocPush(list->alloc, newCapacity * list->stride);
+        memcpy(new, list->data, list->size * list->stride);
 
         f_allocFree(list->alloc, list->data);
         list->data = new;
@@ -29,7 +33,7 @@ void f_alistResizeElements(f_alist *list, const size_t newCapacity) {
 }
 
 void *f_alistIdx(const f_alist *list, const size_t i) {
-        return (int8_t *)list->data + list->element_size * i;
+        return (int8_t *)list->data + list->stride * i;
 }
 
 void *f_alistNext(f_alist *list) {
@@ -46,7 +50,7 @@ void *f_alistPushback(f_alist *list, const void *elem) {
         f_assert(list != NULL);
         f_assert(elem != NULL);
         void *dest = f_alistNext(list);
-        memcpy(dest, elem, list->element_size);
+        memcpy(dest, elem, list->stride);
         return dest;
 }
 
@@ -66,6 +70,6 @@ void *f_alistPushbackArray(f_alist *list, const void *elem,
         f_assert(elem != NULL);
         void *dest = f_alistNextArray(list, number);
 
-        memcpy(dest, elem, list->element_size * number);
+        memcpy(dest, elem, list->stride * number);
         return dest;
 }

@@ -8,13 +8,13 @@
 typedef struct {
         size_t size;
         size_t capacity;
-        size_t element_size;
+        size_t stride;
         f_alloc *alloc;
         void *data;
 } f_alist;
 
 void f_alistCreate(f_alloc *alloc, f_alist *list, const size_t capacity,
-                   const size_t element_size);
+                   const size_t stride);
 
 void f_alistDestroy(f_alist *list);
 
