@@ -142,6 +142,21 @@ void f_vecdLinspace(f_vecd *v, const double start, const double stop) {
         }
 }
 
+void f_vecdLogspace(f_vecd *v, const double startExp, const double stopExp,
+                    const double base) {
+        f_assert(v != NULL);
+        f_assert(v->x != NULL);
+
+        if (v->size == 0) return;
+
+        double step =
+            (v->size > 1) ? (stopExp - startExp) / (v->size - 1) : 0.0;
+
+        for (size_t i = 0; i < v->size; ++i) {
+                v->x[i] = pow(base, startExp + step * i);
+        }
+}
+
 void f_vecdArange(f_vecd *v, const double scale) {
         f_assert(v != NULL);
         f_assert(v->x != NULL);

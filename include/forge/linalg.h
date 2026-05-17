@@ -74,6 +74,9 @@ void f_vecdArange(f_vecd *v, const double scale);
 
 void f_vecdLinspace(f_vecd *v, const double start, const double stop);
 
+void f_vecdLogspace(f_vecd *v, const double startExp, const double stopExp,
+                    const double base);
+
 // vector ops
 // v + w
 void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b);
