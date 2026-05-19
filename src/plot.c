@@ -36,8 +36,8 @@ void f_plotvs(const char *title, const f_vecd *x, const f_vecd **ys,
 
         // figure out lims
         for (size_t i = 0; i < nvecs; ++i) {
-                double M = *f_vecdMax(ys[i]);
-                double m = *f_vecdMin(ys[i]);
+                double M = f_vecdMax(ys[i]);
+                double m = f_vecdMin(ys[i]);
                 if (upLim < M) {
                         upLim = M;
                 }

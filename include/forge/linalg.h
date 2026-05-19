@@ -147,11 +147,11 @@ double f_vecdMul(const f_vecd *a, const f_vecd *b);
 // Element procs
 size_t f_vecdIMin(const f_vecd *v);
 
-double *f_vecdMin(const f_vecd *v);
+double f_vecdMin(const f_vecd *v);
 
 size_t f_vecdIMax(const f_vecd *v);
 
-double *f_vecdMax(const f_vecd *v);
+double f_vecdMax(const f_vecd *v);
 
 void f_vecdOne(f_vecd *vec);
 

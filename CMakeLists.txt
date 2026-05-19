@@ -2,13 +2,16 @@ cmake_minimum_required(VERSION 3.10)
 project(forge C)
 
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+    # set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
 
 
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src/ SOURCES) 
 set(SOURCES 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/forgeAssert.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/arena.c

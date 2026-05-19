@@ -97,8 +97,8 @@ size_t f_vecdIMin(const f_vecd *v) {
         return midx;
 }
 
-double *f_vecdMin(const f_vecd *v) {
-        return f_vecdIdx(v, f_vecdIMin(v));
+double f_vecdMin(const f_vecd *v) {
+        return *f_vecdIdx(v, f_vecdIMin(v));
 }
 
 size_t f_vecdIMax(const f_vecd *v) {
@@ -113,8 +113,8 @@ size_t f_vecdIMax(const f_vecd *v) {
         return Midx;
 }
 
-double *f_vecdMax(const f_vecd *v) {
-        return f_vecdIdx(v, f_vecdIMax(v));
+double f_vecdMax(const f_vecd *v) {
+        return *f_vecdIdx(v, f_vecdIMax(v));
 }
 
 void f_vecdOne(f_vecd *vec) {
@@ -410,19 +410,19 @@ double f_vecdNorm(f_vecd *v) {
                 norm += (v->x[i] * v->x[i]);
         }
 
-        return norm;
+        return sqrt(norm);
 }
 
 double f_vec2dNorm(f_vec2d *v) {
-        return v->x * v->x + v->y * v->y;
+        return sqrt(v->x * v->x + v->y * v->y);
 }
 
 double f_vec3dNorm(f_vec3d *v) {
-        return v->x * v->x + v->y * v->y + v->z * v->z;
+        return sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
 double f_vec4dNorm(f_vec4d *v) {
-        return v->a * v->a + v->b * v->b + v->c * v->c + v->d * v->d;
+        return sqrt(v->a * v->a + v->b * v->b + v->c * v->c + v->d * v->d);
 }
 
 void f_vecdENorm(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
