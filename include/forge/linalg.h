@@ -64,6 +64,12 @@ void f_vecdPrint(const f_vecd *v);
 
 void f_vecdCopy(f_vecd *dest, const f_vecd *source);
 
+void f_vec2dCopy(f_vec2d *dest, const f_vec2d *source);
+
+void f_vec3dCopy(f_vec3d *dest, const f_vec3d *source);
+
+void f_vec4dCopy(f_vec4d *dest, const f_vec4d *source);
+
 void f_vecdSlice(f_vecd *dest, const f_vecd *source, const size_t from,
                  const size_t to);
 
@@ -219,12 +225,6 @@ bool f_matdIsTranspose(f_matd *m0, f_matd *m1);
 void f_matdTranspose(f_matd *dest, const f_matd *m);
 
 void f_matdCopy(f_matd *dest, f_matd *source);
-
-void f_vec2dCopy(f_vec2d *dest, const f_vec2d *source);
-
-void f_vec3dCopy(f_vec3d *dest, const f_vec3d *source);
-
-void f_vec4dCopy(f_vec4d *dest, const f_vec4d *source);
 
 void f_matdColCpy(f_vecd *dest, const f_matd *m, const size_t c, size_t stride);
 
