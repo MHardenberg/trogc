@@ -19,13 +19,9 @@
 
 #else
 
-#define LOG(fmt, ...)                                                          \
-        do {                                                                   \
-        } while (0)
+#define LOG(fmt, ...)
 
-#define LOGERROR(fmt, ...)                                                     \
-        do {                                                                   \
-        } while (0)
+#define LOGERROR(fmt, ...)
 
 #endif
 

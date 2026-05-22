@@ -3,7 +3,6 @@ project(forge C)
 
 if(NOT CMAKE_BUILD_TYPE)
     # set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
-
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
@@ -46,7 +45,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-fsanitize=address -O0 -g)
     add_link_options(-fsanitize=address)
 else()
-    add_compile_options(-O3 -s)
+    add_compile_options(-O3 -s -flto)
+    add_link_options(-flto)
 endif()
 
 # Library

@@ -7,7 +7,7 @@
 
 #include <forge/data.h>
 #define _BUFFER_LEN 1024
-#define _MAX_PLOT_POINTS 10000LL
+#define _MAX_PLOT_POINTS 1000000LL
 const char pathSeparator =
 #ifdef _WIN32
     '\\';
@@ -94,7 +94,7 @@ void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
 
         f_createPathDirs(alloc, path);
         FILE *fptr;
-        fptr = fopen(path, "w");
+        fptr = fopen(path, "w+");
         f_assert(fptr != NULL);
 
         size_t incr = 1;
@@ -104,9 +104,9 @@ void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
 
         LOG("Saving to %s\n", path);
         // Labels to file
-        fprintf(fptr, "%s, ", xLabel);
+        fprintf(fptr, "%s,", xLabel);
         for (size_t i = 0; i < nvecs; ++i) {
-                fprintf(fptr, "%s%s", labels[i], (i < nvecs - 1) ? ", " : "\n");
+                fprintf(fptr, "%s%s", labels[i], (i < nvecs - 1) ? "," : "\n");
         }
 
         // Data to file
