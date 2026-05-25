@@ -15,6 +15,13 @@ typedef struct {
         f_vecd *ytemp;
 } f_rk4Containers;
 
+typedef struct {
+        f_vecd k1;
+        f_vecd k2;
+        f_vecd k3;
+        f_vecd k4;
+} solver_arrays;
+
 double rk4Step(dydt_fn f, const double x, const double y, const double h,
                void *params);
 
