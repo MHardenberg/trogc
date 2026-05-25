@@ -1,71 +1,71 @@
-#include <forge/dsa/alist.h>
+#include <trog/dsa/alist.h>
 
-void f_alistCreate(f_alloc *alloc, f_alist *list, const size_t capacity,
-                   const size_t stride) {
+void tr_alistCreate(tr_alloc *alloc, tr_alist *list, const size_t capacity,
+                    const size_t stride) {
         list->capacity = capacity;
         list->size = 0;
         list->stride = stride;
         list->alloc = alloc;
-        list->data = f_allocPush(alloc, capacity * stride);
+        list->data = tr_allocPush(alloc, capacity * stride);
 }
 
-void f_alistDestroy(f_alist *list) {
-        f_allocFree(list->alloc, list->data);
+void tr_alistDestroy(tr_alist *list) {
+        tr_allocFree(list->alloc, list->data);
 }
 
-void f_alistFree(f_alist *list) {
-        f_allocFree(list->alloc, list->data);
-        f_allocFree(list->alloc, list);
+void tr_alistFree(tr_alist *list) {
+        tr_allocFree(list->alloc, list->data);
+        tr_allocFree(list->alloc, list);
 }
 
-void f_alistResizeElements(f_alist *list, const size_t newCapacity) {
-        f_assert(newCapacity > list->capacity);
-        void *new = f_allocPush(list->alloc, newCapacity * list->stride);
+void tr_alistResizeElements(tr_alist *list, const size_t newCapacity) {
+        tr_assert(newCapacity > list->capacity);
+        void *new = tr_allocPush(list->alloc, newCapacity * list->stride);
         memcpy(new, list->data, list->size * list->stride);
 
-        f_allocFree(list->alloc, list->data);
+        tr_allocFree(list->alloc, list->data);
         list->data = new;
         list->capacity = newCapacity;
 }
 
-void *f_alistIdx(const f_alist *list, const size_t i) {
+void *tr_alistIdx(const tr_alist *list, const size_t i) {
         return (int8_t *)list->data + list->stride * i;
 }
 
-void *f_alistNext(f_alist *list) {
+void *tr_alistNext(tr_alist *list) {
         if (list->capacity < list->size + 1) {
-                f_alistResizeElements(list, 2 * (list->size + 1));
+                tr_alistResizeElements(list, 2 * (list->size + 1));
         }
 
-        void *dest = f_alistIdx(list, list->size);
+        void *dest = tr_alistIdx(list, list->size);
         ++list->size;
         return dest;
 }
 
-void *f_alistPushback(f_alist *list, const void *elem) {
-        f_assert(list != NULL);
-        f_assert(elem != NULL);
-        void *dest = f_alistNext(list);
+void *tr_alistPushback(tr_alist *list, const void *elem) {
+        tr_assert(list != NULL);
+        tr_assert(elem != NULL);
+        void *dest = tr_alistNext(list);
         memcpy(dest, elem, list->stride);
         return dest;
 }
 
-void *f_alistNextArray(f_alist *list, const size_t number) {
-        f_assert(list != NULL);
+void *tr_alistNextArray(tr_alist *list, const size_t number) {
+        tr_assert(list != NULL);
         if (list->capacity <= list->size + number) {
-                f_alistResizeElements(list, 2 * (list->size + number));
+                tr_alistResizeElements(list, 2 * (list->size + number));
         }
 
-        void *dest = f_alistIdx(list, list->size);
+        void *dest = tr_alistIdx(list, list->size);
         list->size += number;
         return dest;
 }
 
-void *f_alistPushbackArray(f_alist *list, const void *elem,
-                           const size_t number) {
-        f_assert(list != NULL);
-        f_assert(elem != NULL);
-        void *dest = f_alistNextArray(list, number);
+void *tr_alistPushbackArray(tr_alist *list, const void *elem,
+                            const size_t number) {
+        tr_assert(list != NULL);
+        tr_assert(elem != NULL);
+        void *dest = tr_alistNextArray(list, number);
 
         memcpy(dest, elem, list->stride * number);
         return dest;

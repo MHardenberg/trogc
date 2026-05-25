@@ -1,4 +1,4 @@
-# Forgelib
+# TrogC
 General library primarily for scientific computing in C.
 Desined with custom maths containers and efficient allocator stategies.
 
@@ -27,8 +27,8 @@ TRAP - Technical Resources for Algorithms and Processing
 
 ## Installation
 ```bash
-git clone --recursive git@github.com:MHardenberg/forge.git
-cd forge/bin
+git clone --recursive git@github.com:MHardenberg/trog.git
+cd trog/bin
 cmake ..
 make
 cd ../../

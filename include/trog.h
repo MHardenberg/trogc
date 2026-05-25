@@ -1,10 +1,10 @@
-#ifndef FORGE_H
-#define FORGE_H
+#ifndef TROG_H
+#define TROG_H
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <forgeLogging.h>
-#include <forgeAssert.h>
+#include <trogLogging.h>
+#include <trogAssert.h>
 
 #define f_max(a, b) ((a) > (b) ? (a) : (b));
 
@@ -20,4 +20,4 @@
 #error "Compiler not supported"
 #endif
 
-#endif // FORGE_H
+#endif // TROG_H

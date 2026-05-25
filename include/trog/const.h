@@ -1,0 +1,8 @@
+#ifndef _CONST
+#define _CONST
+
+#define tr_PI 3.14159265358979323846264338327 // 30 digits
+
+#define tr_EULER 2.718281828459045235360287471352 // 30 digits
+
+#endif // _CONST

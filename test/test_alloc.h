@@ -1,19 +1,19 @@
 #ifndef _TEST_ALLOC
 #define _TEST_ALLOC
-#include <forge.h>
-#include <forge/mem/alloc.h>
-#include <forge/mem/scratchpad.h>
+#include <trog.h>
+#include <trog/mem/alloc.h>
+#include <trog/mem/scratchpad.h>
 #include <test.h>
 
 #define PAGE_SIZE 4096
 
-static void test_f_arenaPush() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
+static void test_tr_arenaPush() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
 
         int res = 0;
         for (size_t i = 0; i < 100; ++i) {
-                char *mems = f_allocPush(&arena, PAGE_SIZE);
+                char *mems = tr_allocPush(&arena, PAGE_SIZE);
                 if (mems == NULL) {
                         ++res;
                 }
@@ -23,18 +23,18 @@ static void test_f_arenaPush() {
         }
         TEST_ZERO(res);
 
-        f_allocClear(&arena);
+        tr_allocClear(&arena);
         TEST_TRUE((arena.alloc.allocArena.offset == 0));
-        f_allocDestroy(&arena);
+        tr_allocDestroy(&arena);
 }
 
-static void test_f_arenaPushZero() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
+static void test_tr_arenaPushZero() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
 
         int res = 0;
         for (size_t i = 0; i < 100; ++i) {
-                char *mems = f_allocPushZero(&arena, PAGE_SIZE);
+                char *mems = tr_allocPushZero(&arena, PAGE_SIZE);
                 if (mems == NULL) {
                         LOGERROR("NULL output\n");
                         ++res;
@@ -51,51 +51,51 @@ static void test_f_arenaPushZero() {
         }
 
         TEST_ZERO(res);
-        f_allocClear(&arena);
+        tr_allocClear(&arena);
         TEST_TRUE((arena.alloc.allocArena.offset == 0));
-        f_allocDestroy(&arena);
+        tr_allocDestroy(&arena);
 }
 
-static void test_f_arenaPushMany() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
+static void test_tr_arenaPushMany() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
 
         size_t Gigs = 1LL * 1024LL * 1024LL * 1024LL;
-        char *mems = f_allocPushZero(&arena, Gigs);
+        char *mems = tr_allocPushZero(&arena, Gigs);
         TEST_TRUE((mems != NULL));
         TEST_TRUE((arena.alloc.allocArena.offset >= Gigs));
 
-        f_allocClear(&arena);
+        tr_allocClear(&arena);
         TEST_TRUE((arena.alloc.allocArena.offset == 0));
-        f_allocDestroy(&arena);
+        tr_allocDestroy(&arena);
 }
 
-static void test_f_ScratchPad() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
-        f_ScratchPad *pad = f_ScratchPadCreate(&arena, 1024);
+static void test_tr_ScratchPad() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
+        tr_ScratchPad *pad = tr_ScratchPadCreate(&arena, 1024);
         TEST_TRUE((pad->buffer != NULL));
 
         // push
-        char *str = f_ScratchPadPush(pad, 64);
+        char *str = tr_ScratchPadPush(pad, 64);
         TEST_TRUE((str != NULL));
         TEST_TRUE((pad->offset >= 64));
 
         // push too much
         size_t offsetBefore = pad->offset;
-        void *dest = f_ScratchPadPush(pad, 2048);
+        void *dest = tr_ScratchPadPush(pad, 2048);
         TEST_EQUAL(dest, NULL);
         TEST_EQUAL(offsetBefore, pad->offset);
 
         // clear
-        f_ScratchPadClear(pad);
+        tr_ScratchPadClear(pad);
         TEST_EQUAL(pad->offset, 0);
 }
 
-void test_f_alloc() {
-        test_f_arenaPush();
-        test_f_arenaPushMany();
-        test_f_arenaPushZero();
-        test_f_ScratchPad();
+void test_tr_alloc() {
+        test_tr_arenaPush();
+        test_tr_arenaPushMany();
+        test_tr_arenaPushZero();
+        test_tr_ScratchPad();
 }
 #endif //_TEST_ALLOC

@@ -1,6 +1,6 @@
-#include <forge/mem/arena.h>
-#include <forge/mem/mem.h>
-#include <forge.h>
+#include <trog/mem/arena.h>
+#include <trog/mem/mem.h>
+#include <trog.h>
 #ifdef __linux__
 #include <sys/mman.h>
 
@@ -36,9 +36,9 @@
 #define MEM_RELEASE(dest, bytes) VirtualFree((dest), 0, MEM_RELEASE)
 #endif
 
-void *arenaResize(f_arena *arena, size_t bytes) {
+void *arenaResize(tr_arena *arena, size_t bytes) {
         // commit full pages
-        bytes = f_alignPages(bytes);
+        bytes = tr_alignPages(bytes);
         if (arena->offset + bytes > arena->reserved) {
                 // This really shouldnt happen
                 LOGERROR("Out of reserved addresses.");
@@ -57,8 +57,8 @@ void *arenaResize(f_arena *arena, size_t bytes) {
         return commit;
 }
 
-int f_arenaCreate(f_arena *arena) {
-        arena->reserved = f_alignPages(DEFAULT_ARENA_RESERVATION_SIZE);
+int tr_arenaCreate(tr_arena *arena) {
+        arena->reserved = tr_alignPages(DEFAULT_ARENA_RESERVATION_SIZE);
         arena->capacity = PAGE_SIZE;
         arena->offset = 0;
 
@@ -87,11 +87,11 @@ int f_arenaCreate(f_arena *arena) {
         return 0;
 }
 
-void f_arenaDestroy(f_arena *arena) {
+void tr_arenaDestroy(tr_arena *arena) {
         MEM_RELEASE(arena->buffer, arena->reserved);
 }
 
-void *f_arenaPush(f_arena *arena, size_t bytes) {
+void *tr_arenaPush(tr_arena *arena, size_t bytes) {
         if (arena->offset + bytes >= arena->capacity) {
                 // resize if out of cap
                 if (arenaResize(arena, bytes) == NULL) {
@@ -104,15 +104,15 @@ void *f_arenaPush(f_arena *arena, size_t bytes) {
 
         // align offset and move by bytes
         arena->offset =
-            f_alignForward((uintptr_t)arena->buffer + arena->offset) -
+            tr_alignForward((uintptr_t)arena->buffer + arena->offset) -
             (uintptr_t)arena->buffer;
         void *loc = (void *)((uintptr_t)arena->buffer + arena->offset);
         arena->offset += bytes;
         return loc;
 }
 
-void *f_arenaPushZero(f_arena *arena, size_t bytes) {
-        void *loc = f_arenaPush(arena, bytes);
+void *tr_arenaPushZero(tr_arena *arena, size_t bytes) {
+        void *loc = tr_arenaPush(arena, bytes);
         if (loc == NULL) {
                 return NULL;
         }
@@ -120,6 +120,6 @@ void *f_arenaPushZero(f_arena *arena, size_t bytes) {
         return loc;
 }
 
-void f_arenaClear(f_arena *arena) {
+void tr_arenaClear(tr_arena *arena) {
         arena->offset = 0;
 }

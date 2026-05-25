@@ -1,25 +1,25 @@
 #ifndef TEST_ZERO_LINALG
 #define TEST_ZERO_LINALG
-#include "forge/mem/alloc.h"
-#include <forge.h>
-#include <forge/linalg.h>
-#include <forge/mem/alloc.h>
+#include "trog/mem/alloc.h"
+#include <trog.h>
+#include <trog/linalg.h>
+#include <trog/mem/alloc.h>
 #include <math.h>
 #include <stddef.h>
 #include <test.h>
 
-static void test_linalg_f_vecdAlloc() {
-        f_alloc alloc;
+static void test_linalg_tr_vecdAlloc() {
+        tr_alloc alloc;
         size_t M = 100;
 
-        f_allocCreate(&alloc, ALLOC_ARENA);
+        tr_allocCreate(&alloc, ALLOC_ARENA);
 
-        f_vecd *v;
+        tr_vecd *v;
         int res = 0;
         for (size_t i = 0; i < M; ++i) {
-                v = f_vecdAlloc(&alloc, i + 1);
+                v = tr_vecdAlloc(&alloc, i + 1);
                 for (size_t j = 0; j < i + 1; ++j) {
-                        *f_vecdIdx(v, j) = j;
+                        *tr_vecdIdx(v, j) = j;
                 } // test writeable
 
                 if (v->x == NULL) {
@@ -32,24 +32,24 @@ static void test_linalg_f_vecdAlloc() {
         }
 
         TEST_ZERO(res);
-        f_allocDestroy(&alloc);
+        tr_allocDestroy(&alloc);
 }
 
-static void test_linalg_f_vecdAllocZero() {
-        f_alloc alloc;
+static void test_linalg_tr_vecdAllocZero() {
+        tr_alloc alloc;
         size_t M = 100;
 
-        f_allocCreate(&alloc, ALLOC_ARENA);
+        tr_allocCreate(&alloc, ALLOC_ARENA);
 
-        f_vecd *v;
+        tr_vecd *v;
         int res = 0;
         for (size_t i = 0; i < M; ++i) {
-                v = f_vecdAllocZero(&alloc, i + 1);
+                v = tr_vecdAllocZero(&alloc, i + 1);
                 for (size_t j = 0; j < i + 1; ++j) {
-                        if (*f_vecdIdx(v, i) != 0) {
+                        if (*tr_vecdIdx(v, i) != 0) {
                                 ++res;
                         }
-                        *f_vecdIdx(v, j) = j; // test writeable
+                        *tr_vecdIdx(v, j) = j; // test writeable
                 }
 
                 if (v->x == NULL) {
@@ -62,19 +62,19 @@ static void test_linalg_f_vecdAllocZero() {
         }
 
         TEST_ZERO(res);
-        f_allocDestroy(&alloc);
+        tr_allocDestroy(&alloc);
 }
 
-static void test_linalg_f_vecdOne() {
+static void test_linalg_tr_vecdOne() {
         int res = 0;
         size_t n = 10;
         double x[n];
-        f_vecd v = {.size = n, .x = x};
+        tr_vecd v = {.size = n, .x = x};
 
-        f_vecdOne(&v);
+        tr_vecdOne(&v);
 
         for (size_t i = 0; i < n; ++i) {
-                if (*f_vecdIdx(&v, i) != 1.0) {
+                if (*tr_vecdIdx(&v, i) != 1.0) {
                         ++res;
                 }
         }
@@ -82,15 +82,15 @@ static void test_linalg_f_vecdOne() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdZero() {
+static void test_linalg_tr_vecdZero() {
         int res = 0;
         size_t n = 10;
         double x[n];
-        f_vecd v = {.size = n, .x = x};
+        tr_vecd v = {.size = n, .x = x};
 
-        f_vecdZero(&v);
+        tr_vecdZero(&v);
         for (size_t i = 0; i < n; ++i) {
-                if (*f_vecdIdx(&v, i) != 0.0) {
+                if (*tr_vecdIdx(&v, i) != 0.0) {
                         ++res;
                 }
         }
@@ -98,12 +98,12 @@ static void test_linalg_f_vecdZero() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdIdx() {
+static void test_linalg_tr_vecdIdx() {
         double x[] = {1.0f, 2.0f, 3.0f};
-        f_vecd v = {.size = 3U, .x = x};
+        tr_vecd v = {.size = 3U, .x = x};
         int res = 0;
         for (uint8_t i = 0; i < v.size; ++i) {
-                if (x[i] != *f_vecdIdx(&v, i)) {
+                if (x[i] != *tr_vecdIdx(&v, i)) {
                         ++res;
                 }
         }
@@ -114,22 +114,22 @@ static void test_linalg_f_vecdIdx() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdSum() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
-        f_vecd *v = f_vecdAllocZero(&arena, 100);
+static void test_linalg_tr_vecdSum() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
+        tr_vecd *v = tr_vecdAllocZero(&arena, 100);
 
         double actualSum = 0;
         for (size_t i = 0; i < v->size; ++i) {
-                *f_vecdIdx(v, i) = i;
+                *tr_vecdIdx(v, i) = i;
                 actualSum += i;
         }
-        TEST_ZERO(actualSum - f_vecdSum(v));
+        TEST_ZERO(actualSum - tr_vecdSum(v));
 }
 
 static void test_linalg_fvecdNorm() {
         double xs[] = {1, 2, 3, 4, 5};
-        f_vecd v = {.size = 5, .x = xs};
+        tr_vecd v = {.size = 5, .x = xs};
 
         double actualNorm = 0;
         for (size_t i = 0; i < 5; ++i) {
@@ -138,7 +138,7 @@ static void test_linalg_fvecdNorm() {
 
         actualNorm = sqrt(actualNorm);
 
-        TEST_EQUAL(actualNorm, f_vecdNorm(&v));
+        TEST_EQUAL(actualNorm, tr_vecdNorm(&v));
 }
 
 static void test_linalg_fvecdENorm() {
@@ -146,73 +146,73 @@ static void test_linalg_fvecdENorm() {
         double ns[5];
         double rs[5];
 
-        f_vecd v = {.size = 5, .x = xs};
-        f_vecd elemNorm = {.size = 5, .x = rs};
-        const f_vecd *vs[] = {&v, &v};
-        f_vecd res = {.size = 5, .x = rs};
+        tr_vecd v = {.size = 5, .x = xs};
+        tr_vecd elemNorm = {.size = 5, .x = rs};
+        const tr_vecd *vs[] = {&v, &v};
+        tr_vecd res = {.size = 5, .x = rs};
 
         for (size_t i = 0; i < 5; ++i) {
                 ns[i] = sqrt(pow(xs[i], 2) * 2);
         }
-        f_vecd actualNorm = {.size = 5, .x = ns};
+        tr_vecd actualNorm = {.size = 5, .x = ns};
 
-        f_vecdENorm(&elemNorm, vs, 2);
-        f_vecdDiff(&res, &elemNorm, &actualNorm);
-        TEST_ZERO(f_vecdSum(&res));
+        tr_vecdENorm(&elemNorm, vs, 2);
+        tr_vecdDiff(&res, &elemNorm, &actualNorm);
+        TEST_ZERO(tr_vecdSum(&res));
 }
 
-static void test_linalg_f_vecdMean() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
-        f_vecd *v = f_vecdAllocZero(&arena, 100);
+static void test_linalg_tr_vecdMean() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
+        tr_vecd *v = tr_vecdAllocZero(&arena, 100);
 
         double actualMean = 0;
         for (size_t i = 0; i < v->size; ++i) {
-                *f_vecdIdx(v, i) = i;
+                *tr_vecdIdx(v, i) = i;
                 actualMean += i;
         }
         actualMean /= v->size;
-        TEST_ZERO(actualMean - f_vecdMean(v));
+        TEST_ZERO(actualMean - tr_vecdMean(v));
 }
 
-static void test_linalg_f_vecdEMean() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
-        f_vecd *v = f_vecdAlloc(&arena, 100);
-        f_vecd *w = f_vecdAlloc(&arena, 100);
-        f_vecd *testV = f_vecdAlloc(&arena, 100);
-        f_vecd *testW = f_vecdAllocZero(&arena, 100);
+static void test_linalg_tr_vecdEMean() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
+        tr_vecd *v = tr_vecdAlloc(&arena, 100);
+        tr_vecd *w = tr_vecdAlloc(&arena, 100);
+        tr_vecd *testV = tr_vecdAlloc(&arena, 100);
+        tr_vecd *testW = tr_vecdAllocZero(&arena, 100);
 
         for (size_t i = 0; i < v->size; ++i) {
-                *f_vecdIdx(v, i) = i;
-                *f_vecdIdx(w, i) = i * i;
-                *f_vecdIdx(testV, i) = ((double)(i + i * i)) / 2;
+                *tr_vecdIdx(v, i) = i;
+                *tr_vecdIdx(w, i) = i * i;
+                *tr_vecdIdx(testV, i) = ((double)(i + i * i)) / 2;
         }
-        const f_vecd *vs[] = {v, w};
-        f_vecdEMean(testW, vs, 2);
+        const tr_vecd *vs[] = {v, w};
+        tr_vecdEMean(testW, vs, 2);
 
         int res = 0;
         for (size_t i = 0; i < v->size; ++i) {
-                if (*f_vecdIdx(testV, i) != *f_vecdIdx(testW, i)) {
+                if (*tr_vecdIdx(testV, i) != *tr_vecdIdx(testW, i)) {
                         ++res;
                 }
         }
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdAdd() {
+static void test_linalg_tr_vecdAdd() {
         double x[] = {1.0f, 2.0f, 3.0f};
         double y[] = {4.0f, 5.0f, 6.0f};
         double z[3];
 
-        f_vecd v = {.size = 3U, .x = x};
-        f_vecd w = {.size = 3U, .x = y};
-        f_vecd r = {.size = 3U, .x = z};
+        tr_vecd v = {.size = 3U, .x = x};
+        tr_vecd w = {.size = 3U, .x = y};
+        tr_vecd r = {.size = 3U, .x = z};
         int res = 0;
 
-        f_vecdAdd(&r, &v, &w);
+        tr_vecdAdd(&r, &v, &w);
         for (uint8_t i = 0; i < v.size; ++i) {
-                if (x[i] + y[i] != *f_vecdIdx(&r, i)) {
+                if (x[i] + y[i] != *tr_vecdIdx(&r, i)) {
                         ++res;
                 }
         }
@@ -220,19 +220,19 @@ static void test_linalg_f_vecdAdd() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdDiff() {
+static void test_linalg_tr_vecdDiff() {
         double x[] = {1.0f, 2.0f, 3.0f};
         double y[] = {4.0f, 5.0f, 6.0f};
         double z[3];
 
-        f_vecd v = {.size = 3U, .x = x};
-        f_vecd w = {.size = 3U, .x = y};
-        f_vecd r = {.size = 3U, .x = z};
+        tr_vecd v = {.size = 3U, .x = x};
+        tr_vecd w = {.size = 3U, .x = y};
+        tr_vecd r = {.size = 3U, .x = z};
         int res = 0;
 
-        f_vecdDiff(&r, &v, &w);
+        tr_vecdDiff(&r, &v, &w);
         for (uint8_t i = 0; i < v.size; ++i) {
-                if (x[i] - y[i] != *f_vecdIdx(&r, i)) {
+                if (x[i] - y[i] != *tr_vecdIdx(&r, i)) {
                         ++res;
                 }
         }
@@ -240,17 +240,17 @@ static void test_linalg_f_vecdDiff() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdIncr() {
+static void test_linalg_tr_vecdIncr() {
         double a = 123.456;
         double x[] = {1.0f, 2.0f, 3.0f};
         double y[] = {a + 1.0f, a + 2.0f, a + 3.0f};
 
-        f_vecd v = {.size = 3U, .x = x};
-        f_vecdIncr(&v, a, &v);
+        tr_vecd v = {.size = 3U, .x = x};
+        tr_vecdIncr(&v, a, &v);
 
         int res = 0;
         for (uint8_t i = 0; i < v.size; ++i) {
-                if (y[i] != *f_vecdIdx(&v, i)) {
+                if (y[i] != *tr_vecdIdx(&v, i)) {
                         ++res;
                 }
         }
@@ -261,21 +261,21 @@ static void test_linalg_f_vecdIncr() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdEmul() {
+static void test_linalg_tr_vecdEmul() {
         double a = 1.0, b = 2.0, c = 3.0;
         double d = 4.0, e = 2.0, f = 3.0;
         double x[] = {a, b, c};
         double y[] = {d, e, f};
 
         double alpha = 123.456;
-        f_vecd v = {.size = 3U, .x = x};
-        f_vecd w = {.size = 3U, .x = y};
+        tr_vecd v = {.size = 3U, .x = x};
+        tr_vecd w = {.size = 3U, .x = y};
         double z[] = {alpha * a * d, alpha * b * e, alpha * c * f};
         int res = 0;
 
-        f_vecdEmul(&v, alpha, &v, &w);
+        tr_vecdEmul(&v, alpha, &v, &w);
         for (uint8_t i = 0; i < v.size; ++i) {
-                if (z[i] != *f_vecdIdx(&v, i)) {
+                if (z[i] != *tr_vecdIdx(&v, i)) {
                         ++res;
                 }
         }
@@ -286,17 +286,17 @@ static void test_linalg_f_vecdEmul() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdMul() {
+static void test_linalg_tr_vecdMul() {
         double a = 1.0, b = 2.0, c = 3.0;
         double d = 4.0, e = 2.0, f = 3.0;
         double x[] = {a, b, c};
         double y[] = {d, e, f};
 
-        f_vecd v = {.size = 3U, .x = x};
-        f_vecd w = {.size = 3U, .x = y};
+        tr_vecd v = {.size = 3U, .x = x};
+        tr_vecd w = {.size = 3U, .x = y};
         int res = 0;
 
-        double s = f_vecdMul(&v, &w);
+        double s = tr_vecdMul(&v, &w);
         double r = a * d + b * e + c * f;
 
         if (s != r) {
@@ -305,17 +305,17 @@ static void test_linalg_f_vecdMul() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_vecdScale() {
+static void test_linalg_tr_vecdScale() {
         double a = 1.0, b = 2.0, c = 3.0;
         double alpha = 123.456;
         double x[] = {a, b, c};
         double y[] = {alpha * a, alpha * b, alpha * c};
-        f_vecd v = {.size = 3U, .x = x};
-        f_vecdScale(&v, alpha, &v);
+        tr_vecd v = {.size = 3U, .x = x};
+        tr_vecdScale(&v, alpha, &v);
 
         int res = 0;
         for (uint8_t i = 0; i < v.size; ++i) {
-                if (y[i] != *f_vecdIdx(&v, i)) {
+                if (y[i] != *tr_vecdIdx(&v, i)) {
                         ++res;
                 }
         }
@@ -326,57 +326,57 @@ static void test_linalg_f_vecdScale() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_matdIdx() {
+static void test_linalg_tr_matdIdx() {
         double x[3][2] = {{1, 4}, {2, 5}, {3, 6}}; // column major
-        f_matd m = {.rows = 2, .cols = 3, .x = (double *)x};
+        tr_matd m = {.rows = 2, .cols = 3, .x = (double *)x};
         int res = 0;
         size_t idx = 0;
         for (size_t i = 0; i < m.rows; ++i) {
                 for (size_t j = 0; j < m.cols; ++j) {
                         idx = m.rows * j + i;
                         // printf("%f %f %d %d %d\n", m.x[idx],
-                        //        *f_matdIdx(&m, i, j), i, j, idx);
-                        if (m.x[idx] != *f_matdIdx(&m, i, j)) {
+                        //        *tr_matdIdx(&m, i, j), i, j, idx);
+                        if (m.x[idx] != *tr_matdIdx(&m, i, j)) {
                                 ++res;
                         }
                 }
         }
 
-        // f_matdPrint(&m);
+        // tr_matdPrint(&m);
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_matdIsTranspose() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
-        f_matd *m0 = f_matdAlloc(&arena, 4, 6);
-        f_matd *m1 = f_matdAlloc(&arena, 6, 4);
+static void test_linalg_tr_matdIsTranspose() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
+        tr_matd *m0 = tr_matdAlloc(&arena, 4, 6);
+        tr_matd *m1 = tr_matdAlloc(&arena, 6, 4);
 
         for (size_t r = 0; r < m0->rows; ++r) {
                 for (size_t c = 0; c < m0->cols; ++c) {
-                        *f_matdIdx(m0, r, c) = r * c;
-                        *f_matdIdx(m1, c, r) = r * c;
+                        *tr_matdIdx(m0, r, c) = r * c;
+                        *tr_matdIdx(m1, c, r) = r * c;
                 }
         }
 
-        TEST_TRUE(f_matdIsTranspose(m0, m1));
+        TEST_TRUE(tr_matdIsTranspose(m0, m1));
 }
-static void test_linalg_f_matdTranspose() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
-        f_matd *m = f_matdAlloc(&arena, 10, 5);
-        f_matd *mT = f_matdAlloc(&arena, 5, 10);
+static void test_linalg_tr_matdTranspose() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
+        tr_matd *m = tr_matdAlloc(&arena, 10, 5);
+        tr_matd *mT = tr_matdAlloc(&arena, 5, 10);
         for (size_t r = 0; r < m->rows; ++r) {
                 for (size_t c = 0; c < m->cols; ++c) {
-                        *f_matdIdx(m, r, c) = r * c;
+                        *tr_matdIdx(m, r, c) = r * c;
                 }
         }
 
-        f_matdTranspose(mT, m);
-        TEST_TRUE(f_matdIsTranspose(mT, m));
+        tr_matdTranspose(mT, m);
+        TEST_TRUE(tr_matdIsTranspose(mT, m));
 }
 
-static void test_linalg_f_matdMVMul() {
+static void test_linalg_tr_matdMVMul() {
         int res = 0;
 
         double mx[3][2] = {{1, 4}, {2, 5}, {3, 6}}; // column major
@@ -384,27 +384,27 @@ static void test_linalg_f_matdMVMul() {
         double yx[2] = {0, 0};
         double expectedY[2] = {550, 1342};
 
-        f_matd m = {.rows = 2, .cols = 3, .x = (double *)mx};
-        f_vecd v = {.size = 3, .x = vx};
-        f_vecd y = {.size = 2, .x = yx};
+        tr_matd m = {.rows = 2, .cols = 3, .x = (double *)mx};
+        tr_vecd v = {.size = 3, .x = vx};
+        tr_vecd y = {.size = 2, .x = yx};
         double alpha = 11;
-        f_matdMVMul(&y, &m, &v, alpha);
+        tr_matdMVMul(&y, &m, &v, alpha);
 
         /*
-            f_matdPrint(&m);
-            f_vecdPrint(&v);
-            f_vecdPrint(&y);
+            tr_matdPrint(&m);
+            tr_vecdPrint(&v);
+            tr_vecdPrint(&y);
         */
 
         for (size_t i = 0; i < 2; ++i) {
-                if (expectedY[i] != *f_vecdIdx(&y, i)) {
+                if (expectedY[i] != *tr_vecdIdx(&y, i)) {
                         ++res;
                 }
         }
         TEST_ZERO(res);
 }
 
-static void test_linalg_f_matdMMul() {
+static void test_linalg_tr_matdMMul() {
         int res = 0;
 
         double mx[3][2] = {{1, 4}, {2, 5}, {3, 6}}; // column major
@@ -413,25 +413,25 @@ static void test_linalg_f_matdMMul() {
 
         double expectedY[2][2] = {{242, 539}, {308, 704}};
 
-        f_matd m = {.rows = 2, .cols = 3, .x = (double *)mx};
-        f_matd n = {.rows = 3, .cols = 2, .x = (double *)nx};
-        f_matd y = {.rows = 2, .cols = 2, .x = (double *)yx};
-        f_matd expected = {.rows = 2, .cols = 2, .x = (double *)expectedY};
+        tr_matd m = {.rows = 2, .cols = 3, .x = (double *)mx};
+        tr_matd n = {.rows = 3, .cols = 2, .x = (double *)nx};
+        tr_matd y = {.rows = 2, .cols = 2, .x = (double *)yx};
+        tr_matd expected = {.rows = 2, .cols = 2, .x = (double *)expectedY};
         double alpha = 11;
 
-        f_matdMMul(&y, alpha, &m, &n);
+        tr_matdMMul(&y, alpha, &m, &n);
 
         /*
-            f_matdPrint(&m);
-            f_matdPrint(&n);
-            f_matdPrint(&y);
-            f_matdPrint(&expected);
+            tr_matdPrint(&m);
+            tr_matdPrint(&n);
+            tr_matdPrint(&y);
+            tr_matdPrint(&expected);
         */
 
         for (size_t i = 0; i < y.rows; ++i) {
                 for (size_t j = 0; j < y.cols; ++j) {
-                        if (*f_matdIdx(&expected, i, j) !=
-                            *f_matdIdx(&y, i, j)) {
+                        if (*tr_matdIdx(&expected, i, j) !=
+                            *tr_matdIdx(&y, i, j)) {
                                 ++res;
                         }
                 }
@@ -440,26 +440,26 @@ static void test_linalg_f_matdMMul() {
         TEST_ZERO(res)
 }
 
-void test_linalg_f_matdRowCpy() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
+void test_linalg_tr_matdRowCpy() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
 
         size_t stride = 3;
-        f_matd *M = f_matdAlloc(&arena, 10, 20);
-        f_vecd *row = f_vecdAlloc(&arena, M->cols / stride);
+        tr_matd *M = tr_matdAlloc(&arena, 10, 20);
+        tr_vecd *row = tr_vecdAlloc(&arena, M->cols / stride);
 
         for (size_t r = 0; r < M->rows; ++r) {
                 for (size_t c = 0; c < M->cols; ++c) {
-                        *f_matdIdx(M, r, c) = r * c;
+                        *tr_matdIdx(M, r, c) = r * c;
                 }
         }
 
-        f_matdColCpy(row, M, 4, stride);
+        tr_matdColCpy(row, M, 4, stride);
 
         int res = 0;
 
         for (size_t c = 0; c < M->cols / stride; ++c) {
-                if (*f_matdIdx(M, 4, c) != *f_vecdIdx(row, c)) {
+                if (*tr_matdIdx(M, 4, c) != *tr_vecdIdx(row, c)) {
                         ++res;
                 }
         }
@@ -467,26 +467,26 @@ void test_linalg_f_matdRowCpy() {
         TEST_ZERO(res);
 }
 
-void test_linalg_f_matdColCpy() {
-        f_alloc arena;
-        f_allocCreate(&arena, ALLOC_ARENA);
+void test_linalg_tr_matdColCpy() {
+        tr_alloc arena;
+        tr_allocCreate(&arena, ALLOC_ARENA);
 
         size_t stride = 3;
-        f_matd *M = f_matdAlloc(&arena, 10, 20);
-        f_vecd *col = f_vecdAlloc(&arena, M->rows / stride);
+        tr_matd *M = tr_matdAlloc(&arena, 10, 20);
+        tr_vecd *col = tr_vecdAlloc(&arena, M->rows / stride);
 
         for (size_t r = 0; r < M->rows; ++r) {
                 for (size_t c = 0; c < M->cols; ++c) {
-                        *f_matdIdx(M, r, c) = r * c;
+                        *tr_matdIdx(M, r, c) = r * c;
                 }
         }
 
-        f_matdColCpy(col, M, 4, stride);
+        tr_matdColCpy(col, M, 4, stride);
 
         int res = 0;
 
         for (size_t r = 0; r < M->rows / stride; ++r) {
-                if (*f_matdIdx(M, r, 4) != *f_vecdIdx(col, r)) {
+                if (*tr_matdIdx(M, r, 4) != *tr_vecdIdx(col, r)) {
                         ++res;
                 }
         }
@@ -494,36 +494,37 @@ void test_linalg_f_matdColCpy() {
         TEST_ZERO(res);
 }
 
-void f_matdRowCpy(f_vecd *dest, const f_matd *m, const size_t r, size_t stride);
+void tr_matdRowCpy(tr_vecd *dest, const tr_matd *m, const size_t r,
+                   size_t stride);
 
 void test_modLinalg() {
         // vectors
-        test_linalg_f_vecdAlloc();
-        test_linalg_f_vecdAllocZero();
+        test_linalg_tr_vecdAlloc();
+        test_linalg_tr_vecdAllocZero();
 
-        test_linalg_f_vecdZero();
-        test_linalg_f_vecdOne();
+        test_linalg_tr_vecdZero();
+        test_linalg_tr_vecdOne();
 
-        test_linalg_f_vecdIdx();
-        test_linalg_f_vecdAdd();
-        test_linalg_f_vecdDiff();
-        test_linalg_f_vecdIncr();
-        test_linalg_f_vecdEmul();
-        test_linalg_f_vecdMul();
-        test_linalg_f_vecdScale();
+        test_linalg_tr_vecdIdx();
+        test_linalg_tr_vecdAdd();
+        test_linalg_tr_vecdDiff();
+        test_linalg_tr_vecdIncr();
+        test_linalg_tr_vecdEmul();
+        test_linalg_tr_vecdMul();
+        test_linalg_tr_vecdScale();
 
         test_linalg_fvecdENorm();
         test_linalg_fvecdNorm();
-        test_linalg_f_vecdSum();
-        test_linalg_f_vecdEMean();
-        test_linalg_f_vecdMean();
+        test_linalg_tr_vecdSum();
+        test_linalg_tr_vecdEMean();
+        test_linalg_tr_vecdMean();
 
         // matrices
-        test_linalg_f_matdIdx();
-        test_linalg_f_matdMVMul();
-        test_linalg_f_matdMMul();
-        test_linalg_f_matdIsTranspose();
-        test_linalg_f_matdTranspose();
+        test_linalg_tr_matdIdx();
+        test_linalg_tr_matdMVMul();
+        test_linalg_tr_matdMMul();
+        test_linalg_tr_matdIsTranspose();
+        test_linalg_tr_matdTranspose();
 }
 
 #endif // TEST_ZERO_LINALG_

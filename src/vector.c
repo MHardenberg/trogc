@@ -3,89 +3,89 @@
 #include <openblas/cblas.h>
 #include <float.h>
 
-#include <forge.h>
-#include <forge/mem/alloc.h>
-#include <forge/linalg.h>
+#include <trog.h>
+#include <trog/mem/alloc.h>
+#include <trog/linalg.h>
 
-f_vecd *f_vecdAlloc(f_alloc *alloc, size_t size) {
-        f_assert(alloc != NULL);
-        f_vecd *dest =
-            f_allocPush(alloc, sizeof(f_vecd) + sizeof(double) * size);
-        f_assert(dest != NULL);
+tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size) {
+        tr_assert(alloc != NULL);
+        tr_vecd *dest =
+            tr_allocPush(alloc, sizeof(tr_vecd) + sizeof(double) * size);
+        tr_assert(dest != NULL);
 
         dest->size = size;
         dest->x = (double *)(dest + 1);
         return dest;
 }
 
-f_vecd *f_vecdAllocZero(f_alloc *alloc, size_t size) {
-        f_vecd *dest = f_vecdAlloc(alloc, size);
-        f_vecdZero(dest);
+tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size) {
+        tr_vecd *dest = tr_vecdAlloc(alloc, size);
+        tr_vecdZero(dest);
         return dest;
 }
 
-void f_vecdFree(f_alloc *alloc, f_vecd *v) {
-        f_assert(alloc != NULL);
-        f_assert(v != NULL);
-        f_allocFree(alloc, v->x);
-        f_allocFree(alloc, v);
+void tr_vecdFree(tr_alloc *alloc, tr_vecd *v) {
+        tr_assert(alloc != NULL);
+        tr_assert(v != NULL);
+        tr_allocFree(alloc, v->x);
+        tr_allocFree(alloc, v);
 }
 
-double *f_vecdIdx(const f_vecd *v, size_t i) {
-        f_assert(v != NULL);
-        f_assert(i < v->size);
+double *tr_vecdIdx(const tr_vecd *v, size_t i) {
+        tr_assert(v != NULL);
+        tr_assert(i < v->size);
         return v->x + i;
 }
 
-void f_vecdPrint(const f_vecd *v) {
+void tr_vecdPrint(const tr_vecd *v) {
         printf("[ ");
         for (size_t i = 0; i < v->size; ++i) {
                 if (i > 10) {
                         printf(", ...");
-                        printf(", %.4e", *f_vecdIdx(v, v->size - 1));
+                        printf(", %.4e", *tr_vecdIdx(v, v->size - 1));
                         break;
                 }
                 if (0 == i) {
-                        printf("%.4e", *f_vecdIdx(v, i));
+                        printf("%.4e", *tr_vecdIdx(v, i));
                 } else {
-                        printf(", %.4e", *f_vecdIdx(v, i));
+                        printf(", %.4e", *tr_vecdIdx(v, i));
                 }
         }
         printf(" ]\n\n");
 }
 
-void f_vecdCopy(f_vecd *dest, const f_vecd *source) {
+void tr_vecdCopy(tr_vecd *dest, const tr_vecd *source) {
         dest->size = source->size;
         memcpy(dest->x, source->x, sizeof(double) * dest->size);
 }
 
-void f_vec2dCopy(f_vec2d *dest, const f_vec2d *source) {
+void tr_vec2dCopy(tr_vec2d *dest, const tr_vec2d *source) {
         dest->x = source->x;
         dest->y = source->y;
 }
 
-void f_vec3dCopy(f_vec3d *dest, const f_vec3d *source) {
+void tr_vec3dCopy(tr_vec3d *dest, const tr_vec3d *source) {
         dest->x = source->x;
         dest->y = source->y;
         dest->z = source->z;
 }
 
-void f_vec4dCopy(f_vec4d *dest, const f_vec4d *source) {
+void tr_vec4dCopy(tr_vec4d *dest, const tr_vec4d *source) {
         dest->a = source->a;
         dest->b = source->b;
         dest->c = source->c;
         dest->d = source->d;
 }
 
-void f_vecdSlice(f_vecd *dest, const f_vecd *source, const size_t from,
-                 const size_t to) {
-        f_assert(to <= source->size);
-        f_assert(from < to);
+void tr_vecdSlice(tr_vecd *dest, const tr_vecd *source, const size_t from,
+                  const size_t to) {
+        tr_assert(to <= source->size);
+        tr_assert(from < to);
         dest->size = to - from;
-        dest->x = f_vecdIdx(source, from);
+        dest->x = tr_vecdIdx(source, from);
 }
 
-size_t f_vecdIMin(const f_vecd *v) {
+size_t tr_vecdIMin(const tr_vecd *v) {
         double m = DBL_MAX;
         size_t midx = 0;
         for (size_t i = 0; i < v->size; ++i) {
@@ -97,11 +97,11 @@ size_t f_vecdIMin(const f_vecd *v) {
         return midx;
 }
 
-double f_vecdMin(const f_vecd *v) {
-        return *f_vecdIdx(v, f_vecdIMin(v));
+double tr_vecdMin(const tr_vecd *v) {
+        return *tr_vecdIdx(v, tr_vecdIMin(v));
 }
 
-size_t f_vecdIMax(const f_vecd *v) {
+size_t tr_vecdIMax(const tr_vecd *v) {
         double M = -DBL_MAX;
         size_t Midx;
         for (size_t i = 0; i < v->size; ++i) {
@@ -113,39 +113,39 @@ size_t f_vecdIMax(const f_vecd *v) {
         return Midx;
 }
 
-double f_vecdMax(const f_vecd *v) {
-        return *f_vecdIdx(v, f_vecdIMax(v));
+double tr_vecdMax(const tr_vecd *v) {
+        return *tr_vecdIdx(v, tr_vecdIMax(v));
 }
 
-void f_vecdOne(f_vecd *vec) {
-        f_assert(vec != NULL);
-        f_assert(vec->x != NULL);
+void tr_vecdOne(tr_vecd *vec) {
+        tr_assert(vec != NULL);
+        tr_assert(vec->x != NULL);
         for (size_t i = 0; i < vec->size; ++i) {
                 vec->x[i] = 1.0;
         }
 }
 
-void f_vecdZero(f_vecd *vec) {
-        f_assert(vec != NULL);
-        f_assert(vec->x != NULL);
+void tr_vecdZero(tr_vecd *vec) {
+        tr_assert(vec != NULL);
+        tr_assert(vec->x != NULL);
         for (size_t i = 0; i < vec->size; ++i) {
                 vec->x[i] = 0.0;
         }
 }
 
-void f_vecdLinspace(f_vecd *v, const double start, const double stop) {
-        f_assert(v != NULL);
-        f_assert(v->x != NULL);
+void tr_vecdLinspace(tr_vecd *v, const double start, const double stop) {
+        tr_assert(v != NULL);
+        tr_assert(v->x != NULL);
         double step = (stop - start) / (v->size - 1);
         for (size_t i = 0; i < v->size; ++i) {
                 v->x[i] = start + step * i;
         }
 }
 
-void f_vecdLogspace(f_vecd *v, const double startExp, const double stopExp,
-                    const double base) {
-        f_assert(v != NULL);
-        f_assert(v->x != NULL);
+void tr_vecdLogspace(tr_vecd *v, const double startExp, const double stopExp,
+                     const double base) {
+        tr_assert(v != NULL);
+        tr_assert(v->x != NULL);
 
         if (v->size == 0) return;
 
@@ -157,46 +157,46 @@ void f_vecdLogspace(f_vecd *v, const double startExp, const double stopExp,
         }
 }
 
-void f_vecdArange(f_vecd *v, const double scale) {
-        f_assert(v != NULL);
-        f_assert(v->x != NULL);
+void tr_vecdArange(tr_vecd *v, const double scale) {
+        tr_assert(v != NULL);
+        tr_assert(v->x != NULL);
 
         for (size_t i = 0; i < v->size; ++i) {
                 v->x[i] = scale * i;
         }
 }
 
-void f_vecdAdd(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
-        f_assert((NULL != dest) && (NULL != a) && (NULL != b));
+void tr_vecdAdd(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {
+        tr_assert((NULL != dest) && (NULL != a) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < a->size) && (i < b->size);
              ++i) {
                 dest->x[i] = a->x[i] + b->x[i];
         }
 }
 
-void f_vec2dAdd(f_vec2d *dest, const f_vec2d *a, const f_vec2d *b) {
-        f_assert(dest != NULL);
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+void tr_vec2dAdd(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a->x + b->x;
         dest->y = a->y + b->y;
 }
 
-void f_vec3dAdd(f_vec3d *dest, const f_vec3d *a, const f_vec3d *b) {
-        f_assert(dest != NULL);
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+void tr_vec3dAdd(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a->x + b->x;
         dest->y = a->y + b->y;
         dest->z = a->z + b->z;
 }
 
-void f_vec4dAdd(f_vec4d *dest, const f_vec4d *a, const f_vec4d *b) {
-        f_assert(dest != NULL);
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+void tr_vec4dAdd(tr_vec4d *dest, const tr_vec4d *a, const tr_vec4d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         dest->a = a->a + b->a;
         dest->b = a->b + b->b;
@@ -204,37 +204,37 @@ void f_vec4dAdd(f_vec4d *dest, const f_vec4d *a, const f_vec4d *b) {
         dest->d = a->d + b->d;
 }
 
-void f_vecdDiff(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
-        f_assert((NULL != dest) && (NULL != a) && (NULL != b));
+void tr_vecdDiff(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {
+        tr_assert((NULL != dest) && (NULL != a) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < a->size) && (i < b->size);
              ++i) {
                 dest->x[i] = a->x[i] - b->x[i];
         }
 }
 
-void f_vec2dDiff(f_vec2d *dest, const f_vec2d *a, const f_vec2d *b) {
-        f_assert(dest != NULL);
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+void tr_vec2dDiff(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a->x - b->x;
         dest->y = a->y - b->y;
 }
 
-void f_vec3dDiff(f_vec3d *dest, const f_vec3d *a, const f_vec3d *b) {
-        f_assert(dest != NULL);
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+void tr_vec3dDiff(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a->x - b->x;
         dest->y = a->y - b->y;
         dest->z = a->z - b->z;
 }
 
-void f_vec4dDiff(f_vec4d *dest, const f_vec4d *a, const f_vec4d *b) {
-        f_assert(dest != NULL);
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+void tr_vec4dDiff(tr_vec4d *dest, const tr_vec4d *a, const tr_vec4d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         dest->a = a->a - b->a;
         dest->b = a->b - b->b;
@@ -242,33 +242,33 @@ void f_vec4dDiff(f_vec4d *dest, const f_vec4d *a, const f_vec4d *b) {
         dest->d = a->d - b->d;
 }
 
-void f_vecdIncr(f_vecd *dest, const double a, const f_vecd *b) {
-        f_assert((NULL != dest) && (NULL != b));
+void tr_vecdIncr(tr_vecd *dest, const double a, const tr_vecd *b) {
+        tr_assert((NULL != dest) && (NULL != b));
         for (size_t i = 0; (i < dest->size) && (i < b->size); ++i) {
                 dest->x[i] = a + b->x[i];
         }
 }
 
-void f_vec2dIncr(f_vec2d *dest, const double a, const f_vec2d *b) {
-        f_assert(dest != NULL);
-        f_assert(b != NULL);
+void tr_vec2dIncr(tr_vec2d *dest, const double a, const tr_vec2d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a + b->x;
         dest->y = a + b->y;
 }
 
-void f_vec3dIncr(f_vec3d *dest, const double a, const f_vec3d *b) {
-        f_assert(dest != NULL);
-        f_assert(b != NULL);
+void tr_vec3dIncr(tr_vec3d *dest, const double a, const tr_vec3d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a + b->x;
         dest->y = a + b->y;
         dest->z = a + b->z;
 }
 
-void f_vec4dIncr(f_vec4d *dest, const double a, const f_vec4d *b) {
-        f_assert(dest != NULL);
-        f_assert(b != NULL);
+void tr_vec4dIncr(tr_vec4d *dest, const double a, const tr_vec4d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(b != NULL);
 
         dest->a = a + b->a;
         dest->b = a + b->b;
@@ -276,8 +276,8 @@ void f_vec4dIncr(f_vec4d *dest, const double a, const f_vec4d *b) {
         dest->d = a + b->d;
 }
 
-void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
-        f_assert((NULL != dest) && (NULL != b));
+void tr_vecdScale(tr_vecd *dest, const double a, const tr_vecd *b) {
+        tr_assert((NULL != dest) && (NULL != b));
 
         // buggy blas impl
         // #ifdef _BLAS
@@ -291,26 +291,26 @@ void f_vecdScale(f_vecd *dest, const double a, const f_vecd *b) {
         // #endif
 }
 
-void f_vec2dScale(f_vec2d *dest, const double a, const f_vec2d *b) {
-        f_assert(dest != NULL);
-        f_assert(b != NULL);
+void tr_vec2dScale(tr_vec2d *dest, const double a, const tr_vec2d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a * b->x;
         dest->y = a * b->y;
 }
 
-void f_vec3dScale(f_vec3d *dest, const double a, const f_vec3d *b) {
-        f_assert(dest != NULL);
-        f_assert(b != NULL);
+void tr_vec3dScale(tr_vec3d *dest, const double a, const tr_vec3d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a * b->x;
         dest->y = a * b->y;
         dest->z = a * b->z;
 }
 
-void f_vec4dScale(f_vec4d *dest, const double a, const f_vec4d *b) {
-        f_assert(dest != NULL);
-        f_assert(b != NULL);
+void tr_vec4dScale(tr_vec4d *dest, const double a, const tr_vec4d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(b != NULL);
 
         dest->a = a * b->a;
         dest->b = a * b->b;
@@ -318,41 +318,41 @@ void f_vec4dScale(f_vec4d *dest, const double a, const f_vec4d *b) {
         dest->d = a * b->d;
 }
 
-void f_vecdScAdd(f_vecd *dest, const f_vecd *v, const double a,
-                 const f_vecd *w) {
-        f_assert((NULL != dest) && (NULL != v) && (NULL != w));
+void tr_vecdScAdd(tr_vecd *dest, const tr_vecd *v, const double a,
+                  const tr_vecd *w) {
+        tr_assert((NULL != dest) && (NULL != v) && (NULL != w));
         for (size_t i = 0; (i < dest->size) && (i < v->size) && (i < w->size);
              ++i) {
                 dest->x[i] = v->x[i] + a * w->x[i];
         }
 }
 
-void f_vec2dScAdd(f_vec2d *dest, const f_vec2d *v, const double a,
-                  const f_vec2d *w) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
-        f_assert(w != NULL);
+void tr_vec2dScAdd(tr_vec2d *dest, const tr_vec2d *v, const double a,
+                   const tr_vec2d *w) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
+        tr_assert(w != NULL);
 
         dest->x = v->x + a * w->x;
         dest->y = v->y + a * w->y;
 }
 
-void f_vec3dScAdd(f_vec3d *dest, const f_vec3d *v, const double a,
-                  const f_vec3d *w) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
-        f_assert(w != NULL);
+void tr_vec3dScAdd(tr_vec3d *dest, const tr_vec3d *v, const double a,
+                   const tr_vec3d *w) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
+        tr_assert(w != NULL);
 
         dest->x = v->x + a * w->x;
         dest->y = v->y + a * w->y;
         dest->z = v->z + a * w->z;
 }
 
-void f_vec4dScAdd(f_vec4d *dest, const f_vec4d *v, const double a,
-                  const f_vec4d *w) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
-        f_assert(w != NULL);
+void tr_vec4dScAdd(tr_vec4d *dest, const tr_vec4d *v, const double a,
+                   const tr_vec4d *w) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
+        tr_assert(w != NULL);
 
         dest->a = v->a + a * w->a;
         dest->b = v->b + a * w->b;
@@ -360,41 +360,41 @@ void f_vec4dScAdd(f_vec4d *dest, const f_vec4d *v, const double a,
         dest->c = v->d + a * w->d;
 }
 
-void f_vecdAddSc(f_vecd *dest, const double a, const f_vecd *v,
-                 const f_vecd *w) {
-        f_assert((NULL != dest) && (NULL != v) && (NULL != w));
+void tr_vecdAddSc(tr_vecd *dest, const double a, const tr_vecd *v,
+                  const tr_vecd *w) {
+        tr_assert((NULL != dest) && (NULL != v) && (NULL != w));
         for (size_t i = 0; (i < dest->size) && (i < v->size) && (i < w->size);
              ++i) {
                 dest->x[i] = a * (v->x[i] + w->x[i]);
         }
 }
 
-void f_vec2dAddSc(f_vec2d *dest, const double a, const f_vec2d *v,
-                  const f_vec2d *w) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
-        f_assert(w != NULL);
+void tr_vec2dAddSc(tr_vec2d *dest, const double a, const tr_vec2d *v,
+                   const tr_vec2d *w) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
+        tr_assert(w != NULL);
 
         dest->x = a * (v->x + a * w->x);
         dest->y = a * (v->y + a * w->y);
 }
 
-void f_vec3dAddSc(f_vec3d *dest, const double a, const f_vec3d *v,
-                  const f_vec3d *w) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
-        f_assert(w != NULL);
+void tr_vec3dAddSc(tr_vec3d *dest, const double a, const tr_vec3d *v,
+                   const tr_vec3d *w) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
+        tr_assert(w != NULL);
 
         dest->x = a * (v->x + w->x);
         dest->y = a * (v->y + w->y);
         dest->z = a * (v->z + w->z);
 }
 
-void f_vec4dAddSc(f_vec4d *dest, const double a, const f_vec4d *v,
-                  const f_vec4d *w) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
-        f_assert(w != NULL);
+void tr_vec4dAddSc(tr_vec4d *dest, const double a, const tr_vec4d *v,
+                   const tr_vec4d *w) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
+        tr_assert(w != NULL);
 
         dest->a = a * (v->a + w->a);
         dest->b = a * (v->b + w->b);
@@ -402,8 +402,8 @@ void f_vec4dAddSc(f_vec4d *dest, const double a, const f_vec4d *v,
         dest->c = a * (v->d + w->d);
 }
 
-double f_vecdNorm(f_vecd *v) {
-        f_assert(v != NULL);
+double tr_vecdNorm(tr_vecd *v) {
+        tr_assert(v != NULL);
 
         double norm = 0;
         for (size_t i = 0; i < v->size; ++i) {
@@ -413,25 +413,25 @@ double f_vecdNorm(f_vecd *v) {
         return sqrt(norm);
 }
 
-double f_vec2dNorm(f_vec2d *v) {
+double tr_vec2dNorm(tr_vec2d *v) {
         return sqrt(v->x * v->x + v->y * v->y);
 }
 
-double f_vec3dNorm(f_vec3d *v) {
+double tr_vec3dNorm(tr_vec3d *v) {
         return sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
-double f_vec4dNorm(f_vec4d *v) {
+double tr_vec4dNorm(tr_vec4d *v) {
         return sqrt(v->a * v->a + v->b * v->b + v->c * v->c + v->d * v->d);
 }
 
-void f_vecdENorm(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
-        f_assert(dest != NULL);
-        f_assert(vecs != NULL);
+void tr_vecdENorm(tr_vecd *dest, const tr_vecd **vecs, const size_t nvecs) {
+        tr_assert(dest != NULL);
+        tr_assert(vecs != NULL);
 
         for (size_t i = 0; i < nvecs; ++i) {
-                f_assert(vecs[i] != 0);
-                f_assert(vecs[i]->size == dest->size);
+                tr_assert(vecs[i] != 0);
+                tr_assert(vecs[i]->size == dest->size);
         }
 
         for (size_t i = 0; i < dest->size; ++i) {
@@ -444,15 +444,15 @@ void f_vecdENorm(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
         }
 }
 
-void f_vecdEmul(f_vecd *dest, const double a, const f_vecd *x,
-                const f_vecd *y) {
-        f_assert((dest != NULL) && (x != NULL));
+void tr_vecdEmul(tr_vecd *dest, const double a, const tr_vecd *x,
+                 const tr_vecd *y) {
+        tr_assert((dest != NULL) && (x != NULL));
         for (size_t i = 0; (i < dest->size) && (i < x->size); ++i) {
                 dest->x[i] = a * x->x[i] * y->x[i];
         }
 }
 
-double f_vecdMul(const f_vecd *a, const f_vecd *b) {
+double tr_vecdMul(const tr_vecd *a, const tr_vecd *b) {
         double x = 0;
         if ((a == NULL) || (b == NULL)) {
                 return x;
@@ -467,33 +467,33 @@ double f_vecdMul(const f_vecd *a, const f_vecd *b) {
         return x;
 }
 
-void f_vecdCross(f_vecd *dest, const f_vecd *a, const f_vecd *b) {
-        f_assert((3 == a->size) && (3 == b->size) && (3 == dest->size));
+void tr_vecdCross(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {
+        tr_assert((3 == a->size) && (3 == b->size) && (3 == dest->size));
         dest->x[0] = a->x[1] * b->x[2] - a->x[2] * b->x[1];
         dest->x[1] = a->x[2] * b->x[0] - a->x[0] * b->x[2];
         dest->x[2] = a->x[0] * b->x[1] - a->x[1] * b->x[0];
 }
 
-double f_vec2dCross(const f_vec2d *a, const f_vec2d *b) {
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+double tr_vec2dCross(const tr_vec2d *a, const tr_vec2d *b) {
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         return a->x * b->y - a->y * b->x;
 }
 
-void f_vec3dCross(f_vec3d *dest, const f_vec3d *a, const f_vec3d *b) {
-        f_assert(dest != NULL);
-        f_assert(a != NULL);
-        f_assert(b != NULL);
+void tr_vec3dCross(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
 
         dest->x = a->y * b->z - a->z * b->y;
         dest->y = a->z * b->x - a->x * b->z;
         dest->z = a->x * b->y - a->y * b->x;
 }
 
-double f_vecdSum(const f_vecd *v) {
+double tr_vecdSum(const tr_vecd *v) {
         double sum = 0;
-        f_assert(v != NULL);
+        tr_assert(v != NULL);
         for (size_t i = 0; i < v->size; ++i) {
                 sum += v->x[i];
         }
@@ -501,17 +501,17 @@ double f_vecdSum(const f_vecd *v) {
         return sum;
 }
 
-double f_vecdMean(const f_vecd *v) {
-        return f_vecdSum(v) / v->size;
+double tr_vecdMean(const tr_vecd *v) {
+        return tr_vecdSum(v) / v->size;
 }
 
-void f_vecdEMean(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
-        f_assert(dest != NULL);
-        f_assert(vecs != NULL);
+void tr_vecdEMean(tr_vecd *dest, const tr_vecd **vecs, const size_t nvecs) {
+        tr_assert(dest != NULL);
+        tr_assert(vecs != NULL);
 
         for (size_t i = 0; i < nvecs; ++i) {
-                f_assert(vecs[i] != 0);
-                f_assert(vecs[i]->size == dest->size);
+                tr_assert(vecs[i] != 0);
+                tr_assert(vecs[i]->size == dest->size);
         }
 
         for (size_t i = 0; i < dest->size; ++i) {
@@ -523,9 +523,9 @@ void f_vecdEMean(f_vecd *dest, const f_vecd **vecs, const size_t nvecs) {
         }
 }
 
-void f_vec2dRotate(f_vec2d *dest, const f_vec2d *v, const double phase) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
+void tr_vec2dRotate(tr_vec2d *dest, const tr_vec2d *v, const double phase) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
 
         const double vx = v->x;
         const double vy = v->y;
@@ -536,9 +536,9 @@ void f_vec2dRotate(f_vec2d *dest, const f_vec2d *v, const double phase) {
         dest->y = vx * sin_phase + vy * cos_phase;
 }
 
-void f_vec3dRotatex(f_vec3d *dest, const f_vec3d *v, const double phase) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
+void tr_vec3dRotatex(tr_vec3d *dest, const tr_vec3d *v, const double phase) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
 
         const double vy = v->y;
         const double vz = v->z;
@@ -549,9 +549,9 @@ void f_vec3dRotatex(f_vec3d *dest, const f_vec3d *v, const double phase) {
         dest->z = vy * sin_phase + vz * sin_phase;
 }
 
-void f_vec3dRotatey(f_vec3d *dest, const f_vec3d *v, const double phase) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
+void tr_vec3dRotatey(tr_vec3d *dest, const tr_vec3d *v, const double phase) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
 
         const double vx = v->x;
         const double vz = v->z;
@@ -562,9 +562,9 @@ void f_vec3dRotatey(f_vec3d *dest, const f_vec3d *v, const double phase) {
         dest->z = -vx * sin_phase + vz * cos_phase;
 }
 
-void f_vec3dRotatez(f_vec3d *dest, const f_vec3d *v, const double phase) {
-        f_assert(dest != NULL);
-        f_assert(v != NULL);
+void tr_vec3dRotatez(tr_vec3d *dest, const tr_vec3d *v, const double phase) {
+        tr_assert(dest != NULL);
+        tr_assert(v != NULL);
 
         const double vx = v->x;
         const double vy = v->z;

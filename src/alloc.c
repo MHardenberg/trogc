@@ -1,13 +1,13 @@
-#include "forge/mem/arena.h"
-#include <forge/mem/alloc.h>
+#include "trog/mem/arena.h"
+#include <trog/mem/alloc.h>
 #include <stdlib.h>
 
-void f_allocCreate(f_alloc *alloc, enum allocType type) {
-        f_assert(alloc != NULL);
+void tr_allocCreate(tr_alloc *alloc, enum allocType type) {
+        tr_assert(alloc != NULL);
         switch (type) {
         case ALLOC_ARENA: {
                 alloc->type = ALLOC_ARENA;
-                f_arenaCreate(&alloc->alloc.allocArena);
+                tr_arenaCreate(&alloc->alloc.allocArena);
                 break;
         }
         case ALLOC_HEAP: {
@@ -15,42 +15,42 @@ void f_allocCreate(f_alloc *alloc, enum allocType type) {
                 break;
         }
         default: // Should never happen.
-                f_assert(0 && "Not initialised!");
+                tr_assert(0 && "Not initialised!");
         }
 }
 
-void *f_allocPush(f_alloc *alloc, size_t bytes) {
-        f_assert(alloc != NULL);
+void *tr_allocPush(tr_alloc *alloc, size_t bytes) {
+        tr_assert(alloc != NULL);
         switch (alloc->type) {
         case ALLOC_ARENA: {
-                return f_arenaPush(&alloc->alloc.allocArena, bytes);
+                return tr_arenaPush(&alloc->alloc.allocArena, bytes);
         }
         case ALLOC_HEAP: {
                 return malloc(bytes);
         }
         default: // Should never happen.
-                f_assert(0 && "Not initialised!");
+                tr_assert(0 && "Not initialised!");
                 return NULL;
         }
 }
 
-void *f_allocPushZero(f_alloc *alloc, size_t bytes) {
-        f_assert(alloc != NULL);
+void *tr_allocPushZero(tr_alloc *alloc, size_t bytes) {
+        tr_assert(alloc != NULL);
         switch (alloc->type) {
         case ALLOC_ARENA: {
-                return f_arenaPushZero(&alloc->alloc.allocArena, bytes);
+                return tr_arenaPushZero(&alloc->alloc.allocArena, bytes);
         }
         case ALLOC_HEAP: {
                 return calloc(bytes, sizeof(char));
         }
         default: // Should never happen.
-                f_assert(0 && "Not initialised!");
+                tr_assert(0 && "Not initialised!");
                 return NULL;
         }
 }
 
-void f_allocFree(f_alloc *alloc, void *ptr) {
-        f_assert(alloc != NULL);
+void tr_allocFree(tr_alloc *alloc, void *ptr) {
+        tr_assert(alloc != NULL);
         switch (alloc->type) {
         case ALLOC_ARENA: {
                 (void)ptr;
@@ -62,37 +62,37 @@ void f_allocFree(f_alloc *alloc, void *ptr) {
                 break;
         }
         default: // Should never happen.
-                f_assert(0 && "Not initialised!");
+                tr_assert(0 && "Not initialised!");
         }
 }
 
-void f_allocClear(f_alloc *alloc) {
-        f_assert(alloc != NULL);
+void tr_allocClear(tr_alloc *alloc) {
+        tr_assert(alloc != NULL);
         switch (alloc->type) {
         case ALLOC_ARENA: {
-                f_arenaClear(&alloc->alloc.allocArena);
+                tr_arenaClear(&alloc->alloc.allocArena);
         }
         case ALLOC_HEAP: {
                 // noop
                 break;
         }
         default: // Should never happen.
-                f_assert(0 && "Not initialised!");
+                tr_assert(0 && "Not initialised!");
         }
 }
 
 // Dangerous if allocator doesnt track allocations!
-void f_allocDestroy(f_alloc *alloc) {
-        f_assert(alloc != NULL);
+void tr_allocDestroy(tr_alloc *alloc) {
+        tr_assert(alloc != NULL);
         switch (alloc->type) {
         case ALLOC_ARENA: {
-                f_arenaDestroy(&alloc->alloc.allocArena);
+                tr_arenaDestroy(&alloc->alloc.allocArena);
                 break;
         }
         case ALLOC_HEAP: {
                 break; // nothing todo
         }
         default: // Should never happen.
-                f_assert(0 && "Not initialised!");
+                tr_assert(0 && "Not initialised!");
         }
 }

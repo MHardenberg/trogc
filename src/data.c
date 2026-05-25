@@ -1,11 +1,11 @@
-#include "forge/linalg.h"
-#include "forge/mem/scratchpad.h"
+#include "trog/linalg.h"
+#include "trog/mem/scratchpad.h"
 #include <stdio.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <float.h>
 
-#include <forge/data.h>
+#include <trog/data.h>
 #define _BUFFER_LEN 1024
 #define _MAX_PLOT_POINTS 1000000LL
 const char pathSeparator =
@@ -15,16 +15,16 @@ const char pathSeparator =
     '/';
 #endif
 
-void f_getTimeStr(char *dest, size_t capacity) {
+void tr_getTimeStr(char *dest, size_t capacity) {
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
         strftime(dest, capacity, "%d_%m_%Y_%H_%M_%S", t);
 }
 
 // Given a file path, create all constituent directories if missing
-void f_createPathDirs(f_alloc *alloc, const char *dest) {
+void tr_createPathDirs(tr_alloc *alloc, const char *dest) {
         const char *next_sep = strchr(dest, pathSeparator);
-        char *dirPath = f_allocPush(alloc, 1024);
+        char *dirPath = tr_allocPush(alloc, 1024);
         while (next_sep != NULL) {
                 int dirPathLen = next_sep - dest;
                 memcpy(dirPath, dest, dirPathLen);
@@ -33,10 +33,10 @@ void f_createPathDirs(f_alloc *alloc, const char *dest) {
                 next_sep = strchr(next_sep + 1, pathSeparator);
         }
 
-        f_allocFree(alloc, dirPath);
+        tr_allocFree(alloc, dirPath);
 }
 
-void f_getFilePath(char *dest, const char *title) {
+void tr_getFilePath(char *dest, const char *title) {
         if (title != NULL) {
                 strcat(dest, PROJECT_ROOT "/temp/");
                 char c = '\0';
@@ -55,47 +55,47 @@ void f_getFilePath(char *dest, const char *title) {
         } else {
                 size_t result = snprintf(dest, sizeof(char) * _BUFFER_LEN,
                                          "%s/temp/%s", PROJECT_ROOT, "temp");
-                f_assert(result > 0);
-                f_assert(result <= sizeof(char) * _BUFFER_LEN);
+                tr_assert(result > 0);
+                tr_assert(result <= sizeof(char) * _BUFFER_LEN);
         }
 }
 
-void f_makeDataPath(f_alloc *alloc, char *dest, char *fileName) {
-        f_assert(dest != NULL);
-        f_ScratchPad *pad = f_ScratchPadCreate(alloc, 3072);
+void tr_makeDataPath(tr_alloc *alloc, char *dest, char *fileName) {
+        tr_assert(dest != NULL);
+        tr_ScratchPad *pad = tr_ScratchPadCreate(alloc, 3072);
 
-        char *time = f_ScratchPadPush(pad, 1024);
-        char *stampedFile = f_ScratchPadPush(pad, 1024);
-        f_getTimeStr(time, 1024);
-        f_assert(time != NULL);
-        f_assert(dest != NULL);
+        char *time = tr_ScratchPadPush(pad, 1024);
+        char *stampedFile = tr_ScratchPadPush(pad, 1024);
+        tr_getTimeStr(time, 1024);
+        tr_assert(time != NULL);
+        tr_assert(dest != NULL);
         sprintf(stampedFile, "%s%s%s", time, "_", fileName);
-        f_getFilePath(dest, stampedFile);
-        f_ScratchPadDestroy(pad);
+        tr_getFilePath(dest, stampedFile);
+        tr_ScratchPadDestroy(pad);
 }
 
-void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
-              f_vecd **ys, size_t nvecs, char *xLabel, char **labels) {
-        f_assert(alloc != NULL);
-        f_assert((fileName != NULL) ^ (path != NULL));
-        f_assert(xLabel != NULL);
-        f_assert(labels != NULL);
-        f_assert(x != NULL);
+void tr_toFile(tr_alloc *alloc, char *fileName, char *path, tr_vecd *x,
+               tr_vecd **ys, size_t nvecs, char *xLabel, char **labels) {
+        tr_assert(alloc != NULL);
+        tr_assert((fileName != NULL) ^ (path != NULL));
+        tr_assert(xLabel != NULL);
+        tr_assert(labels != NULL);
+        tr_assert(x != NULL);
         for (size_t i = 0; i < nvecs; ++i) {
-                f_assert(ys[i] != NULL);
-                f_assert(ys[i]->size == x->size);
+                tr_assert(ys[i] != NULL);
+                tr_assert(ys[i]->size == x->size);
         }
 
-        f_ScratchPad *pad = f_ScratchPadCreate(alloc, 4096);
+        tr_ScratchPad *pad = tr_ScratchPadCreate(alloc, 4096);
         if (path == NULL) {
-                path = f_ScratchPadPush(pad, 2048);
-                f_makeDataPath(alloc, path, fileName);
+                path = tr_ScratchPadPush(pad, 2048);
+                tr_makeDataPath(alloc, path, fileName);
         }
 
-        f_createPathDirs(alloc, path);
+        tr_createPathDirs(alloc, path);
         FILE *fptr;
         fptr = fopen(path, "w+");
-        f_assert(fptr != NULL);
+        tr_assert(fptr != NULL);
 
         size_t incr = 1;
         if (x->size > _MAX_PLOT_POINTS) {
@@ -119,5 +119,5 @@ void f_toFile(f_alloc *alloc, char *fileName, char *path, f_vecd *x,
         }
         // Close the file
         fclose(fptr);
-        f_ScratchPadDestroy(pad);
+        tr_ScratchPadDestroy(pad);
 }

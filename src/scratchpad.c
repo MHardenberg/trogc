@@ -1,22 +1,22 @@
 #include <assert.h>
-#include <forge/mem/scratchpad.h>
-#include <forge/mem/alloc.h>
-#include <forge/mem/mem.h>
+#include <trog/mem/scratchpad.h>
+#include <trog/mem/alloc.h>
+#include <trog/mem/mem.h>
 #include <string.h>
 
-f_ScratchPad *f_ScratchPadCreate(f_alloc *alloc, size_t bytes) {
-        f_ScratchPad *pad = f_allocPush(alloc, sizeof(f_ScratchPad));
+tr_ScratchPad *tr_ScratchPadCreate(tr_alloc *alloc, size_t bytes) {
+        tr_ScratchPad *pad = tr_allocPush(alloc, sizeof(tr_ScratchPad));
         pad->alloc = alloc;
         pad->offset = 0;
         pad->capacity = bytes;
-        pad->buffer = f_allocPush(alloc, bytes);
-        f_assert(pad->buffer != NULL);
+        pad->buffer = tr_allocPush(alloc, bytes);
+        tr_assert(pad->buffer != NULL);
         return pad;
 }
 
-void *f_ScratchPadPush(f_ScratchPad *pad, size_t bytes) {
+void *tr_ScratchPadPush(tr_ScratchPad *pad, size_t bytes) {
         size_t newOffset =
-            f_alignForward((uintptr_t)pad->buffer + pad->offset + bytes) -
+            tr_alignForward((uintptr_t)pad->buffer + pad->offset + bytes) -
             (uintptr_t)pad->buffer;
 
         if (newOffset > pad->capacity) {
@@ -29,18 +29,18 @@ void *f_ScratchPadPush(f_ScratchPad *pad, size_t bytes) {
         return dest;
 }
 
-void *f_ScratchPadPushZero(f_ScratchPad *pad, size_t bytes) {
-        void *dest = f_ScratchPadPush(pad, bytes);
-        f_assert(dest != NULL);
+void *tr_ScratchPadPushZero(tr_ScratchPad *pad, size_t bytes) {
+        void *dest = tr_ScratchPadPush(pad, bytes);
+        tr_assert(dest != NULL);
         memset(dest, 0, bytes);
         return dest;
 }
 
-void f_ScratchPadClear(f_ScratchPad *pad) {
+void tr_ScratchPadClear(tr_ScratchPad *pad) {
         pad->offset = 0;
 }
 
-void f_ScratchPadDestroy(f_ScratchPad *pad) {
-        f_allocFree(pad->alloc, pad->buffer);
-        f_allocFree(pad->alloc, pad);
+void tr_ScratchPadDestroy(tr_ScratchPad *pad) {
+        tr_allocFree(pad->alloc, pad->buffer);
+        tr_allocFree(pad->alloc, pad);
 }

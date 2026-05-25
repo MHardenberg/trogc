@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(forge C)
+project(trog C)
 
 if(NOT CMAKE_BUILD_TYPE)
     # set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
@@ -12,7 +12,7 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src/ SOURCES) 
 set(SOURCES 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/forgeAssert.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/trogAssert.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/arena.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scratchpad.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc.c
@@ -51,24 +51,24 @@ endif()
 
 # Library
 # ------------------------------------------------------------------------------
-add_library(forge STATIC
+add_library(trog STATIC
     ${SOURCES}
 )
 
-target_include_directories(forge
+target_include_directories(trog
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(forge PRIVATE backtrace openblas)
+target_link_libraries(trog PRIVATE backtrace openblas)
 # Executable
 # ------------------------------------------------------------------------------
-add_executable(forgetest
+add_executable(trogtest
     test/main.c
 )
-target_include_directories(forgetest
+target_include_directories(trogtest
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/test
 )
-target_link_libraries(forgetest PUBLIC forge backtrace openblas m)
+target_link_libraries(trogtest PUBLIC trog backtrace openblas m)

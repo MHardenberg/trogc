@@ -7,7 +7,7 @@
 
 void printStackTrace();
 
-#define f_assert(condition)                                                    \
+#define tr_assert(condition)                                                   \
         do {                                                                   \
                 if (!(condition)) {                                            \
                         fprintf(stderr,                                        \
@@ -21,7 +21,7 @@ void printStackTrace();
         } while (0)
 
 #else
-#define f_assert(condition)                                                    \
+#define tr_assert(condition)                                                   \
         do {                                                                   \
         } while (0)
 

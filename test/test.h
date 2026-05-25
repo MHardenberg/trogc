@@ -2,7 +2,7 @@
 #define TEST_H
 
 #include <stdio.h>
-#include <forge.h>
+#include <trog.h>
 #include <string.h>
 inline static void test_print_fail(const char *file, const char *func,
                                    const int line) {
