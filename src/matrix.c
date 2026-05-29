@@ -1,3 +1,4 @@
+#include "trogAssert.h"
 #include <assert.h>
 #include <openblas/cblas.h>
 #include <float.h>
@@ -73,6 +74,24 @@ tr_vec4d *tr_matdColv4(const tr_matd *m, const size_t c) {
         tr_assert(m->rows == 4);
         tr_vec4d *v = (void *)tr_matdIdx(m, 0, c);
         return v;
+}
+
+void tr_mat2NdRotCols(tr_matd *m, const double phase) {
+        tr_assert(m->rows = 2);
+        tr_vec2d *v2;
+        for (size_t c = 0; c < m->cols; ++c) {
+                v2 = tr_matdColv2(m, c);
+                tr_vec2dRotate(v2, v2, phase);
+        }
+}
+
+void tr_mat3NdRotColsz(tr_matd *m, const double phase) {
+        tr_assert(m->rows = 3);
+        tr_vec3d *v3;
+        for (size_t c = 0; c < m->cols; ++c) {
+                v3 = tr_matdColv3(m, c);
+                tr_vec3dRotatez(v3, v3, phase);
+        }
 }
 
 void tr_matdColslice(tr_matd *dest, const tr_matd *m, const size_t fromCol,

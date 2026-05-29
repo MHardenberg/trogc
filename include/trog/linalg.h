@@ -241,6 +241,10 @@ tr_vec3d *tr_matdColv3(const tr_matd *m, const size_t c);
 
 tr_vec4d *tr_matdColv4(const tr_matd *m, const size_t c);
 
+void tr_mat2NdRotCols(tr_matd *m, const double phase);
+
+void tr_mat3NdRotColsz(tr_matd *m, const double phase);
+
 void tr_matdColslice(tr_matd *dest, const tr_matd *m, const size_t fromCol,
                      const size_t toCol);
 
