@@ -7,7 +7,7 @@
 
 #include <trog/data.h>
 #define _BUFFER_LEN 1024
-#define _MAX_PLOT_POINTS 1000000LL
+#define _MAX_PLOT_POINTS 100000LL
 const char pathSeparator =
 #ifdef _WIN32
     '\\';

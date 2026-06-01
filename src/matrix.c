@@ -76,20 +76,66 @@ tr_vec4d *tr_matdColv4(const tr_matd *m, const size_t c) {
         return v;
 }
 
-void tr_mat2NdRotCols(tr_matd *m, const double phase) {
+void tr_mat2NdRotCols(tr_matd *m, const tr_vecd *stepwise_phase,
+                      const double const_phase) {
         tr_assert(m->rows = 2);
+        tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
+                                           : true);
         tr_vec2d *v2;
         for (size_t c = 0; c < m->cols; ++c) {
                 v2 = tr_matdColv2(m, c);
+                double phase = (stepwise_phase != NULL)
+                                   ? stepwise_phase->x[c] + const_phase
+                                   : const_phase;
+
                 tr_vec2dRotate(v2, v2, phase);
         }
 }
 
-void tr_mat3NdRotColsz(tr_matd *m, const double phase) {
+void tr_mat3NdRotColsx(tr_matd *m, const tr_vecd *stepwise_phase,
+                       const double const_phase) {
         tr_assert(m->rows = 3);
+        tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
+                                           : true);
         tr_vec3d *v3;
         for (size_t c = 0; c < m->cols; ++c) {
                 v3 = tr_matdColv3(m, c);
+                double phase = (stepwise_phase != NULL)
+                                   ? stepwise_phase->x[c] + const_phase
+                                   : const_phase;
+
+                tr_vec3dRotatex(v3, v3, phase);
+        }
+}
+
+void tr_mat3NdRotColsy(tr_matd *m, const tr_vecd *stepwise_phase,
+                       const double const_phase) {
+        tr_assert(m->rows = 3);
+        tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
+                                           : true);
+        tr_vec3d *v3;
+        for (size_t c = 0; c < m->cols; ++c) {
+                v3 = tr_matdColv3(m, c);
+                double phase = (stepwise_phase != NULL)
+                                   ? stepwise_phase->x[c] + const_phase
+                                   : const_phase;
+
+                tr_vec3dRotatey(v3, v3, phase);
+        }
+}
+
+void tr_mat3NdRotColsz(tr_matd *m, const tr_vecd *stepwise_phase,
+                       const double const_phase) {
+        tr_assert(m->rows = 3);
+        tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
+                                           : true);
+        tr_vec3d *v3;
+        for (size_t c = 0; c < m->cols; ++c) {
+                v3 = tr_matdColv3(m, c);
+                double phase = (stepwise_phase != NULL)
+                                   ? stepwise_phase->x[c] + const_phase
+                                   : const_phase;
+
                 tr_vec3dRotatez(v3, v3, phase);
         }
 }
