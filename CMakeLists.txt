@@ -16,6 +16,8 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/arena.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/scratchpad.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/alloc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/euclidean.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hyperbolic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/vector.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
