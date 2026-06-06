@@ -534,6 +534,58 @@ double tr_vec4dDot(const tr_vec4d *a, const tr_vec4d *b) {
         return a->a * b->a + a->b * b->b + a->c * b->c + a->d * b->d;
 }
 
+void tr_vecdOuter(tr_matd *dest, const tr_vecd *a, const tr_vecd *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+
+        assert((dest->rows * dest->cols) == (a->size * b->size));
+        dest->rows = a->size;
+        dest->cols = b->size;
+
+        for (size_t c = 0; c < a->size; ++c) {
+                for (size_t r = 0; r < b->size; ++r) {
+                        *tr_matdIdx(dest, r, c) = a->x[c] * b->x[r];
+                }
+        }
+}
+
+void tr_vec2dOuter(tr_matd *dest, const tr_vec2d *a, const tr_vec2d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+        tr_assert(dest->cols == dest->rows == 2);
+        for (size_t c = 0; c < 2; ++c) {
+                for (size_t r = 0; r < 2; ++r) {
+                        *tr_matdIdx(dest, r, c) = a->array[c] * b->array[r];
+                }
+        }
+}
+
+void tr_vec3dOuter(tr_matd *dest, const tr_vec3d *a, const tr_vec3d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+        tr_assert(dest->cols == dest->rows == 3);
+        for (size_t c = 0; c < 3; ++c) {
+                for (size_t r = 0; r < 3; ++r) {
+                        *tr_matdIdx(dest, r, c) = a->array[c] * b->array[r];
+                }
+        }
+}
+
+void tr_vec4dOuter(tr_matd *dest, const tr_vec4d *a, const tr_vec4d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+        tr_assert(dest->cols == dest->rows == 4);
+        for (size_t c = 0; c < 4; ++c) {
+                for (size_t r = 0; r < 4; ++r) {
+                        *tr_matdIdx(dest, r, c) = a->array[c] * b->array[r];
+                }
+        }
+}
+
 void tr_vecdCross(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {
         tr_assert((3 == a->size) && (3 == b->size) && (3 == dest->size));
         dest->x[0] = a->x[1] * b->x[2] - a->x[2] * b->x[1];

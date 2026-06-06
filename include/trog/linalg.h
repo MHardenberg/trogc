@@ -45,6 +45,15 @@ void tr_vec2dPrint(const tr_vec2d *v);
 void tr_vec3dPrint(const tr_vec3d *v);
 void tr_vec4dPrint(const tr_vec4d *v);
 
+// Matrices
+typedef struct {
+        // column major
+        size_t cols;
+        size_t rows;
+        double *x;
+} tr_matd;
+void tr_matdPrint(tr_matd *m);
+
 // data procs
 tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size);
 tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size);
@@ -129,6 +138,11 @@ double tr_vec4dDot(const tr_vec4d *a, const tr_vec4d *b);
 double tr_vec3dDot(const tr_vec3d *a, const tr_vec3d *b);
 double tr_vec2dDot(const tr_vec2d *a, const tr_vec2d *b);
 
+void tr_vecdOuter(tr_matd *dest, const tr_vecd *a, const tr_vecd *b);
+void tr_vec2dOuter(tr_matd *dest, const tr_vec2d *a, const tr_vec2d *b);
+void tr_vec3dOuter(tr_matd *dest, const tr_vec3d *a, const tr_vec3d *b);
+void tr_vec4dOuter(tr_matd *dest, const tr_vec4d *a, const tr_vec4d *b);
+
 // Element procs
 size_t tr_vecdIMin(const tr_vecd *v);
 double tr_vecdMin(const tr_vecd *v);
@@ -151,15 +165,6 @@ void tr_vec2dRotate(tr_vec2d *dest, const tr_vec2d *v, const double phase);
 void tr_vec3dRotatex(tr_vec3d *dest, const tr_vec3d *v, const double phase);
 void tr_vec3dRotatey(tr_vec3d *dest, const tr_vec3d *v, const double phase);
 void tr_vec3dRotatez(tr_vec3d *dest, const tr_vec3d *v, const double phase);
-
-// Matrices
-typedef struct {
-        // column major
-        size_t cols;
-        size_t rows;
-        double *x;
-} tr_matd;
-void tr_matdPrint(tr_matd *m);
 
 tr_matd *tr_matdAlloc(tr_alloc *alloc, size_t rows, size_t cols);
 tr_matd *tr_matdAllocZero(tr_alloc *alloc, size_t rows, size_t cols);

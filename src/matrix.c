@@ -165,6 +165,9 @@ void tr_mat3NCrossCols(tr_matd *dest, const tr_matd *m, const tr_matd *n) {
         tr_assert(m->cols == n->cols);
         tr_assert((dest->cols * dest->rows) == (m->cols * 3));
 
+        dest->cols = m->cols;
+        dest->rows = 3;
+
         for (size_t c = 0; c < dest->cols; ++c) {
                 tr_vec3d *destc = tr_matdColv3(dest, c);
                 tr_vec3d *mc = tr_matdColv3(m, c);
@@ -177,7 +180,9 @@ void tr_mat3NCrossCols(tr_matd *dest, const tr_matd *m, const tr_matd *n) {
 void tr_mat2NCrossCols(tr_vecd *dest, const tr_matd *m, const tr_matd *n) {
         tr_assert(m->rows = 2);
         tr_assert(m->cols == n->cols);
-        tr_assert(dest->size == m->cols * 3);
+        tr_assert(dest->size == m->cols * 2);
+
+        dest->size = m->cols;
 
         for (size_t c = 0; c < dest->size; ++c) {
                 tr_vec2d *mc = tr_matdColv2(m, c);
