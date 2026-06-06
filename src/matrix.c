@@ -26,6 +26,26 @@ tr_matd *tr_matdAllocZero(tr_alloc *alloc, size_t rows, size_t cols) {
         return dest;
 }
 
+tr_matd *tr_matdAllocLike(tr_alloc *alloc, tr_matd *source) {
+        tr_assert(alloc != NULL);
+        tr_assert(source != NULL);
+        return tr_matdAlloc(alloc, source->rows, source->cols);
+}
+
+tr_matd *tr_matdAllocLikeZero(tr_alloc *alloc, tr_matd *source) {
+        tr_assert(alloc != NULL);
+        tr_assert(source != NULL);
+        return tr_matdAllocZero(alloc, source->rows, source->cols);
+}
+
+tr_matd *tr_matdAllocCpy(tr_alloc *alloc, tr_matd *source) {
+        tr_assert(alloc != NULL);
+        tr_assert(source != NULL);
+        tr_matd *dest = tr_matdAllocLike(alloc, source);
+        tr_matdCopy(dest, source);
+        return dest;
+}
+
 void tr_matdFree(tr_alloc *alloc, tr_matd *m) {
         tr_assert(alloc != NULL);
         tr_assert(m != NULL);

@@ -46,15 +46,13 @@ tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size);
 
 tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size);
 
-static inline tr_vecd *tr_vecdAllocLike(tr_alloc *alloc, tr_vecd *source) {
-        tr_assert(source != NULL);
-        return tr_vecdAlloc(alloc, source->size);
-}
+tr_vecd *tr_vecdAllocArray(tr_alloc *alloc, size_t size, const double *array);
 
-static inline tr_vecd *tr_vecdAllocZeroLike(tr_alloc *alloc, tr_vecd *source) {
-        tr_assert(source != NULL);
-        return tr_vecdAllocZero(alloc, source->size);
-}
+tr_vecd *tr_vecdAllocCpy(tr_alloc *alloc, const tr_vecd *source);
+
+tr_vecd *tr_vecdAllocLike(tr_alloc *alloc, tr_vecd *source);
+
+tr_vecd *tr_vecdAllocZeroLike(tr_alloc *alloc, tr_vecd *source);
 
 void tr_vecdFree(tr_alloc *alloc, tr_vecd *vector);
 
@@ -207,15 +205,11 @@ tr_matd *tr_matdAlloc(tr_alloc *alloc, size_t rows, size_t cols);
 
 tr_matd *tr_matdAllocZero(tr_alloc *alloc, size_t rows, size_t cols);
 
-static inline tr_matd *tr_matdAllocLike(tr_alloc *alloc, tr_matd *source) {
-        tr_assert(source != NULL);
-        return tr_matdAlloc(alloc, source->rows, source->cols);
-}
+tr_matd *tr_matdAllocCpy(tr_alloc *alloc, tr_matd *source);
 
-static inline tr_matd *tr_matdAllocLikeZero(tr_alloc *alloc, tr_matd *source) {
-        tr_assert(source != NULL);
-        return tr_matdAllocZero(alloc, source->rows, source->cols);
-}
+tr_matd *tr_matdAllocLike(tr_alloc *alloc, tr_matd *source);
+
+tr_matd *tr_matdAllocLikeZero(tr_alloc *alloc, tr_matd *source);
 
 void tr_matdFree(tr_alloc *alloc, tr_matd *m);
 

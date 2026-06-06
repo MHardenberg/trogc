@@ -1,8 +1,10 @@
+#include "trogAssert.h"
 #include <assert.h>
 #include <math.h>
 #include <openblas/cblas.h>
 #include <float.h>
 
+#include <string.h>
 #include <trog.h>
 #include <trog/mem/alloc.h>
 #include <trog/linalg.h>
@@ -19,9 +21,36 @@ tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size) {
 }
 
 tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size) {
+        tr_assert(alloc != NULL);
         tr_vecd *dest = tr_vecdAlloc(alloc, size);
         tr_vecdZero(dest);
         return dest;
+}
+
+tr_vecd *tr_vecdAllocArray(tr_alloc *alloc, size_t size, const double *array) {
+        tr_assert(alloc != NULL);
+        tr_assert(array != NULL);
+        tr_vecd *dest = tr_vecdAlloc(alloc, size);
+        memcpy(dest->x, array, sizeof(double) * size);
+        return dest;
+}
+
+tr_vecd *tr_vecdAllocCpy(tr_alloc *alloc, const tr_vecd *source) {
+        tr_assert(alloc != NULL);
+        tr_assert(source != NULL);
+        tr_vecd *dest = tr_vecdAlloc(alloc, source->size);
+        tr_vecdCopy(dest, source);
+        return dest;
+}
+
+tr_vecd *tr_vecdAllocLike(tr_alloc *alloc, tr_vecd *source) {
+        tr_assert(source != NULL);
+        return tr_vecdAlloc(alloc, source->size);
+}
+
+tr_vecd *tr_vecdAllocZeroLike(tr_alloc *alloc, tr_vecd *source) {
+        tr_assert(source != NULL);
+        return tr_vecdAllocZero(alloc, source->size);
 }
 
 void tr_vecdFree(tr_alloc *alloc, tr_vecd *v) {
