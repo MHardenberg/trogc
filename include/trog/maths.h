@@ -2,6 +2,10 @@
 #define MATHS_H
 #include <stdint.h>
 
+#define tr_square(x) ((x) * (x))
+
+#define tr_cube(x) ((x) * (x) * (x))
+
 inline uint32_t tr_mini(const uint32_t x, const uint32_t y) {
         return (x < y) ? x : y;
 }

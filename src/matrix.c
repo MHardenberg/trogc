@@ -160,6 +160,33 @@ void tr_mat3NdRotColsz(tr_matd *m, const tr_vecd *stepwise_phase,
         }
 }
 
+void tr_mat3NCrossCols(tr_matd *dest, const tr_matd *m, const tr_matd *n) {
+        tr_assert(m->rows = 3);
+        tr_assert(m->cols == n->cols);
+        tr_assert((dest->cols * dest->rows) == (m->cols * 3));
+
+        for (size_t c = 0; c < dest->cols; ++c) {
+                tr_vec3d *destc = tr_matdColv3(dest, c);
+                tr_vec3d *mc = tr_matdColv3(m, c);
+                tr_vec3d *nc = tr_matdColv3(n, c);
+
+                tr_vec3dCross(destc, mc, nc);
+        }
+}
+
+void tr_mat2NCrossCols(tr_vecd *dest, const tr_matd *m, const tr_matd *n) {
+        tr_assert(m->rows = 2);
+        tr_assert(m->cols == n->cols);
+        tr_assert(dest->size == m->cols * 3);
+
+        for (size_t c = 0; c < dest->size; ++c) {
+                tr_vec2d *mc = tr_matdColv2(m, c);
+                tr_vec2d *nc = tr_matdColv2(n, c);
+
+                dest->x[c] = tr_vec2dCross(mc, nc);
+        }
+}
+
 void tr_matdColslice(tr_matd *dest, const tr_matd *m, const size_t fromCol,
                      const size_t toCol) {
         tr_assert(dest != NULL);

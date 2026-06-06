@@ -4,7 +4,6 @@
 #include <openblas/cblas.h>
 #include <float.h>
 
-#include <string.h>
 #include <trog.h>
 #include <trog/mem/alloc.h>
 #include <trog/linalg.h>
@@ -67,6 +66,7 @@ double *tr_vecdIdx(const tr_vecd *v, size_t i) {
 }
 
 void tr_vecdPrint(const tr_vecd *v) {
+        tr_assert(v != NULL);
         printf("[ ");
         for (size_t i = 0; i < v->size; ++i) {
                 if (i > 10) {
@@ -81,6 +81,21 @@ void tr_vecdPrint(const tr_vecd *v) {
                 }
         }
         printf(" ]\n\n");
+}
+
+extern void tr_vec2dPrint(const tr_vec2d *v) {
+        tr_assert(v != NULL);
+        printf("[ %.4e, %.4e]\n\n", v->x, v->y);
+}
+
+extern void tr_vec3dPrint(const tr_vec3d *v) {
+        tr_assert(v != NULL);
+        printf("[ %.4e, %.4e, %.4e]\n\n", v->x, v->y, v->z);
+}
+
+extern void tr_vec4dPrint(const tr_vec4d *v) {
+        tr_assert(v != NULL);
+        printf("[ %.4e, %.4e, %.4e, %.4e]\n\n", v->a, v->b, v->c, v->d);
 }
 
 void tr_vecdCopy(tr_vecd *dest, const tr_vecd *source) {
@@ -203,7 +218,7 @@ void tr_vecdAdd(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {
         }
 }
 
-void tr_vec2dAdd(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
+extern void tr_vec2dAdd(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
         tr_assert(dest != NULL);
         tr_assert(a != NULL);
         tr_assert(b != NULL);
@@ -212,7 +227,7 @@ void tr_vec2dAdd(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
         dest->y = a->y + b->y;
 }
 
-void tr_vec3dAdd(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
+extern void tr_vec3dAdd(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
         tr_assert(dest != NULL);
         tr_assert(a != NULL);
         tr_assert(b != NULL);
@@ -222,7 +237,7 @@ void tr_vec3dAdd(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
         dest->z = a->z + b->z;
 }
 
-void tr_vec4dAdd(tr_vec4d *dest, const tr_vec4d *a, const tr_vec4d *b) {
+extern void tr_vec4dAdd(tr_vec4d *dest, const tr_vec4d *a, const tr_vec4d *b) {
         tr_assert(dest != NULL);
         tr_assert(a != NULL);
         tr_assert(b != NULL);
@@ -241,7 +256,7 @@ void tr_vecdDiff(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {
         }
 }
 
-void tr_vec2dDiff(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
+extern void tr_vec2dDiff(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
         tr_assert(dest != NULL);
         tr_assert(a != NULL);
         tr_assert(b != NULL);
@@ -250,7 +265,7 @@ void tr_vec2dDiff(tr_vec2d *dest, const tr_vec2d *a, const tr_vec2d *b) {
         dest->y = a->y - b->y;
 }
 
-void tr_vec3dDiff(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
+extern void tr_vec3dDiff(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
         tr_assert(dest != NULL);
         tr_assert(a != NULL);
         tr_assert(b != NULL);
@@ -260,7 +275,7 @@ void tr_vec3dDiff(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
         dest->z = a->z - b->z;
 }
 
-void tr_vec4dDiff(tr_vec4d *dest, const tr_vec4d *a, const tr_vec4d *b) {
+extern void tr_vec4dDiff(tr_vec4d *dest, const tr_vec4d *a, const tr_vec4d *b) {
         tr_assert(dest != NULL);
         tr_assert(a != NULL);
         tr_assert(b != NULL);
@@ -278,7 +293,7 @@ void tr_vecdIncr(tr_vecd *dest, const double a, const tr_vecd *b) {
         }
 }
 
-void tr_vec2dIncr(tr_vec2d *dest, const double a, const tr_vec2d *b) {
+extern void tr_vec2dIncr(tr_vec2d *dest, const double a, const tr_vec2d *b) {
         tr_assert(dest != NULL);
         tr_assert(b != NULL);
 
@@ -286,7 +301,7 @@ void tr_vec2dIncr(tr_vec2d *dest, const double a, const tr_vec2d *b) {
         dest->y = a + b->y;
 }
 
-void tr_vec3dIncr(tr_vec3d *dest, const double a, const tr_vec3d *b) {
+extern void tr_vec3dIncr(tr_vec3d *dest, const double a, const tr_vec3d *b) {
         tr_assert(dest != NULL);
         tr_assert(b != NULL);
 
@@ -295,7 +310,7 @@ void tr_vec3dIncr(tr_vec3d *dest, const double a, const tr_vec3d *b) {
         dest->z = a + b->z;
 }
 
-void tr_vec4dIncr(tr_vec4d *dest, const double a, const tr_vec4d *b) {
+extern void tr_vec4dIncr(tr_vec4d *dest, const double a, const tr_vec4d *b) {
         tr_assert(dest != NULL);
         tr_assert(b != NULL);
 
@@ -320,7 +335,7 @@ void tr_vecdScale(tr_vecd *dest, const double a, const tr_vecd *b) {
         // #endif
 }
 
-void tr_vec2dScale(tr_vec2d *dest, const double a, const tr_vec2d *b) {
+extern void tr_vec2dScale(tr_vec2d *dest, const double a, const tr_vec2d *b) {
         tr_assert(dest != NULL);
         tr_assert(b != NULL);
 
@@ -328,7 +343,7 @@ void tr_vec2dScale(tr_vec2d *dest, const double a, const tr_vec2d *b) {
         dest->y = a * b->y;
 }
 
-void tr_vec3dScale(tr_vec3d *dest, const double a, const tr_vec3d *b) {
+extern void tr_vec3dScale(tr_vec3d *dest, const double a, const tr_vec3d *b) {
         tr_assert(dest != NULL);
         tr_assert(b != NULL);
 
@@ -337,7 +352,7 @@ void tr_vec3dScale(tr_vec3d *dest, const double a, const tr_vec3d *b) {
         dest->z = a * b->z;
 }
 
-void tr_vec4dScale(tr_vec4d *dest, const double a, const tr_vec4d *b) {
+extern void tr_vec4dScale(tr_vec4d *dest, const double a, const tr_vec4d *b) {
         tr_assert(dest != NULL);
         tr_assert(b != NULL);
 
@@ -356,8 +371,8 @@ void tr_vecdScAdd(tr_vecd *dest, const tr_vecd *v, const double a,
         }
 }
 
-void tr_vec2dScAdd(tr_vec2d *dest, const tr_vec2d *v, const double a,
-                   const tr_vec2d *w) {
+extern void tr_vec2dScAdd(tr_vec2d *dest, const tr_vec2d *v, const double a,
+                          const tr_vec2d *w) {
         tr_assert(dest != NULL);
         tr_assert(v != NULL);
         tr_assert(w != NULL);
@@ -366,8 +381,8 @@ void tr_vec2dScAdd(tr_vec2d *dest, const tr_vec2d *v, const double a,
         dest->y = v->y + a * w->y;
 }
 
-void tr_vec3dScAdd(tr_vec3d *dest, const tr_vec3d *v, const double a,
-                   const tr_vec3d *w) {
+extern void tr_vec3dScAdd(tr_vec3d *dest, const tr_vec3d *v, const double a,
+                          const tr_vec3d *w) {
         tr_assert(dest != NULL);
         tr_assert(v != NULL);
         tr_assert(w != NULL);
@@ -377,8 +392,8 @@ void tr_vec3dScAdd(tr_vec3d *dest, const tr_vec3d *v, const double a,
         dest->z = v->z + a * w->z;
 }
 
-void tr_vec4dScAdd(tr_vec4d *dest, const tr_vec4d *v, const double a,
-                   const tr_vec4d *w) {
+extern void tr_vec4dScAdd(tr_vec4d *dest, const tr_vec4d *v, const double a,
+                          const tr_vec4d *w) {
         tr_assert(dest != NULL);
         tr_assert(v != NULL);
         tr_assert(w != NULL);
@@ -398,8 +413,8 @@ void tr_vecdAddSc(tr_vecd *dest, const double a, const tr_vecd *v,
         }
 }
 
-void tr_vec2dAddSc(tr_vec2d *dest, const double a, const tr_vec2d *v,
-                   const tr_vec2d *w) {
+extern void tr_vec2dAddSc(tr_vec2d *dest, const double a, const tr_vec2d *v,
+                          const tr_vec2d *w) {
         tr_assert(dest != NULL);
         tr_assert(v != NULL);
         tr_assert(w != NULL);
@@ -408,8 +423,8 @@ void tr_vec2dAddSc(tr_vec2d *dest, const double a, const tr_vec2d *v,
         dest->y = a * (v->y + a * w->y);
 }
 
-void tr_vec3dAddSc(tr_vec3d *dest, const double a, const tr_vec3d *v,
-                   const tr_vec3d *w) {
+extern void tr_vec3dAddSc(tr_vec3d *dest, const double a, const tr_vec3d *v,
+                          const tr_vec3d *w) {
         tr_assert(dest != NULL);
         tr_assert(v != NULL);
         tr_assert(w != NULL);
@@ -419,8 +434,8 @@ void tr_vec3dAddSc(tr_vec3d *dest, const double a, const tr_vec3d *v,
         dest->z = a * (v->z + w->z);
 }
 
-void tr_vec4dAddSc(tr_vec4d *dest, const double a, const tr_vec4d *v,
-                   const tr_vec4d *w) {
+extern void tr_vec4dAddSc(tr_vec4d *dest, const double a, const tr_vec4d *v,
+                          const tr_vec4d *w) {
         tr_assert(dest != NULL);
         tr_assert(v != NULL);
         tr_assert(w != NULL);
@@ -442,15 +457,15 @@ double tr_vecdNorm(tr_vecd *v) {
         return sqrt(norm);
 }
 
-double tr_vec2dNorm(tr_vec2d *v) {
+extern double tr_vec2dNorm(tr_vec2d *v) {
         return sqrt(v->x * v->x + v->y * v->y);
 }
 
-double tr_vec3dNorm(tr_vec3d *v) {
+extern double tr_vec3dNorm(tr_vec3d *v) {
         return sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
-double tr_vec4dNorm(tr_vec4d *v) {
+extern double tr_vec4dNorm(tr_vec4d *v) {
         return sqrt(v->a * v->a + v->b * v->b + v->c * v->c + v->d * v->d);
 }
 
@@ -481,7 +496,9 @@ void tr_vecdEmul(tr_vecd *dest, const double a, const tr_vecd *x,
         }
 }
 
-double tr_vecdMul(const tr_vecd *a, const tr_vecd *b) {
+double tr_vecdDot(const tr_vecd *a, const tr_vecd *b) {
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
         double x = 0;
         if ((a == NULL) || (b == NULL)) {
                 return x;
@@ -494,6 +511,27 @@ double tr_vecdMul(const tr_vecd *a, const tr_vecd *b) {
         }
 #endif
         return x;
+}
+
+double tr_vec2dDot(const tr_vec2d *a, const tr_vec2d *b) {
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+
+        return a->x * b->x + a->y * b->y;
+}
+
+double tr_vec3dDot(const tr_vec3d *a, const tr_vec3d *b) {
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+
+        return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+double tr_vec4dDot(const tr_vec4d *a, const tr_vec4d *b) {
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+
+        return a->a * b->a + a->b * b->b + a->c * b->c + a->d * b->d;
 }
 
 void tr_vecdCross(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {

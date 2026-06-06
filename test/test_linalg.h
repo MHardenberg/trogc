@@ -286,7 +286,7 @@ static void test_linalg_tr_vecdEmul() {
         TEST_ZERO(res);
 }
 
-static void test_linalg_tr_vecdMul() {
+static void test_linalg_tr_vecdDot() {
         double a = 1.0, b = 2.0, c = 3.0;
         double d = 4.0, e = 2.0, f = 3.0;
         double x[] = {a, b, c};
@@ -296,7 +296,7 @@ static void test_linalg_tr_vecdMul() {
         tr_vecd w = {.size = 3U, .x = y};
         int res = 0;
 
-        double s = tr_vecdMul(&v, &w);
+        double s = tr_vecdDot(&v, &w);
         double r = a * d + b * e + c * f;
 
         if (s != r) {
@@ -510,7 +510,7 @@ void test_modLinalg() {
         test_linalg_tr_vecdDiff();
         test_linalg_tr_vecdIncr();
         test_linalg_tr_vecdEmul();
-        test_linalg_tr_vecdMul();
+        test_linalg_tr_vecdDot();
         test_linalg_tr_vecdScale();
 
         test_linalg_fvecdENorm();
