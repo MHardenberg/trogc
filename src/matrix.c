@@ -352,6 +352,50 @@ void tr_matdMVMul(tr_vecd *dest, const tr_matd *m, const tr_vecd *v,
 #endif
 }
 
+void tr_matdMV2Mul(tr_vec2d *dest, const tr_matd *m, const tr_vec2d *v,
+                   const double a) {
+        tr_assert(dest != NULL);
+        tr_assert(m != NULL);
+        tr_assert(v != NULL);
+        tr_assert(m->cols == 2);
+#ifdef _BLAS
+        cblas_dgemv(CblasColMajor, CblasNoTrans, m->rows, m->cols, a, m->x,
+                    m->rows, v->array, 1, 0.0, dest->array, 1);
+#else
+#error "Not implemented!"
+#endif
+}
+
+void tr_matdMV3Mul(tr_vec3d *dest, const tr_matd *m, const tr_vec3d *v,
+                   const double a) {
+        tr_assert(dest != NULL);
+        tr_assert(m != NULL);
+        tr_assert(v != NULL);
+        tr_assert(m->cols == 3);
+
+#ifdef _BLAS
+        cblas_dgemv(CblasColMajor, CblasNoTrans, m->rows, m->cols, a, m->x,
+                    m->rows, v->array, 1, 0.0, dest->array, 1);
+#else
+#error "Not implemented!"
+#endif
+}
+
+void tr_matdMV4Mul(tr_vec4d *dest, const tr_matd *m, const tr_vec4d *v,
+                   const double a) {
+        tr_assert(dest != NULL);
+        tr_assert(m != NULL);
+        tr_assert(v != NULL);
+        tr_assert(m->cols == 4);
+
+#ifdef _BLAS
+        cblas_dgemv(CblasColMajor, CblasNoTrans, m->rows, m->cols, a, m->x,
+                    m->rows, v->array, 1, 0.0, dest->array, 1);
+#else
+#error "Not implemented!"
+#endif
+}
+
 void tr_matdMMul(tr_matd *dest, const double alpha, const tr_matd *a,
                  const tr_matd *b) {
 #ifdef _BLAS

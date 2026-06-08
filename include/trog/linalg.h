@@ -45,6 +45,11 @@ void tr_vec2dPrint(const tr_vec2d *v);
 void tr_vec3dPrint(const tr_vec3d *v);
 void tr_vec4dPrint(const tr_vec4d *v);
 
+#define tr_vecdStackAlloc(vec, s)                                              \
+        double __vecdBuffer##vec[s];                                           \
+        vec.size = s;                                                          \
+        vec.x = __vecdBuffer##vec
+
 // Matrices
 typedef struct {
         // column major
@@ -54,6 +59,12 @@ typedef struct {
 } tr_matd;
 void tr_matdPrint(tr_matd *m);
 
+#define tr_matdStackAlloc(mat, r, c)                                           \
+        double __matdBuffer##mat[r * c];                                       \
+        mat.r = rows;                                                          \
+        mat.c = cols;                                                          \
+        mat.x = __matdBuffer##mat
+
 // data procs
 tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size);
 tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size);
@@ -61,6 +72,7 @@ tr_vecd *tr_vecdAllocArray(tr_alloc *alloc, size_t size, const double *array);
 tr_vecd *tr_vecdAllocCpy(tr_alloc *alloc, const tr_vecd *source);
 tr_vecd *tr_vecdAllocLike(tr_alloc *alloc, tr_vecd *source);
 tr_vecd *tr_vecdAllocZeroLike(tr_alloc *alloc, tr_vecd *source);
+
 void tr_vecdFree(tr_alloc *alloc, tr_vecd *vector);
 
 double *tr_vecdIdx(const tr_vecd *v, size_t i);
@@ -154,6 +166,9 @@ void tr_vecdCross(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b);
 double tr_vec2dCross(const tr_vec2d *a, const tr_vec2d *b);
 void tr_vec3dCross(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b);
 
+void tr_vec3dNormCross(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b);
+void tr_vecdNormCross(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b);
+
 // |v|
 double tr_vecdNorm(tr_vecd *v);
 double tr_vec2dNorm(tr_vec2d *v);
@@ -216,6 +231,12 @@ void tr_matdScAdd(tr_matd *dest, tr_matd *m, double a, tr_matd *n);
 
 void tr_matdMVMul(tr_vecd *dest, const tr_matd *m, const tr_vecd *v,
                   const double a);
+void tr_matdMV4Mul(tr_vec4d *dest, const tr_matd *m, const tr_vec4d *v,
+                   const double a);
+void tr_matdMV3Mul(tr_vec3d *dest, const tr_matd *m, const tr_vec3d *v,
+                   const double a);
+void tr_matdMV2Mul(tr_vec2d *dest, const tr_matd *m, const tr_vec2d *v,
+                   const double a);
 void tr_matdMMul(tr_matd *dest, const double alpha, const tr_matd *a,
                  const tr_matd *b);
 

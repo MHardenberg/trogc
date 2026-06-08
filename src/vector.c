@@ -1,3 +1,4 @@
+#include "trog/maths.h"
 #include "trogAssert.h"
 #include <assert.h>
 #include <math.h>
@@ -608,6 +609,28 @@ void tr_vec3dCross(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
         dest->x = a->y * b->z - a->z * b->y;
         dest->y = a->z * b->x - a->x * b->z;
         dest->z = a->x * b->y - a->y * b->x;
+}
+
+void tr_vecdNormCross(tr_vecd *dest, const tr_vecd *a, const tr_vecd *b) {
+        tr_assert((3 == a->size) && (3 == b->size) && (3 == dest->size));
+        const double invnorm =
+            1. /
+            sqrt(tr_square(a->x[0]) + tr_square(a->x[1]) + tr_square(a->x[2]));
+        dest->x[0] = invnorm * (a->x[1] * b->x[2] - a->x[2] * b->x[1]);
+        dest->x[1] = invnorm * (a->x[2] * b->x[0] - a->x[0] * b->x[2]);
+        dest->x[2] = invnorm * (a->x[0] * b->x[1] - a->x[1] * b->x[0]);
+}
+
+void tr_vec3dNormCross(tr_vec3d *dest, const tr_vec3d *a, const tr_vec3d *b) {
+        tr_assert(dest != NULL);
+        tr_assert(a != NULL);
+        tr_assert(b != NULL);
+
+        const double invnorm =
+            1. / sqrt(tr_square(a->x) + tr_square(a->y) + tr_square(a->z));
+        dest->x = invnorm * (a->y * b->z - a->z * b->y);
+        dest->y = invnorm * (a->z * b->x - a->x * b->z);
+        dest->z = invnorm * (a->x * b->y - a->y * b->x);
 }
 
 double tr_vecdSum(const tr_vecd *v) {

@@ -91,6 +91,9 @@ void tr_vec3dArctanh(tr_vec3d *dest, const tr_vec3d *v);
 void tr_vec4dArctanh(tr_vec4d *dest, const tr_vec4d *v);
 
 // rotations
-void tr_vec3dGetAlignRotation(tr_matd *R, const tr_vec3d *m, const tr_vec3d *n);
+void tr_vec3dHouseholderRotation(tr_matd *R, tr_matd *Rinv, const tr_vec3d *m,
+                                 const tr_vec3d *n);
 
+void tr_vec3dRotateztox(tr_matd *R, tr_matd *Rinv, const tr_vec3d *p,
+                        const tr_vec3d *q);
 #endif // _GEOMETRY
