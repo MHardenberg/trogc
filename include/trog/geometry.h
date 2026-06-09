@@ -96,4 +96,31 @@ void tr_vec3dHouseholderRotation(tr_matd *R, tr_matd *Rinv, const tr_vec3d *m,
 
 void tr_vec3dRotateztox(tr_matd *R, tr_matd *Rinv, const tr_vec3d *p,
                         const tr_vec3d *q);
+
+// Grid
+/* TO BE ADDED
+void tr_grid_spawn(tr_alloc *alloc, const double width,
+                         const double height, const double depth,
+                         const double grid_res) {
+        const size_t width_points = round(width / grid_res);
+        const size_t height_points = round(height / grid_res);
+        const size_t depth_points = round(depth / grid_res);
+
+        tr_tens3d *gridx =
+            tr_tens3dAlloc(alloc, width_points, height_points, depth_points);
+        tr_tens3d *gridy = tr_tens3dAllocLike(alloc, gridx);
+        tr_tens3d *gridz = tr_tens3dAllocLike(alloc, gridx);
+
+        for (size_t x = 0; x < width_points; ++x) {
+                for (size_t y = 0; y < height_points; ++y) {
+                        for (size_t z = 0; z < depth_points; ++z) {
+                                *tr_tens3dIdx(gridx, x, y, z) = x * grid_res;
+                                *tr_tens3dIdx(gridy, x, y, z) = y * grid_res;
+                                *tr_tens3dIdx(gridz, x, y, z) = z * grid_res;
+                        }
+                }
+        }
+}
+
+*/
 #endif // _GEOMETRY

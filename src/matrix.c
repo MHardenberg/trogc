@@ -56,6 +56,7 @@ void tr_matdFree(tr_alloc *alloc, tr_matd *m) {
 void tr_matdCopy(tr_matd *dest, tr_matd *source) {
         tr_assert(dest != NULL);
         tr_assert(source != NULL);
+        tr_assert((dest->rows * dest->cols) == (source->rows * source->cols));
         dest->cols = source->cols;
         dest->rows = source->rows;
         memcpy(dest->x, source->x, sizeof(double) * dest->cols * dest->rows);

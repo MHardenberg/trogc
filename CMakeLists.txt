@@ -20,6 +20,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hyperbolic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/vector.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/tensor.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ode.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/plot.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/data.c

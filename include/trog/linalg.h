@@ -61,8 +61,8 @@ void tr_matdPrint(tr_matd *m);
 
 #define tr_matdStackAlloc(mat, r, c)                                           \
         double __matdBuffer##mat[r * c];                                       \
-        mat.r = rows;                                                          \
-        mat.c = cols;                                                          \
+        mat.rows = r;                                                          \
+        mat.cols = c;                                                          \
         mat.x = __matdBuffer##mat
 
 // data procs
