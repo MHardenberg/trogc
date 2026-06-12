@@ -8,7 +8,7 @@
 #include <trog/linalg.h>
 #include <string.h>
 
-tr_matd *tr_matdAlloc(tr_alloc *alloc, size_t rows, size_t cols) {
+tr_matd *tr_matdAlloc(tr_alloc *alloc, const size_t rows, const size_t cols) {
         tr_assert(alloc != NULL);
         tr_matd *dest = tr_allocPush(alloc, sizeof(tr_matd));
         dest->x = tr_allocPush(alloc, sizeof(double) * cols * rows);
@@ -17,7 +17,8 @@ tr_matd *tr_matdAlloc(tr_alloc *alloc, size_t rows, size_t cols) {
         return dest;
 }
 
-tr_matd *tr_matdAllocZero(tr_alloc *alloc, size_t rows, size_t cols) {
+tr_matd *tr_matdAllocZero(tr_alloc *alloc, const size_t rows,
+                          const size_t cols) {
         tr_assert(alloc != NULL);
         tr_matd *dest = tr_allocPush(alloc, sizeof(tr_matd));
         dest->x = tr_allocPushZero(alloc, sizeof(double) * cols * rows);
@@ -53,7 +54,7 @@ void tr_matdFree(tr_alloc *alloc, tr_matd *m) {
         tr_allocFree(alloc, m);
 }
 
-void tr_matdCopy(tr_matd *dest, tr_matd *source) {
+void tr_matdCopy(tr_matd *dest, const tr_matd *source) {
         tr_assert(dest != NULL);
         tr_assert(source != NULL);
         tr_assert((dest->rows * dest->cols) == (source->rows * source->cols));
@@ -207,7 +208,7 @@ void tr_matdColslice(tr_matd *dest, const tr_matd *m, const size_t fromCol,
 }
 
 void tr_matdRowCpy(tr_vecd *dest, const tr_matd *m, const size_t r,
-                   size_t stride) {
+                   const size_t stride) {
         tr_assert(dest->size == m->cols / stride);
         tr_assert(stride > 0 && stride <= m->cols);
         tr_assert(dest->size <= m->cols);
@@ -217,7 +218,7 @@ void tr_matdRowCpy(tr_vecd *dest, const tr_matd *m, const size_t r,
 }
 
 void tr_matdColCpy(tr_vecd *dest, const tr_matd *m, const size_t c,
-                   size_t stride) {
+                   const size_t stride) {
         tr_assert(dest->size == m->rows / stride);
         tr_assert(stride > 0 && stride <= m->rows);
         tr_assert(dest->size <= m->rows);
@@ -226,7 +227,7 @@ void tr_matdColCpy(tr_vecd *dest, const tr_matd *m, const size_t c,
         }
 }
 
-bool tr_matdIsTranspose(tr_matd *m0, tr_matd *m1) {
+bool tr_matdIsTranspose(const tr_matd *m0, const tr_matd *m1) {
         if (m0->rows != m1->cols) {
                 return false;
         }
@@ -243,23 +244,26 @@ bool tr_matdIsTranspose(tr_matd *m0, tr_matd *m1) {
         return true;
 }
 
-void tr_matdTranspose(tr_matd *dest, const tr_matd *m) {
+void tr_matdTranspose(tr_alloc *alloc, tr_matd *dest, const tr_matd *m) {
+#warning "this should prolly take and allocator to stick to convention"
         tr_assert(m != NULL);
         tr_assert(dest != NULL);
         // check if enough allocated space
         tr_assert(dest->cols * dest->rows == m->rows * m->cols);
 
         tr_matd *mT;
-        tr_alloc alloc;
         size_t srcRows = m->rows;
         size_t srcCols = m->cols;
         if (dest == m) {
                 // allow for inplace transposition by copying memory later
-                tr_allocCreate(&alloc, ALLOC_HEAP);
-                mT = tr_matdAlloc(&alloc, srcCols, srcRows);
+                tr_assert(alloc != NULL);
+                mT = tr_matdAlloc(alloc, srcCols, srcRows);
         } else {
                 mT = dest;
         }
+
+        mT->cols = m->rows;
+        mT->rows = m->cols;
 
         for (size_t c = 0; c < m->cols; ++c) {
                 for (size_t r = 0; r < m->rows; ++r) {
@@ -268,12 +272,9 @@ void tr_matdTranspose(tr_matd *dest, const tr_matd *m) {
         }
 
         if (dest == m) {
-                memcpy(dest->x, mT->x, sizeof(double) * mT->rows * mT->cols);
-                tr_matdFree(&alloc, mT);
+                tr_matdCopy(dest, mT);
+                tr_matdFree(alloc, mT);
         }
-
-        dest->cols = srcRows;
-        dest->rows = srcCols;
 }
 
 void tr_matdOne(tr_matd *m) {

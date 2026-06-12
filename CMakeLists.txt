@@ -36,6 +36,7 @@ add_compile_options(
     -Wall
     -Wextra
     -Wpedantic
+    #-fPIC
 )
 
 add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
@@ -64,6 +65,7 @@ target_include_directories(trog
 )
 
 target_link_libraries(trog PRIVATE backtrace openblas)
+
 # Executable
 # ------------------------------------------------------------------------------
 add_executable(trogtest

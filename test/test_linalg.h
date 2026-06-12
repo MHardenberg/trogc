@@ -372,7 +372,7 @@ static void test_linalg_tr_matdTranspose() {
                 }
         }
 
-        tr_matdTranspose(mT, m);
+        tr_matdTranspose(&arena, mT, m);
         TEST_TRUE(tr_matdIsTranspose(mT, m));
 }
 

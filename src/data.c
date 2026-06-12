@@ -74,8 +74,8 @@ void tr_makeDataPath(tr_alloc *alloc, char *dest, char *fileName) {
         tr_ScratchPadDestroy(pad);
 }
 
-void tr_toFile(tr_alloc *alloc, char *fileName, char *path, tr_vecd *x,
-               tr_vecd **ys, size_t nvecs, char *xLabel, char **labels) {
+void tr_toFile(tr_alloc *alloc, char *fileName, char *path, const tr_vecd *x,
+               tr_vecd **ys, const size_t nvecs, char *xLabel, char **labels) {
         tr_assert(alloc != NULL);
         tr_assert((fileName != NULL) ^ (path != NULL));
         tr_assert(xLabel != NULL);

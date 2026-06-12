@@ -9,7 +9,7 @@
 #include <trog/mem/alloc.h>
 #include <trog/linalg.h>
 
-tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size) {
+tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size) {
         tr_assert(alloc != NULL);
         tr_vecd *dest =
             tr_allocPush(alloc, sizeof(tr_vecd) + sizeof(double) * size);
@@ -20,8 +20,12 @@ tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size) {
         return dest;
 }
 
+<<<<<<< Updated upstream
 tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size) {
         tr_assert(alloc != NULL);
+=======
+tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, const size_t size) {
+>>>>>>> Stashed changes
         tr_vecd *dest = tr_vecdAlloc(alloc, size);
         tr_vecdZero(dest);
         return dest;
@@ -60,7 +64,7 @@ void tr_vecdFree(tr_alloc *alloc, tr_vecd *v) {
         tr_allocFree(alloc, v);
 }
 
-double *tr_vecdIdx(const tr_vecd *v, size_t i) {
+double *tr_vecdIdx(const tr_vecd *v, const size_t i) {
         tr_assert(v != NULL);
         tr_assert(i < v->size);
         return v->x + i;

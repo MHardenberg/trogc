@@ -11,7 +11,7 @@ void tr_createPathDirs(tr_alloc *alloc, const char *dest);
 
 void tr_getFilePath(char *dest, const char *title);
 
-void tr_toFile(tr_alloc *alloc, char *fileName, char *path, tr_vecd *x,
-               tr_vecd **ys, size_t nvecs, char *xLabel, char **labels);
+void tr_toFile(tr_alloc *alloc, char *fileName, char *path, const tr_vecd *x,
+               tr_vecd **ys, const size_t nvecs, char *xLabel, char **labels);
 
 #endif // DATA_H
