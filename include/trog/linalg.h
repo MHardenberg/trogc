@@ -40,8 +40,6 @@ typedef union {
         } PACKED_END;
         double array[4];
 } tr_vec4d;
-<<<<<<< Updated upstream
-=======
 
 // data procs
 tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size);
@@ -64,7 +62,6 @@ void tr_vecdFree(tr_alloc *alloc, tr_vecd *vector);
 
 double *tr_vecdIdx(const tr_vecd *v, size_t i);
 
->>>>>>> Stashed changes
 void tr_vecdPrint(const tr_vecd *v);
 void tr_vec2dPrint(const tr_vec2d *v);
 void tr_vec3dPrint(const tr_vec3d *v);
@@ -91,12 +88,11 @@ void tr_matdPrint(tr_matd *m);
         mat.x = __matdBuffer##mat
 
 // data procs
-tr_vecd *tr_vecdAlloc(tr_alloc *alloc, size_t size);
-tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size);
-tr_vecd *tr_vecdAllocArray(tr_alloc *alloc, size_t size, const double *array);
+tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size);
+tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, const size_t size);
+tr_vecd *tr_vecdAllocArray(tr_alloc *alloc, const size_t size,
+                           const double *array);
 tr_vecd *tr_vecdAllocCpy(tr_alloc *alloc, const tr_vecd *source);
-tr_vecd *tr_vecdAllocLike(tr_alloc *alloc, tr_vecd *source);
-tr_vecd *tr_vecdAllocZeroLike(tr_alloc *alloc, tr_vecd *source);
 
 void tr_vecdFree(tr_alloc *alloc, tr_vecd *vector);
 
@@ -206,17 +202,10 @@ void tr_vec3dRotatex(tr_vec3d *dest, const tr_vec3d *v, const double phase);
 void tr_vec3dRotatey(tr_vec3d *dest, const tr_vec3d *v, const double phase);
 void tr_vec3dRotatez(tr_vec3d *dest, const tr_vec3d *v, const double phase);
 
-<<<<<<< Updated upstream
-tr_matd *tr_matdAlloc(tr_alloc *alloc, size_t rows, size_t cols);
-tr_matd *tr_matdAllocZero(tr_alloc *alloc, size_t rows, size_t cols);
-tr_matd *tr_matdAllocCpy(tr_alloc *alloc, tr_matd *source);
-tr_matd *tr_matdAllocLike(tr_alloc *alloc, tr_matd *source);
-tr_matd *tr_matdAllocLikeZero(tr_alloc *alloc, tr_matd *source);
-=======
 tr_matd *tr_matdAlloc(tr_alloc *alloc, const size_t rows, const size_t cols);
-
 tr_matd *tr_matdAllocZero(tr_alloc *alloc, const size_t rows,
                           const size_t cols);
+tr_matd *tr_matdAllocCpy(tr_alloc *alloc, tr_matd *source);
 
 static inline tr_matd *tr_matdAllocLike(tr_alloc *alloc,
                                         const tr_matd *source) {
@@ -230,34 +219,19 @@ static inline tr_matd *tr_matdAllocLikeZero(tr_alloc *alloc,
         return tr_matdAllocZero(alloc, source->rows, source->cols);
 }
 
->>>>>>> Stashed changes
 void tr_matdFree(tr_alloc *alloc, tr_matd *m);
 
 double *tr_matdIdx(const tr_matd *m, const size_t r, const size_t c);
 
-<<<<<<< Updated upstream
-bool tr_matdIsTranspose(tr_matd *m0, tr_matd *m1);
-void tr_matdTranspose(tr_matd *dest, const tr_matd *m);
-
-void tr_matdCopy(tr_matd *dest, tr_matd *source);
-void tr_matdColCpy(tr_vecd *dest, const tr_matd *m, const size_t c,
-                   size_t stride);
-void tr_matdRowCpy(tr_vecd *dest, const tr_matd *m, const size_t r,
-                   size_t stride);
-=======
 bool tr_matdIsTranspose(const tr_matd *m0, const tr_matd *m1);
-
 void tr_matdTranspose(tr_alloc *alloc, tr_matd *dest, const tr_matd *m);
 
 void tr_matdCopy(tr_matd *dest, const tr_matd *source);
-
 void tr_matdColCpy(tr_vecd *dest, const tr_matd *m, const size_t c,
                    const size_t stride);
-
 void tr_matdRowCpy(tr_vecd *dest, const tr_matd *m, const size_t r,
                    const size_t stride);
 
->>>>>>> Stashed changes
 void tr_matdCol(tr_vecd *dest, const tr_matd *m, const size_t c);
 
 tr_vec2d *tr_matdColv2(const tr_matd *m, const size_t c);
@@ -284,10 +258,11 @@ void tr_matdOne(tr_matd *m);
 void tr_matdZero(tr_matd *m);
 void tr_matdIdent(tr_matd *m);
 
-void tr_matdScale(tr_matd *dest, tr_matd *m, double a);
-void tr_matdIncr(tr_matd *dest, tr_matd *m, double a);
-void tr_matdAdd(tr_matd *dest, tr_matd *m, tr_matd *n);
-void tr_matdScAdd(tr_matd *dest, tr_matd *m, double a, tr_matd *n);
+void tr_matdScale(tr_matd *dest, const tr_matd *m, const double a);
+void tr_matdIncr(tr_matd *dest, const tr_matd *m, const double a);
+void tr_matdAdd(tr_matd *dest, const tr_matd *m, const tr_matd *n);
+void tr_matdScAdd(tr_matd *dest, const tr_matd *m, const double a,
+                  const tr_matd *n);
 
 void tr_matdMVMul(tr_vecd *dest, const tr_matd *m, const tr_vecd *v,
                   const double a);

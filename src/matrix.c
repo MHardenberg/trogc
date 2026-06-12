@@ -27,18 +27,6 @@ tr_matd *tr_matdAllocZero(tr_alloc *alloc, const size_t rows,
         return dest;
 }
 
-tr_matd *tr_matdAllocLike(tr_alloc *alloc, tr_matd *source) {
-        tr_assert(alloc != NULL);
-        tr_assert(source != NULL);
-        return tr_matdAlloc(alloc, source->rows, source->cols);
-}
-
-tr_matd *tr_matdAllocLikeZero(tr_alloc *alloc, tr_matd *source) {
-        tr_assert(alloc != NULL);
-        tr_assert(source != NULL);
-        return tr_matdAllocZero(alloc, source->rows, source->cols);
-}
-
 tr_matd *tr_matdAllocCpy(tr_alloc *alloc, tr_matd *source) {
         tr_assert(alloc != NULL);
         tr_assert(source != NULL);
@@ -100,7 +88,7 @@ tr_vec4d *tr_matdColv4(const tr_matd *m, const size_t c) {
 
 void tr_mat2NdRotCols(tr_matd *m, const tr_vecd *stepwise_phase,
                       const double const_phase) {
-        tr_assert(m->rows = 2);
+        tr_assert(m->rows == 2);
         tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
                                            : true);
         tr_vec2d *v2;
@@ -116,7 +104,7 @@ void tr_mat2NdRotCols(tr_matd *m, const tr_vecd *stepwise_phase,
 
 void tr_mat3NdRotColsx(tr_matd *m, const tr_vecd *stepwise_phase,
                        const double const_phase) {
-        tr_assert(m->rows = 3);
+        tr_assert(m->rows == 3);
         tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
                                            : true);
         tr_vec3d *v3;
@@ -132,7 +120,7 @@ void tr_mat3NdRotColsx(tr_matd *m, const tr_vecd *stepwise_phase,
 
 void tr_mat3NdRotColsy(tr_matd *m, const tr_vecd *stepwise_phase,
                        const double const_phase) {
-        tr_assert(m->rows = 3);
+        tr_assert(m->rows == 3);
         tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
                                            : true);
         tr_vec3d *v3;
@@ -148,7 +136,7 @@ void tr_mat3NdRotColsy(tr_matd *m, const tr_vecd *stepwise_phase,
 
 void tr_mat3NdRotColsz(tr_matd *m, const tr_vecd *stepwise_phase,
                        const double const_phase) {
-        tr_assert(m->rows = 3);
+        tr_assert(m->rows == 3);
         tr_assert((stepwise_phase != NULL) ? stepwise_phase->size == m->rows
                                            : true);
         tr_vec3d *v3;
@@ -163,7 +151,7 @@ void tr_mat3NdRotColsz(tr_matd *m, const tr_vecd *stepwise_phase,
 }
 
 void tr_mat3NCrossCols(tr_matd *dest, const tr_matd *m, const tr_matd *n) {
-        tr_assert(m->rows = 3);
+        tr_assert(m->rows == 3);
         tr_assert(m->cols == n->cols);
         tr_assert((dest->cols * dest->rows) == (m->cols * 3));
 
@@ -180,7 +168,7 @@ void tr_mat3NCrossCols(tr_matd *dest, const tr_matd *m, const tr_matd *n) {
 }
 
 void tr_mat2NCrossCols(tr_vecd *dest, const tr_matd *m, const tr_matd *n) {
-        tr_assert(m->rows = 2);
+        tr_assert(m->rows == 2);
         tr_assert(m->cols == n->cols);
         tr_assert(dest->size == m->cols * 2);
 
@@ -245,7 +233,6 @@ bool tr_matdIsTranspose(const tr_matd *m0, const tr_matd *m1) {
 }
 
 void tr_matdTranspose(tr_alloc *alloc, tr_matd *dest, const tr_matd *m) {
-#warning "this should prolly take and allocator to stick to convention"
         tr_assert(m != NULL);
         tr_assert(dest != NULL);
         // check if enough allocated space
@@ -302,7 +289,7 @@ void tr_matdIdent(tr_matd *m) {
         }
 }
 
-void tr_matdScale(tr_matd *dest, tr_matd *m, double a) {
+void tr_matdScale(tr_matd *dest, const tr_matd *m, const double a) {
         tr_assert(dest != NULL);
         tr_assert(m != NULL);
         tr_assert((dest->cols = m->cols) && (dest->rows = m->rows));
@@ -311,7 +298,7 @@ void tr_matdScale(tr_matd *dest, tr_matd *m, double a) {
         }
 }
 
-void tr_matdIncr(tr_matd *dest, tr_matd *m, double a) {
+void tr_matdIncr(tr_matd *dest, const tr_matd *m, const double a) {
         tr_assert(dest != NULL);
         tr_assert(m != NULL);
         tr_assert((dest->cols = m->cols) && (dest->rows = m->rows));
@@ -320,24 +307,25 @@ void tr_matdIncr(tr_matd *dest, tr_matd *m, double a) {
         }
 }
 
-void tr_matdAdd(tr_matd *dest, tr_matd *m, tr_matd *n) {
+void tr_matdAdd(tr_matd *dest, const tr_matd *m, const tr_matd *n) {
         tr_assert(dest != NULL);
         tr_assert(m != NULL);
         tr_assert(n != NULL);
-        tr_assert((dest->cols = m->cols) && (dest->rows = m->rows));
-        tr_assert((n->cols = m->cols) && (n->rows = m->rows));
+        tr_assert((dest->cols == m->cols) && (dest->rows == m->rows));
+        tr_assert((n->cols == m->cols) && (n->rows == m->rows));
 
         for (size_t i = 0; i < m->cols * m->rows; ++i) {
                 dest->x[i] = m->x[i] + n->x[i];
         }
 }
 
-void tr_matdScAdd(tr_matd *dest, tr_matd *m, double a, tr_matd *n) {
+void tr_matdScAdd(tr_matd *dest, const tr_matd *m, const double a,
+                  const tr_matd *n) {
         tr_assert(dest != NULL);
         tr_assert(m != NULL);
         tr_assert(n != NULL);
-        tr_assert((dest->cols = m->cols) && (dest->rows = m->rows));
-        tr_assert((n->cols = m->cols) && (n->rows = m->rows));
+        tr_assert((dest->cols == m->cols) && (dest->rows == m->rows));
+        tr_assert((n->cols == m->cols) && (n->rows == m->rows));
 
         for (size_t i = 0; i < m->cols * m->rows; ++i) {
                 dest->x[i] = m->x[i] + a * n->x[i];

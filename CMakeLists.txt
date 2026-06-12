@@ -71,6 +71,7 @@ target_link_libraries(trog PRIVATE backtrace openblas)
 add_executable(trogtest
     test/main.c
 )
+
 target_include_directories(trogtest
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include

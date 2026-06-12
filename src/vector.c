@@ -20,12 +20,7 @@ tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size) {
         return dest;
 }
 
-<<<<<<< Updated upstream
-tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, size_t size) {
-        tr_assert(alloc != NULL);
-=======
 tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, const size_t size) {
->>>>>>> Stashed changes
         tr_vecd *dest = tr_vecdAlloc(alloc, size);
         tr_vecdZero(dest);
         return dest;
@@ -45,16 +40,6 @@ tr_vecd *tr_vecdAllocCpy(tr_alloc *alloc, const tr_vecd *source) {
         tr_vecd *dest = tr_vecdAlloc(alloc, source->size);
         tr_vecdCopy(dest, source);
         return dest;
-}
-
-tr_vecd *tr_vecdAllocLike(tr_alloc *alloc, tr_vecd *source) {
-        tr_assert(source != NULL);
-        return tr_vecdAlloc(alloc, source->size);
-}
-
-tr_vecd *tr_vecdAllocZeroLike(tr_alloc *alloc, tr_vecd *source) {
-        tr_assert(source != NULL);
-        return tr_vecdAllocZero(alloc, source->size);
 }
 
 void tr_vecdFree(tr_alloc *alloc, tr_vecd *v) {
