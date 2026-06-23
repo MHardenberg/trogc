@@ -10,11 +10,10 @@ void printStackTrace();
 #define tr_assert(condition)                                                   \
         do {                                                                   \
                 if (!(condition)) {                                            \
-                        fprintf(stderr,                                        \
-                                "\033[31;1;4mASSERTION FAILED\033[0m %s:  "    \
-                                "%s in file "                                  \
-                                "%s, line %d\n",                               \
-                                #condition, __func__, __FILE__, __LINE__);     \
+                        LOG("\033[31;1;4mASSERTION FAILED\033[0m %s:  "        \
+                            "%s in file "                                      \
+                            "%s, line %d",                                     \
+                            #condition, __func__, __FILE__, __LINE__);         \
                         printStackTrace();                                     \
                         abort();                                               \
                 }                                                              \

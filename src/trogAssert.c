@@ -1,7 +1,5 @@
 #include <trog.h>
-
-#include <stdio.h>
-#include <stdlib.h>
+#include <trogLogging.h>
 
 #ifdef _DEBUG
 #include <backtrace.h>
@@ -16,11 +14,11 @@ static int symCallback(void *data, uintptr_t pc, const char *filename,
 
         // Print in a human-readable format
         if (function) {
-                printf("  [0x%lx] %s (%s:%d)\n", (unsigned long)pc, function,
-                       filename ? filename : "??", lineno);
+                LOGBARE("  [0x%lx] %s (%s:%d)\n", (unsigned long)pc, function,
+                        filename ? filename : "??", lineno);
         } else {
-                printf("  [0x%lx] ?? (%s:%d)\n", (unsigned long)pc,
-                       filename ? filename : "??", lineno);
+                LOGBARE("  [0x%lx] ?? (%s:%d)\n", (unsigned long)pc,
+                        filename ? filename : "??", lineno);
         }
         return 0; // Continue unwinding
 }
@@ -28,7 +26,7 @@ static int symCallback(void *data, uintptr_t pc, const char *filename,
 // Error callback for libbacktrace
 static void errorCallback(void *data, const char *msg, int errnum) {
         (void)data;
-        fprintf(stderr, "libbacktrace error: %s (errno: %d)\n", msg, errnum);
+        LOGBARE("libbacktrace error: %s (errno: %d)\n", msg, errnum);
 }
 
 void printStackTrace() {
@@ -38,9 +36,10 @@ void printStackTrace() {
         }
 
         if (backtraceState) {
-                printf("Stack trace:\n");
+                LOGBARE("Stack trace:\n");
                 backtrace_full(backtraceState, 1, symCallback, errorCallback,
                                NULL);
         }
+        LOGBARE("\n");
 }
 #endif

@@ -64,12 +64,12 @@ void tr_makeDataPath(tr_alloc *alloc, char *dest, char *fileName) {
         tr_assert(dest != NULL);
         tr_ScratchPad *pad = tr_ScratchPadCreate(alloc, 3072);
 
-        char *time = tr_ScratchPadPush(pad, 1024);
+        char *timenow = tr_ScratchPadPush(pad, 1024);
         char *stampedFile = tr_ScratchPadPush(pad, 1024);
-        tr_getTimeStr(time, 1024);
-        tr_assert(time != NULL);
+        tr_getTimeStr(timenow, 1024);
+        tr_assert(timenow != NULL);
         tr_assert(dest != NULL);
-        sprintf(stampedFile, "%s%s%s", time, "_", fileName);
+        sprintf(stampedFile, "%s%s%s", timenow, "_", fileName);
         tr_getFilePath(dest, stampedFile);
         tr_ScratchPadDestroy(pad);
 }
@@ -83,7 +83,7 @@ void tr_toFile(tr_alloc *alloc, char *fileName, char *path, const tr_vecd *x,
         tr_assert(x != NULL);
         for (size_t i = 0; i < nvecs; ++i) {
                 tr_assert(ys[i] != NULL);
-                tr_assert(ys[i]->size == x->size);
+                tr_assert(ys[i]->size <= x->size);
         }
 
         tr_ScratchPad *pad = tr_ScratchPadCreate(alloc, 4096);
