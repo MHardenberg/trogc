@@ -10,7 +10,7 @@
 #include <trog/linalg.h>
 
 #include <trogcu.cuh>
-#include <trogcu/cudaAssert.h>
+#include <trogcu/cudaAssert.cuh>
 
 tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size) {
         tr_cudaAssert(alloc != NULL);
