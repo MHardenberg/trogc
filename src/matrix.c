@@ -7,6 +7,7 @@
 #include <trog/mem/alloc.h>
 #include <trog/linalg.h>
 #include <string.h>
+#include <openblas/cblas.h>
 
 tr_matd *tr_matdAlloc(tr_alloc *alloc, const size_t rows, const size_t cols) {
         tr_assert(alloc != NULL);

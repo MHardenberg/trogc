@@ -1,9 +1,12 @@
 #ifndef LINALG_H
 #define LINALG_H
 
-#include <trog.h>
-#include <openblas/cblas.h>
+#include <trogc.h>
 #include <trog/mem/alloc.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Vectors
 typedef struct {
@@ -275,4 +278,7 @@ void tr_matdMV2Mul(tr_vec2d *dest, const tr_matd *m, const tr_vec2d *v,
 void tr_matdMMul(tr_matd *dest, const double alpha, const tr_matd *a,
                  const tr_matd *b);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

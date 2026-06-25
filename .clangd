@@ -1,0 +1,7 @@
+CompileFlags:
+  Add: [
+    "-x", "cuda",
+    "--cuda-path=/opt/cuda",
+    "-I/opt/cuda/include",
+    "-D__CUDACC__"
+  ]
