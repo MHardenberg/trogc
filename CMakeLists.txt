@@ -44,9 +44,10 @@ add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 # Debug-specific options
 # ------------------------------------------------------------------------------
 add_compile_definitions(_BLAS)
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_definitions(_DEBUG LOG_FILE="${CMAKE_CURRENT_SOURCE_DIR}/temp/trogc.log")
+add_compile_definitions(LOG_FILE="${CMAKE_CURRENT_SOURCE_DIR}/temp/trogc.log")
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_definitions( _DEBUG )
     add_compile_options(-O0 -g)
     # add_compile_options(-fsanitize=address )
     # add_link_options(-fsanitize=address "LINKER:--as-needed")

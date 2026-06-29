@@ -1,9 +1,10 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
+#include <stdio.h>
+
 #ifdef _DEBUG
 #include <time.h>
-#include <stdio.h>
 
 #define LOG(...)                                                               \
         do {                                                                   \
@@ -67,5 +68,19 @@
 #define LOGERROR(...)
 #define LOGBARE(...)
 #endif
+
+#define LOGRELEASE(...)                                                        \
+        do {                                                                   \
+                FILE *fptr = fopen(LOG_FILE, "a");                             \
+                if (fptr != NULL) {                                            \
+                        fprintf(fptr, __VA_ARGS__);                            \
+                        fprintf(fptr, "\n");                                   \
+                        fclose(fptr);                                          \
+                } else {                                                       \
+                        fprintf(stderr, "Failed to open log file..\n");        \
+                }                                                              \
+                fprintf(stderr, "[LOG] " __VA_ARGS__);                         \
+                fprintf(stderr, "\n");                                         \
+        } while (0)
 
 #endif // LOGGING_H

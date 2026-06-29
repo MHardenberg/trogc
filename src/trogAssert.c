@@ -1,7 +1,6 @@
 #include <trog.h>
 #include <trogLogging.h>
 
-#ifdef _DEBUG
 #include <backtrace.h>
 
 // Global state for libbacktrace
@@ -42,4 +41,3 @@ void printStackTrace() {
         }
         LOGBARE("\n");
 }
-#endif

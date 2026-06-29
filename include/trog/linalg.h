@@ -75,8 +75,8 @@ void tr_vec4dPrint(const tr_vec4d *v);
 // Matrices
 typedef struct {
         // column major
-        size_t cols;
         size_t rows;
+        size_t cols;
         double *x;
 } tr_matd;
 void tr_matdPrint(tr_matd *m);
