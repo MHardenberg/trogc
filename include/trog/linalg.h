@@ -1,7 +1,7 @@
 #ifndef LINALG_H
 #define LINALG_H
 
-#include <trogc.h>
+#include <trog.h>
 #include <trog/mem/alloc.h>
 
 #ifdef __cplusplus

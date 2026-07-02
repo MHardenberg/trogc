@@ -13,11 +13,11 @@ double rk4Step(dydt_fn f, const double x, const double y, const double h,
         return y + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
 }
 
-void tr_rk4(double *dest, dydt_fn f, const double x0, double y0, const double h,
-            const size_t N, void *params) {
+void tr_rk4(tr_vecd *dest, dydt_fn f, const double x0, double y0,
+            const double h, const size_t N, void *params) {
         tr_assert(dest != NULL);
         for (size_t i = 0; i < N; ++i) {
-                dest[i] = rk4Step(f, x0, f(x0, y0, h, params), h, params);
+                dest->x[i] = rk4Step(f, x0, f(x0, y0, h, params), h, params);
         }
 }
 
@@ -52,9 +52,6 @@ void rk4Stepv(tr_vecd *ynext, dvdt_fn dvdt, const double x,
         tr_vecdScAdd(ynext, ytemp, h / 6., k4);
 }
 
-// mat schould by rows = dims - cols = steps
-// dvdt function should have signature void ode(tr_vecd *dvdt, tr_vecd *x,
-// double time, double step, void *params)
 void tr_rk4v(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict Y,
              const tr_vecd *restrict y0, const tr_vecd *restrict x,
              const double h, const void *functionParams) {
@@ -92,4 +89,46 @@ void tr_rk4v(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict Y,
         tr_allocFree(alloc, rk4containers.k2);
         tr_allocFree(alloc, rk4containers.k3);
         tr_allocFree(alloc, rk4containers.k4);
+}
+
+void tr_rk4vBatch(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict *restrict Y,
+                  const tr_vecd *restrict y0, const tr_vecd *restrict x,
+                  const double h, const size_t batchSize,
+                  const void *functionParams) {
+        tr_assert(alloc != NULL);
+        tr_assert(dvdt != NULL);
+        tr_assert(Y != NULL);
+        tr_assert(y0 != NULL);
+        tr_assert(x != NULL);
+        tr_assert(functionParams != NULL);
+
+        tr_assert(x->size == Y->cols);
+        tr_assert(y0->size == Y->rows);
+
+        for (size_t i = 0; i < batchSize; ++i) {
+                tr_rk4Containers rk4containers = {
+                    .k1 = tr_vecdAllocZero(alloc, Y[i]->rows),
+                    .k2 = tr_vecdAllocZero(alloc, Y[i]->rows),
+                    .k3 = tr_vecdAllocZero(alloc, Y[i]->rows),
+                    .k4 = tr_vecdAllocZero(alloc, Y[i]->rows),
+                    .ytemp = tr_vecdAlloc(alloc, Y[i]->rows)};
+                tr_vecd ynow;
+                tr_vecd ynext;
+                tr_matdCol(&ynow, Y[i], 0);
+                tr_vecdCopy(&ynow, y0);
+
+                // for every step we compute the ynext value and put it into
+                // y now, which is a cloumn in dest
+                for (size_t j = 0; j < Y[i]->cols - 1; ++j) {
+                        tr_matdCol(&ynow, Y[i], j);
+                        tr_matdCol(&ynext, Y[i], j + 1);
+                        rk4Stepv(&ynext, dvdt, *tr_vecdIdx(x, j), &ynow, h,
+                                 functionParams, &rk4containers);
+                }
+
+                tr_allocFree(alloc, rk4containers.k1);
+                tr_allocFree(alloc, rk4containers.k2);
+                tr_allocFree(alloc, rk4containers.k3);
+                tr_allocFree(alloc, rk4containers.k4);
+        }
 }
