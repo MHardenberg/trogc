@@ -1,7 +1,5 @@
 #include <assert.h>
-#include <cstddef>
 #include <math.h>
-#include <openblas/cblas.h>
 #include <float.h>
 
 #include <trog.h>
@@ -12,7 +10,16 @@
 #include <trogcu.cuh>
 #include <trogcu/cudaAssert.cuh>
 
-tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size) {
+__global__ void tr_vecdAlloc_kernel(tr_vecd *dest, const size_t size) {
+        tr_cudaAssert(alloc != NULL);
+        cudaMalloc(&dest, sizeof(tr_vecd) + sizeof(double) * size);
+        tr_cudaAssert(dest != NULL);
+
+        dest->size = size;
+        dest->x = (double *)(dest + 1);
+}
+
+__host__ tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size) {
         tr_cudaAssert(alloc != NULL);
         tr_vecd *dest = (tr_vecd *)tr_allocPush(
             alloc, sizeof(tr_vecd) + sizeof(double) * size);
@@ -23,7 +30,17 @@ tr_vecd *tr_vecdAlloc(tr_alloc *alloc, const size_t size) {
         return dest;
 }
 
-tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, const size_t size) {
+__global__ void tr_vecdAllocZero_kernel(tr_vecd *dest, const size_t size) {
+        tr_cudaAssert(alloc != NULL);
+        cudaMalloc((void **)&dest, sizeof(tr_vecd) + sizeof(double) * size);
+        tr_cudaAssert(dest != NULL);
+
+        dest->size = size;
+        dest->x = (double *)(dest + 1);
+        cudaMemset(dest->x, 0, sizeof(double) * dest->size);
+}
+
+__host__ tr_vecd *tr_vecdAllocZero(tr_alloc *alloc, const size_t size) {
         tr_vecd *dest = tr_vecdAlloc(alloc, size);
         tr_vecdZero(dest);
         return dest;
@@ -341,8 +358,8 @@ __host__ void tr_vecdScale(tr_vecd *dest, const double a, const tr_vecd *b) {
         cudaDeviceSynchronize();
 }
 
-__host__ __device__ void tr_vec2dScale(tr_vec2d *dest, const double a,
-                                       const tr_vec2d *b) {
+__global__ void tr_vec2dScale_kernel(tr_vec2d *dest, const double a,
+                                     const tr_vec2d *b) {
         tr_cudaAssert(dest != NULL);
         tr_cudaAssert(b != NULL);
 
@@ -350,8 +367,12 @@ __host__ __device__ void tr_vec2dScale(tr_vec2d *dest, const double a,
         dest->y = a * b->y;
 }
 
-__host__ __device__ void tr_vec3dScale(tr_vec3d *dest, const double a,
-                                       const tr_vec3d *b) {
+__host__ void tr_vec2dScale(tr_vec2d *dest, const double a, const tr_vec2d *b) {
+        tr_vec2dScale_kernel<<<1, 1>>>(dest, a, b);
+}
+
+__global__ void tr_vec3dScale_kernel(tr_vec3d *dest, const double a,
+                                     const tr_vec3d *b) {
         tr_cudaAssert(dest != NULL);
         tr_cudaAssert(b != NULL);
 
@@ -360,8 +381,12 @@ __host__ __device__ void tr_vec3dScale(tr_vec3d *dest, const double a,
         dest->z = a * b->z;
 }
 
-__host__ __device__ void tr_vec4dScale(tr_vec4d *dest, const double a,
-                                       const tr_vec4d *b) {
+__host__ void tr_vec3dScale(tr_vec3d *dest, const double a, const tr_vec3d *b) {
+        tr_vec3dScale_kernel<<<1, 1>>>(dest, a, b);
+}
+
+__global__ void tr_vec4dScale_kernel(tr_vec4d *dest, const double a,
+                                     const tr_vec4d *b) {
         tr_cudaAssert(dest != NULL);
         tr_cudaAssert(b != NULL);
 
@@ -369,6 +394,10 @@ __host__ __device__ void tr_vec4dScale(tr_vec4d *dest, const double a,
         dest->b = a * b->b;
         dest->c = a * b->c;
         dest->d = a * b->d;
+}
+
+__host__ void tr_vec4dScale(tr_vec4d *dest, const double a, const tr_vec4d *b) {
+        tr_vec4dScale_kernel<<<1, 1>>>(dest, a, b);
 }
 
 __global__ void tr_vecdScAdd_kernel(double *d_destx, const double a,

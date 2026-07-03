@@ -14,9 +14,9 @@
                 printf("Assertion %s failed!\n", #condition);                  \
                 asm("trap;");                                                  \
         }
-#else
-
 #endif
+
+#else
 #define tr_cudaAssert(condition)
 #endif
 

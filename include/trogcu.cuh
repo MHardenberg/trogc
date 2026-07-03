@@ -1,6 +1,7 @@
 #ifndef _TROGCU
 #define _TROGCU
 
+#ifdef __CUDA__
 #include <cuda_runtime.h>
 #include <trogLogging.h>
 
@@ -21,5 +22,7 @@
 
 #else
 #define trogCuErrcheck
+#endif
+
 #endif
 #endif // _TROGCU
