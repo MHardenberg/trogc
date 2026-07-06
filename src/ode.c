@@ -102,10 +102,10 @@ void tr_rk4vBatch(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict *restrict Y,
         tr_assert(x != NULL);
         tr_assert(functionParams != NULL);
 
-        tr_assert(x->size == Y->cols);
-        tr_assert(y0->size == Y->rows);
-
         for (size_t i = 0; i < batchSize; ++i) {
+                tr_assert(Y[i] != NULL);
+                tr_assert(x->size == Y[i]->cols);
+                tr_assert(y0->size == Y[i]->rows);
                 tr_rk4Containers rk4containers = {
                     .k1 = tr_vecdAllocZero(alloc, Y[i]->rows),
                     .k2 = tr_vecdAllocZero(alloc, Y[i]->rows),

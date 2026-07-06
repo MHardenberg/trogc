@@ -4,7 +4,6 @@
 #ifdef _DEBUG
 #include <time.h>
 #include <stdio.h>
-
 #define LOG(...)                                                               \
         do {                                                                   \
                 FILE *fptr = fopen(LOG_FILE, "a");                             \
