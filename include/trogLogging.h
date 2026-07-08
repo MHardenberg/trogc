@@ -1,6 +1,10 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef _DEBUG
 #include <time.h>
 #include <stdio.h>
@@ -65,6 +69,10 @@
 #define LOG(...)
 #define LOGERROR(...)
 #define LOGBARE(...)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif // LOGGING_H

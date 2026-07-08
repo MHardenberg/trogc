@@ -3,6 +3,10 @@
 
 #include <trog/linalg.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // euclidean
 // ----------------------------------------------------------------------------
 void tr_vecdCos(tr_vecd *dest, const tr_vecd *v);
@@ -123,4 +127,9 @@ void tr_grid_spawn(tr_alloc *alloc, const double width,
 }
 
 */
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif // _GEOMETRY

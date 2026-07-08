@@ -4,6 +4,10 @@
 #include <trog.h>
 #include <trog/linalg.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void tr_getTimeStr(char *dest, size_t capacity);
 
 // Given a file path, create all constituent directories if missing
@@ -13,5 +17,9 @@ void tr_getFilePath(char *dest, const char *title);
 
 void tr_toFile(tr_alloc *alloc, char *fileName, char *path, const tr_vecd *x,
                tr_vecd **ys, const size_t nvecs, char *xLabel, char **labels);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // DATA_H

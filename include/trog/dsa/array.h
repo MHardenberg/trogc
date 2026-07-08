@@ -4,6 +4,10 @@
 #include <trog.h>
 #include <trog/mem/alloc.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
         size_t size;
         size_t stride;
@@ -18,5 +22,9 @@ void tr_arrayDestroy(tr_alloc *alloc, tr_array *array);
 void tr_arrayFree(tr_alloc *alloc, tr_array *array);
 
 void *tr_arrayIdx(const tr_array *array, const size_t i);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // ARRAY_H

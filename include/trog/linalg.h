@@ -281,4 +281,5 @@ void tr_matdMMul(tr_matd *dest, const double alpha, const tr_matd *a,
 #ifdef __cplusplus
 }
 #endif
+
 #endif

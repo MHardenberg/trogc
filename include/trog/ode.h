@@ -4,6 +4,10 @@
 #include <trog/mem/alloc.h>
 #include <trog/linalg.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // dydt = fn(y ,x, h, params)
 typedef double (*dydt_fn)(double, double, double, void *);
 
@@ -49,5 +53,9 @@ void tr_rk4vBatch(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict *restrict Y,
                   const tr_vecd *restrict y0, const tr_vecd *restrict x,
                   const double h, const size_t batchSize,
                   const void *functionParams);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

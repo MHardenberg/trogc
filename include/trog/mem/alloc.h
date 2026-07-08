@@ -4,6 +4,10 @@
 #include <trog.h>
 #include <trog/mem/arena.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum allocType { ALLOC_UNINIT = 0, ALLOC_HEAP, ALLOC_ARENA };
 
 typedef struct {
@@ -26,4 +30,9 @@ void tr_allocFree(tr_alloc *alloc, void *ptr);
 
 // Dangerous if allocator doesnt track allocations!
 void tr_allocDestroy(tr_alloc *alloc);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif // ALLOCATOR_H

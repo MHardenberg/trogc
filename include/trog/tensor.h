@@ -4,6 +4,10 @@
 #include <trog/mem/alloc.h>
 #include <trog.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
         // m x n x p
         // final dim -> first dim major
@@ -29,5 +33,9 @@ void tr_tens3dFree(tr_alloc *alloc, tr_tens3d *t);
 
 double *tr_tens3dIdx(const tr_tens3d *t, const size_t row, const size_t col,
                      const size_t layer);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _TENSOR_H

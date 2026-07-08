@@ -5,6 +5,10 @@
 #include <trog.h>
 #include <trog/mem/alloc.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
         size_t size;
         size_t capacity;
@@ -30,5 +34,9 @@ void *tr_alistPushbackArray(tr_alist *list, const void *elem,
                             const size_t number);
 
 void *tr_alistNextArray(tr_alist *list, const size_t number);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // ALIST_H

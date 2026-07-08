@@ -4,6 +4,10 @@
 #include <stdint.h>
 #include <string.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define DEFAULT_ARENA_RESERVATION_SIZE                                         \
         (256LL * 1000LL * 1000LL * 1000LL) // 256 Gb
 
@@ -33,5 +37,9 @@ void *tr_arenaPush(tr_arena *arena, size_t bytes);
 void *tr_arenaPushZero(tr_arena *arena, size_t bytes);
 
 void tr_arenaClear(tr_arena *arena);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // ARENA_H

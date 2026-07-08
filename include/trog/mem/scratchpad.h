@@ -3,6 +3,10 @@
 
 #include <trog/mem/alloc.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
         tr_alloc *alloc;
 
@@ -27,5 +31,9 @@ void *tr_ScratchPadPushZero(tr_ScratchPad *pad, size_t bytes);
 void tr_ScratchPadClear(tr_ScratchPad *pad);
 
 void tr_ScratchPadDestroy(tr_ScratchPad *pad);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // SCRATCH_PAD_H

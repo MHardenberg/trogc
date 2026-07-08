@@ -1,6 +1,10 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef _DEBUG
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,6 +28,10 @@ void printStackTrace();
         do {                                                                   \
         } while (0)
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif //  ASSERT_H
