@@ -104,7 +104,7 @@ void tr_vec3dCopy(tr_vec3d *dest, const tr_vec3d *source) {
         dest->z = source->z;
 }
 
-bool tr_vecdAll(tr_vecd *v, const tr_vecd *w) {
+bool tr_vecdAll(const tr_vecd *v, const tr_vecd *w) {
         tr_assert(NULL != v);
         tr_assert(NULL != w);
         tr_assert(v->size == w->size);
@@ -116,23 +116,55 @@ bool tr_vecdAll(tr_vecd *v, const tr_vecd *w) {
         return true;
 }
 
-bool tr_vec2dAll(tr_vec2d *v, const tr_vec2d *w) {
+bool tr_vec2dAll(const tr_vec2d *v, const tr_vec2d *w) {
         tr_assert(NULL != v);
         tr_assert(NULL != w);
-        return ((v->x == w->x) && (v->y == w->y));
+        return (v->x == w->x) && (v->y == w->y);
 }
 
-bool tr_vec3dAll(tr_vec3d *v, const tr_vec3d *w) {
+bool tr_vec3dAll(const tr_vec3d *v, const tr_vec3d *w) {
         tr_assert(NULL != v);
         tr_assert(NULL != w);
-        return ((v->x == w->x) && (v->y == w->y) && (v->z == w->z));
+        return (v->x == w->x) && (v->y == w->y) && (v->z == w->z);
 }
 
-bool tr_vec4dAll(tr_vec4d *v, const tr_vec4d *w) {
+bool tr_vec4dAll(const tr_vec4d *v, const tr_vec4d *w) {
         tr_assert(NULL != v);
         tr_assert(NULL != w);
-        return ((v->a == w->a) && (v->b == w->b) && (v->c == w->c) &&
-                (v->d == w->d));
+        return (v->a == w->a) && (v->b == w->b) && (v->c == w->c) &&
+               (v->d == w->d);
+}
+
+bool tr_vecdAllTol(const tr_vecd *v, const tr_vecd *w, const double tol) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        tr_assert(v->size == w->size);
+        for (size_t i = 0; i < v->size; ++i) {
+                if (fabs(v->x[i] - w->x[i]) > tol) {
+                        return false;
+                }
+        }
+        return true;
+}
+
+bool tr_vec2dAllTol(const tr_vec2d *v, const tr_vec2d *w, const double tol) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        return (fabs(v->x - w->x) <= tol) && (fabs(v->y - w->y) <= tol);
+}
+
+bool tr_vec3dAllTol(const tr_vec3d *v, const tr_vec3d *w, const double tol) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        return (fabs(v->x - w->x) <= tol) && (fabs(v->y - w->y) <= tol) &&
+               (fabs(v->z - w->z) <= tol);
+}
+
+bool tr_vec4dAllTol(const tr_vec4d *v, const tr_vec4d *w, const double tol) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        return (fabs(v->a - w->a) <= tol) && (fabs(v->b - w->b) <= tol) &&
+               (fabs(v->c - w->c) <= tol) && (fabs(v->d - w->d) <= tol);
 }
 
 void tr_vec4dCopy(tr_vec4d *dest, const tr_vec4d *source) {

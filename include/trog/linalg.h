@@ -105,10 +105,15 @@ void tr_vec2dCopy(tr_vec2d *dest, const tr_vec2d *source);
 void tr_vec3dCopy(tr_vec3d *dest, const tr_vec3d *source);
 void tr_vec4dCopy(tr_vec4d *dest, const tr_vec4d *source);
 
-bool tr_vecdAll(tr_vecd *v, const tr_vecd *w);
-bool tr_vec2dAll(tr_vec2d *v, const tr_vec2d *w);
-bool tr_vec3dAll(tr_vec3d *v, const tr_vec3d *w);
-bool tr_vec4dAll(tr_vec4d *v, const tr_vec4d *w);
+bool tr_vecdAll(const tr_vecd *v, const tr_vecd *w);
+bool tr_vec2dAll(const tr_vec2d *v, const tr_vec2d *w);
+bool tr_vec3dAll(const tr_vec3d *v, const tr_vec3d *w);
+bool tr_vec4dAll(const tr_vec4d *v, const tr_vec4d *w);
+
+bool tr_vecdAllTol(const tr_vecd *v, const tr_vecd *w, const double tol);
+bool tr_vec2dAllTol(const tr_vec2d *v, const tr_vec2d *w, const double tol);
+bool tr_vec3dAllTol(const tr_vec3d *v, const tr_vec3d *w, const double tol);
+bool tr_vec4dAllTol(const tr_vec4d *v, const tr_vec4d *w, const double tol);
 
 void tr_vecdSlice(tr_vecd *dest, const tr_vecd *source, const size_t from,
                   const size_t to);
