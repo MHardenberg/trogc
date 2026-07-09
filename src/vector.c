@@ -104,6 +104,37 @@ void tr_vec3dCopy(tr_vec3d *dest, const tr_vec3d *source) {
         dest->z = source->z;
 }
 
+bool tr_vecdAll(tr_vecd *v, const tr_vecd *w) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        tr_assert(v->size == w->size);
+        for (size_t i = 0; i < v->size; ++i) {
+                if (v->x[i] != w->x[i]) {
+                        return false;
+                }
+        }
+        return true;
+}
+
+bool tr_vec2dAll(tr_vec2d *v, const tr_vec2d *w) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        return ((v->x == w->x) && (v->y == w->y));
+}
+
+bool tr_vec3dAll(tr_vec3d *v, const tr_vec3d *w) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        return ((v->x == w->x) && (v->y == w->y) && (v->z == w->z));
+}
+
+bool tr_vec4dAll(tr_vec4d *v, const tr_vec4d *w) {
+        tr_assert(NULL != v);
+        tr_assert(NULL != w);
+        return ((v->a == w->a) && (v->b == w->b) && (v->c == w->c) &&
+                (v->d == w->d));
+}
+
 void tr_vec4dCopy(tr_vec4d *dest, const tr_vec4d *source) {
         dest->a = source->a;
         dest->b = source->b;

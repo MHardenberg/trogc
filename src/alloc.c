@@ -96,3 +96,30 @@ void tr_allocDestroy(tr_alloc *alloc) {
                 tr_assert(0 && "Not initialised!");
         }
 }
+
+// Checkpoints
+tr_allocCheckpoint tr_allocCheckpointSpawn(const tr_alloc *alloc) {
+        tr_assert(alloc != NULL);
+        tr_allocCheckpoint check = {.alloc = alloc, .cpy = *alloc};
+        return check;
+}
+
+void tr_allocCheckpointReset(const tr_allocCheckpoint *check) {
+        tr_assert(check != NULL);
+        tr_assert(check->alloc != NULL);
+
+        switch (check->alloc->type) {
+        case ALLOC_HEAP: { // no-op
+                break;
+        }
+
+        case ALLOC_ARENA: {
+                *(tr_alloc *)check->alloc = check->cpy;
+                break;
+        }
+
+        default: {
+                tr_panic("Invalid allocator");
+        }
+        }
+}

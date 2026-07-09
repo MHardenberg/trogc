@@ -6,7 +6,14 @@
 #include <trogLogging.h>
 #include <trogAssert.h>
 
-#define tr_max(a, b) ((a) > (b) ? (a) : (b));
+#define tr_max(a, b) ((a) > (b) ? (a) : (b))
+#define tr_min(a, b) ((a) < (b) ? (a) : (b))
+
+#ifndef tr_NPROC
+#define tr_NPROC 4
+#endif
+
+#define tr_MAX_THREADS tr_max(1, tr_NPROC - 1)
 
 #if defined(__GNUC__) || defined(__clang__)
 #define PACKED_START

@@ -1,7 +1,12 @@
+#include <trog.h>
+#include <trogAssert.h>
+#include <trogLogging.h>
 #include <trog/mem/alloc.h>
 #include <trog/ode.h>
 #include <trog/maths.h>
 #include <trog/linalg.h>
+
+#include <pthread.h>
 
 double rk4Step(dydt_fn f, const double x, const double y, const double h,
                void *params) {
@@ -68,6 +73,8 @@ void tr_rk4v(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict Y,
         tr_assert(x->size == Y->cols);
         tr_assert(y0->size == Y->rows);
 
+        const tr_allocCheckpoint checkpoint = tr_allocCheckpointSpawn(alloc);
+
         tr_rk4Containers rk4containers = {
             .k1 = tr_vecdAllocZero(alloc, Y->rows),
             .k2 = tr_vecdAllocZero(alloc, Y->rows),
@@ -88,8 +95,112 @@ void tr_rk4v(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict Y,
                          functionParams, &rk4containers);
         }
 
+        // can be reset in arena
+        tr_allocCheckpointReset(&checkpoint);
         tr_allocFree(alloc, rk4containers.k1);
         tr_allocFree(alloc, rk4containers.k2);
         tr_allocFree(alloc, rk4containers.k3);
         tr_allocFree(alloc, rk4containers.k4);
+        tr_allocFree(alloc, rk4containers.ytemp);
+}
+
+// Batched solvers
+typedef struct {
+        dvdt_fn dvdt;
+        tr_matd **Ys;
+        tr_vecd *restrict y0;
+        tr_vecd *restrict x;
+        double h;
+        void **functionParams;
+
+        size_t batchStartIdx;
+        size_t batchEndIdx;
+} rk4BatchParams;
+
+static void *rk4vBatch(void *batchParams) {
+        tr_assert(batchParams != NULL);
+
+        rk4BatchParams *bp = (rk4BatchParams *)batchParams;
+
+        dvdt_fn dvdt = bp->dvdt;
+        tr_matd *restrict *Ys = bp->Ys;
+        const tr_vecd *restrict y0 = bp->y0;
+        const tr_vecd *restrict x = bp->x;
+        const double h = bp->h;
+        void **functionParams = bp->functionParams;
+
+        const size_t batchStartIdx = bp->batchStartIdx;
+        const size_t batchEndIdx = bp->batchEndIdx;
+        (void)bp;
+
+        tr_assert(dvdt != NULL);
+        tr_assert(Ys != NULL);
+        tr_assert(y0 != NULL);
+        tr_assert(x != NULL);
+        tr_assert(functionParams != NULL);
+
+        tr_alloc alloc;
+        tr_allocCreate(&alloc, ALLOC_ARENA);
+
+        tr_rk4Containers rk4containers = {
+            .k1 = tr_vecdAllocZero(&alloc, Ys[bp->batchStartIdx]->rows),
+            .k2 = tr_vecdAllocZero(&alloc, Ys[bp->batchStartIdx]->rows),
+            .k3 = tr_vecdAllocZero(&alloc, Ys[bp->batchStartIdx]->rows),
+            .k4 = tr_vecdAllocZero(&alloc, Ys[bp->batchStartIdx]->rows),
+            .ytemp = tr_vecdAlloc(&alloc, Ys[bp->batchStartIdx]->rows)};
+
+        for (size_t i = batchStartIdx; i < batchEndIdx; ++i) {
+                tr_assert(Ys[i] != NULL);
+                tr_assert(x->size == Ys[i]->cols);
+                tr_assert(y0->size == Ys[i]->rows);
+                tr_vecd ynow;
+                tr_vecd ynext;
+                tr_matdCol(&ynow, Ys[i], 0);
+                tr_vecdCopy(&ynow, y0);
+
+                // for every step we compute the ynext value and put it into
+                // y now, which is a cloumn in dest
+                for (size_t j = 0; j < Ys[i]->cols - 1; ++j) {
+                        tr_matdCol(&ynow, Ys[i], j);
+                        tr_matdCol(&ynext, Ys[i], j + 1);
+                        rk4Stepv(&ynext, dvdt, *tr_vecdIdx(x, j), &ynow, h,
+                                 functionParams[i], &rk4containers);
+                }
+        }
+
+        // smash arena
+        tr_allocDestroy(&alloc);
+        return NULL;
+}
+
+void tr_rk4vSet(dvdt_fn dvdt, tr_matd **Ys, tr_vecd *restrict y0,
+                tr_vecd *restrict x, const double h, const size_t setSize,
+                void **functionParams) {
+        tr_assert(setSize > 0);
+        size_t nThreads = tr_min(tr_MAX_THREADS, setSize);
+        size_t batchSize = (setSize + nThreads - 1) / nThreads;
+        pthread_t threads[nThreads];
+        rk4BatchParams params[nThreads];
+
+        for (size_t i = 0; i < nThreads; ++i) {
+                params[i].dvdt = dvdt;
+                params[i].Ys = Ys;
+                params[i].y0 = y0;
+                params[i].x = x;
+                params[i].h = h;
+                params[i].functionParams = functionParams;
+                params[i].batchStartIdx = batchSize * i;
+                params[i].batchEndIdx = tr_min(setSize, batchSize * (i + 1));
+
+                LOG("Spawned thread for systems %lu to %lu\n",
+                    params[i].batchStartIdx, params[i].batchEndIdx);
+                int err = pthread_create(&threads[i], NULL, rk4vBatch,
+                                         (void *)&params[i]);
+                tr_assert(err == 0);
+        }
+
+        for (size_t i = 0; i < nThreads; ++i) {
+                LOG("Joined thread %lu\n", i);
+                pthread_join(threads[i], NULL);
+        }
 }

@@ -43,4 +43,8 @@ void rk4Stepv(tr_vecd *ynext, dvdt_fn dvdt, const double x,
 void tr_rk4v(tr_alloc *alloc, dvdt_fn dvdt, tr_matd *restrict Y,
              const tr_vecd *restrict y0, const tr_vecd *restrict x,
              const double h, const void *functionParams);
+
+void tr_rk4vSet(dvdt_fn dvdt, tr_matd **Ys, tr_vecd *restrict y0,
+                tr_vecd *restrict x, const double h, const size_t setSize,
+                void **functionParams);
 #endif
