@@ -25,6 +25,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/plot.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/data.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/alist.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/array.c
 )
 
 # Compiler settings

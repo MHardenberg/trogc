@@ -1,12 +1,5 @@
-#include "trogAssert.h"
-#include <assert.h>
-#include <openblas/cblas.h>
-#include <float.h>
-
-#include <trog.h>
-#include <trog/mem/alloc.h>
 #include <trog/linalg.h>
-#include <string.h>
+#include <openblas/cblas.h>
 
 tr_matd *tr_matdAlloc(tr_alloc *alloc, const size_t rows, const size_t cols) {
         tr_assert(alloc != NULL);
@@ -440,4 +433,47 @@ void tr_matdPrint(tr_matd *m) {
                 printf(" |\n");
         }
         printf("<%lu by %lu matrix>\n", m->rows, m->cols);
+}
+
+void tr_matdPrintCSV(FILE *csv, const tr_matd *m, const tr_vecd *v,
+                     const tr_array *headers, const bool transpose) {
+        tr_assert(NULL != csv);
+        tr_assert(NULL != m);
+        if (NULL != v) {
+                tr_assert(v->size == transpose ? m->cols : m->rows);
+        }
+
+        char EOI; // <-- appended character is either ',' or '\n'
+        if (NULL != headers) {
+                tr_assert(headers->size == transpose ? m->cols : m->rows);
+                for (size_t i = 0; i < headers->size; ++i) {
+                        EOI = i < headers->size - 1 ? ',' : '\n';
+                        fprintf(csv, "%s%c", (char *)tr_arrayIdx(headers, i),
+                                EOI);
+                }
+        }
+
+        if (!transpose) {
+                for (size_t r = 0; r < m->rows; ++r) {
+                        // Prepend vector if given
+                        if (NULL != v) {
+                                fprintf(csv, "%f,", *tr_vecdIdx(v, r));
+                        }
+
+                        for (size_t c = 0; c < m->cols; ++c) {
+                                EOI = c < m->cols - 1 ? ',' : '\n';
+                                fprintf(csv, "%f%c", *tr_matdIdx(m, r, c), EOI);
+                        }
+                }
+                return;
+        }
+
+        // transpose first - we simply iterate thrugh the rows first
+        // (inner loop) writing then colum-wise to csv
+        for (size_t c = 0; c < m->cols; ++c) {
+                for (size_t r = 0; r < m->rows; ++r) {
+                        EOI = r < m->rows - 1 ? ',' : '\n';
+                        fprintf(csv, "%f%c", *tr_matdIdx(m, r, c), EOI);
+                }
+        }
 }

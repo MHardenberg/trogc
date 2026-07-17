@@ -1,11 +1,10 @@
 #ifndef LINALG_H
 #define LINALG_H
 
-#include "trogAssert.h"
-#include <stddef.h>
 #include <trog.h>
-#include <openblas/cblas.h>
+#include <trogAssert.h>
 #include <trog/mem/alloc.h>
+#include <trog/dsa/array.h>
 
 // Vectors
 typedef struct {
@@ -62,7 +61,7 @@ static inline tr_vecd *tr_vecdAllocZeroLike(tr_alloc *alloc,
 
 void tr_vecdFree(tr_alloc *alloc, tr_vecd *vector);
 
-double *tr_vecdIdx(const tr_vecd *v, size_t i);
+double *tr_vecdIdx(const tr_vecd *v, const size_t i);
 
 void tr_vecdPrint(const tr_vecd *v);
 void tr_vec2dPrint(const tr_vec2d *v);
@@ -82,6 +81,8 @@ typedef struct {
         double *x;
 } tr_matd;
 void tr_matdPrint(tr_matd *m);
+void tr_matdPrintCSV(FILE *csv, const tr_matd *m, const tr_vecd *v,
+                     const tr_array *headers, const bool transpose);
 
 #define tr_matdStackAlloc(mat, r, c)                                           \
         double __matdBuffer##mat[r * c];                                       \

@@ -42,9 +42,8 @@ void *tr_alistNext(tr_alist *list) {
         if (list->capacity < list->size + 1) {
                 tr_alistResizeElements(list, 2 * (list->size + 1));
         }
-
-        void *dest = tr_alistIdx(list, list->size);
         ++list->size;
+        void *dest = tr_alistIdx(list, list->size - 1);
         return dest;
 }
 
