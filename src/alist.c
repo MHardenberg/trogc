@@ -29,7 +29,13 @@ void tr_alistResizeElements(tr_alist *list, const size_t newCapacity) {
 }
 
 void *tr_alistIdx(const tr_alist *list, const size_t i) {
+        tr_assert(i < list->size);
         return (int8_t *)list->data + list->stride * i;
+}
+
+void *tr_alistIdxBack(const tr_alist *list, const size_t i) {
+        tr_assert(i <= list->size);
+        return (int8_t *)list->data + list->stride * (list->size - i);
 }
 
 void *tr_alistNext(tr_alist *list) {

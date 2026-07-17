@@ -22,6 +22,8 @@ void tr_alistResizeElements(tr_alist *list, const size_t newCapacity);
 
 void *tr_alistIdx(const tr_alist *list, const size_t i);
 
+void *tr_alistIdxBack(const tr_alist *list, const size_t i);
+
 void *tr_alistPushback(tr_alist *list, const void *elem);
 
 void *tr_alistNext(tr_alist *list);
