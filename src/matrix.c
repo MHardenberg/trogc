@@ -443,7 +443,7 @@ void tr_matdPrintCSV(FILE *csv, const tr_matd *m, const tr_vecd *v,
                 tr_assert(v->size == transpose ? m->cols : m->rows);
         }
 
-        char EOI; // <-- appended character is either ',' or '\n'
+        char EOI; // <-- appended end-of-item character is either ',' or '\n'
         if (NULL != headers) {
                 tr_assert(headers->size == transpose ? m->cols : m->rows);
                 for (size_t i = 0; i < headers->size; ++i) {
