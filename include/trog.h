@@ -3,8 +3,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <trogLogging.h>
+
 #include <trogAssert.h>
+#include <trogLogging.h>
 
 #define tr_max(a, b) ((a) > (b) ? (a) : (b))
 #define tr_min(a, b) ((a) < (b) ? (a) : (b))

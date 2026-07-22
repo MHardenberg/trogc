@@ -10,6 +10,12 @@ typedef struct {
         void *data;
 } tr_array;
 
+tr_array *tr_arrayAlloc(tr_alloc *alloc, const size_t size,
+                        const size_t stride);
+
+tr_array *tr_arrayAllocZero(tr_alloc *alloc, const size_t size,
+                            const size_t stride);
+
 void tr_arrayCreate(tr_alloc *alloc, tr_array *array, const size_t size,
                     const size_t stride);
 

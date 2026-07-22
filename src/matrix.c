@@ -390,7 +390,7 @@ void tr_matdMMul(tr_matd *dest, const double alpha, const tr_matd *a,
 #endif
 }
 
-void tr_matdPrint(tr_matd *m) {
+void tr_matdPrint(const tr_matd *m) {
         for (size_t r = 0; r < m->rows; ++r) {
                 printf("| ");
 

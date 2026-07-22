@@ -80,7 +80,7 @@ typedef struct {
         size_t cols;
         double *x;
 } tr_matd;
-void tr_matdPrint(tr_matd *m);
+void tr_matdPrint(const tr_matd *m);
 void tr_matdPrintCSV(FILE *csv, const tr_matd *m, const tr_vecd *v,
                      const tr_array *headers, const bool transpose);
 
