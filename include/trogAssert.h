@@ -25,16 +25,16 @@ void printStackTrace();
                         abort();                                               \
                 }                                                              \
         } while (0)
-#ifdef _DEBUG
 
+#ifndef _TROG_NOASSERT
 #define tr_assert(condition)                                                   \
         do {                                                                   \
                 if (!(condition)) {                                            \
-                        LOG("\n\n\033[31;1;4mASSERTION "                       \
-                            "FAILED\033[0m %s: "                               \
-                            "%s in file "                                      \
-                            "%s, line %d",                                     \
-                            #condition, __func__, __FILE__, __LINE__);         \
+                        LOGRELEASE("\n\n\033[31;1;4mASSERTION "                \
+                                   "FAILED\033[0m %s: "                        \
+                                   "%s in file "                               \
+                                   "%s, line %d",                              \
+                                   #condition, __func__, __FILE__, __LINE__);  \
                         printStackTrace();                                     \
                         abort();                                               \
                 }                                                              \

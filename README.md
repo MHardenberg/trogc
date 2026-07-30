@@ -17,3 +17,18 @@ cmake ..
 make
 cd ../../
 ```
+## Compile options
+```cmake
+# Set debug flag
+target_compile_definitions(trogc PRIVATE _TROG_DEBUG)
+
+# Set precision to double (default)
+    target_compile_definitions(trogc PRIVATE _TROG_DOUBLE_PRECISION)
+
+# Set precision to single
+# (yet to be added)
+    target_compile_definitions(trogc PRIVATE _TROG_SINGLE_PRECISION)
+
+```
+
+

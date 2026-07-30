@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
-project(trog)
+project(trogc)
 
 if(NOT CMAKE_BUILD_TYPE)
     # set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
-
-
-
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 AUX_SOURCE_DIRECTORY(${CMAKE_SOURCE_DIR}/src/ SOURCES) 
@@ -46,18 +43,16 @@ if(NOT NPROC OR NPROC EQUAL 0)
   set(NPROC 1)
 endif()
 
-# Debug-specific options
 # ------------------------------------------------------------------------------
 add_compile_definitions(_BLAS)
 add_compile_definitions(tr_NPROC=${NPROC})
-add_compile_definitions(LOG_FILE="${CMAKE_CURRENT_SOURCE_DIR}/temp/smores.log")
 add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_definitions( _DEBUG )
+    add_compile_definitions( _TROG_DEBUG )
     add_compile_options(-O0 -g)
-    # add_compile_options(-fsanitize=address )
-    # add_link_options(-fsanitize=address "LINKER:--as-needed")
+    add_compile_options(-fsanitize=address )
+    add_link_options(-fsanitize=address -fsanitize=undefined "LINKER:--as-needed")
 else()
     add_compile_options(-O3 -s -flto -ffast-math -march=native)
     add_link_options(-flto)
@@ -65,16 +60,16 @@ endif()
 
 # Library
 # ------------------------------------------------------------------------------
-add_library(trog STATIC
+add_library(trogc STATIC
     ${SOURCES}
 )
 
-target_include_directories(trog
+target_include_directories(trogc
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(trog PRIVATE backtrace openblas)
+target_link_libraries(trogc PRIVATE backtrace openblas)
 
 # Executable
 # ------------------------------------------------------------------------------
@@ -87,4 +82,4 @@ target_include_directories(trogtest
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/test
 )
-target_link_libraries(trogtest PUBLIC trog backtrace openblas m)
+target_link_libraries(trogtest PUBLIC trogc backtrace openblas m)

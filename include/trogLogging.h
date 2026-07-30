@@ -3,12 +3,16 @@
 
 #include <stdio.h>
 
-#ifdef _DEBUG
+#ifndef _TROG_LOG_FILE
+#define _TROG_LOG_FILE "./temp/trogc.log"
+#endif
+
+#ifdef _TROG_DEBUG
 #include <time.h>
 
 #define LOG(...)                                                               \
         do {                                                                   \
-                FILE *fptr = fopen(LOG_FILE, "a");                             \
+                FILE *fptr = fopen(_TROG_LOG_FILE, "a");                       \
                 if (fptr != NULL) {                                            \
                         time_t t = time(NULL);                                 \
                         struct tm timeLocal = *localtime(&t);                  \
@@ -29,7 +33,7 @@
 
 #define LOGERROR(...)                                                          \
         do {                                                                   \
-                FILE *fptr = fopen(LOG_FILE, "a");                             \
+                FILE *fptr = fopen(_TROG_LOG_FILE, "a");                       \
                 if (fptr != NULL) {                                            \
                         time_t t = time(NULL);                                 \
                         struct tm timeLocal = *localtime(&t);                  \
@@ -53,7 +57,7 @@
 
 #define LOGBARE(...)                                                           \
         do {                                                                   \
-                FILE *fptr = fopen(LOG_FILE, "a");                             \
+                FILE *fptr = fopen(_TROG_LOG_FILE, "a");                       \
                 if (fptr != NULL) {                                            \
                         fprintf(fptr, __VA_ARGS__);                            \
                         fclose(fptr);                                          \
@@ -71,7 +75,7 @@
 
 #define LOGRELEASE(...)                                                        \
         do {                                                                   \
-                FILE *fptr = fopen(LOG_FILE, "a");                             \
+                FILE *fptr = fopen(_TROG_LOG_FILE, "a");                       \
                 if (fptr != NULL) {                                            \
                         fprintf(fptr, __VA_ARGS__);                            \
                         fprintf(fptr, "\n");                                   \
